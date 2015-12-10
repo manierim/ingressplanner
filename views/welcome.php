@@ -12,7 +12,72 @@ echo $this->div(
         'row',
         $this->col(
             2,
-            $this->tag('p', $this->img('ingressplannerlogo.png', array('style'=>'margin-top: 20px;')))
+            $this->row(
+                $this->col(12, $this->img('ingressplannerlogo.png', array('style'=>'margin-top: 20px;')))
+            )
+            . $this->row(
+                array('style'=>'margin-top: 20px; '),
+                $this->col(
+                    4,
+                    $this->tag(
+                        'a',
+                        array(
+                            'href'      => 'https://plus.google.com/communities/102911691483488654925',
+                            'target'    => '_blank',
+                            'style'     => 'text-decoration:none; ',
+                            'class'     => 'pull-left',
+                        ),
+                        $this->tag(
+                            'img',
+                            array(
+                                'src'   => '//ssl.gstatic.com/images/icons/gplus-32.png',
+                                'alt'   => 'Google+',
+                                'style' => 'border:0; height: 32px; ',
+                            )
+                        )
+                    )
+                )
+                . $this->col(
+                    4,
+                    $this->tag(
+                        'a',
+                        array(
+                            'href'      => 'https://github.com/manierim/ingressplanner',
+                            'target'    => '_blank',
+                            'style'     => 'text-decoration:none; ',
+                            'class'     => 'pull-left',
+                        ),
+                        $this->tag(
+                            'img',
+                            array(
+                                'src'   => 'img/GitHub-Mark-32px.png',
+                                'alt'   => 'GitHub',
+                                'style' => 'border:0; height: 32px; ',
+                            )
+                        )
+                    )
+                )
+                . $this->col(
+                    4,
+                    $this->tag(
+                        'a',
+                        array(
+                            'href'      => 'https://www.youtube.com/playlist?list=PLJf23rcfHjvc1a3YYVFjqwBXgN4pctPeq',
+                            'target'    => '_blank',
+                            'style'     => 'text-decoration:none; ',
+                            'class'     => 'pull-left',
+                        ),
+                        $this->tag(
+                            'img',
+                            array(
+                                'src'   => 'img/YouTube-social-circle_red_48px.png',
+                                'alt'   => 'YouTube',
+                                'style' => 'border:0; height: 32px; ',
+                            )
+                        )
+                    )
+                )
+            )
         )
         . $this->col(
             10,
@@ -24,7 +89,7 @@ echo $this->div(
             . $this->img('ingress-logo.png', array('class'=>'pull-right'))
             . $this->tag(
                 'p',
-                $this->tag('small', 'by ' . AUTHOR . '(' . $this->tag('span', 'team-'.AUTHOR_TEAM, AUTHOR_AGENTNAME) . ') | version ' . VERSION . ' build ' . BUILD)
+                $this->tag('small', 'by ' . AUTHOR . ' (' . $this->tag('span', 'team-'.AUTHOR_TEAM, AUTHOR_AGENTNAME) . ')<br>version ' . VERSION . ' build ' . BUILD)
             )
             . $this->tag(
                 'p',
