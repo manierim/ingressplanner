@@ -1,0 +1,3 @@
+<IfModule pagespeed_module>
+    ModPagespeed unplugged
+</IfModule>
