@@ -51,22 +51,29 @@ ingressplanner = new (function() {
 
 		if (typeof currPlan != undefined && currPlan)
 		{
-			$.each(currPlan.ranges, function(index, range) {
-				rangesMap[range.index] = JSON.stringify({
-					type: range.type,
- 				 	color: range.color
- 				});
-			});
+			if (typeof currPlan.ranges != 'undefined')
+			{
+				$.each(currPlan.ranges, function(index, range) {
+					rangesMap[range.index] = JSON.stringify({
+						type: range.type,
+	 				 	color: range.color
+	 				});
+				});
+			}
 
-			$.each(currPlan.steps, function(index, step) {
-				if (step.type == 'reverse' && typeof step.drawingIdx != 'undefined')
-				{
-					reversesMap[step.drawingIdx] = JSON.stringify({
-	 				 	color: step.color,
-	 				 	portals: step.portals
-	 				 });
-				}
-			});
+			if (typeof currPlan.steps != 'undefined')
+			{
+				$.each(currPlan.steps, function(index, step) {
+					if (step.type == 'reverse' && typeof step.drawingIdx != 'undefined')
+					{
+						reversesMap[step.drawingIdx] = JSON.stringify({
+		 				 	color: step.color,
+		 				 	portals: step.portals
+		 				 });
+					}
+				});
+			}
+
 		}
 		else
 		{
