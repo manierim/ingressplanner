@@ -218,6 +218,9 @@ ingressplanner.gameworld = new (function() {
 			if (typeof routes[hash]=='undefined')
 			{
 
+				var pl = new L.polyline([L.latLng(fromHash.split(',')),L.latLng(toHash.split(','))],options);
+				layer.addLayer(pl);
+
 				router.route(
 					[
 						new L.Routing.Waypoint(L.latLng(fromHash.split(','))),
@@ -229,17 +232,13 @@ ingressplanner.gameworld = new (function() {
 						if (err)
 						{
 							ingressplanner.warn('Route',hash,'error',err);
-							coords = [fromHash.split(','),toHash.split(',')];
 						}
 						else
 						{
 							routes[hash] = route[0].coordinates;
-							coords = routes[hash];
 							sessionStorage.setItem('routes',JSON.stringify(routes));
+							pl.setLatLngs(routes[hash]);
 						}
-
-						layer.addLayer(L.polyline(coords,options));
-
 					},
 					null,
 					{
