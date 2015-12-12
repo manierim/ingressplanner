@@ -15,6 +15,9 @@ ingressplanner.gameworld = new (function() {
 	var fields = {};
 	var fieldsByPortalLLstring = {};
 
+	var serviceDownWarning = null;
+	var serviceDownAlertTimer = null;
+
 	function teamName(fromiitc,what)
 	{
 	    var internal = fromiitc;
@@ -269,6 +272,17 @@ ingressplanner.gameworld = new (function() {
 				var pl = new L.polyline([L.latLng(fromHash.split(',')),L.latLng(toHash.split(','))],options);
 				layer.addLayer(pl);
 
+				if ((!serviceDownWarning) && (!serviceDownAlertTimer))
+				{
+					serviceDownAlertTimer = setTimeout(
+						function() {
+							serviceDownWarning = true;
+							bootbox.alert("OSRM public routing engine is down, route preview not available at this time");
+						}
+						,5000
+					);
+				}
+
 				router.route(
 					[
 						new L.Routing.Waypoint(L.latLng(fromHash.split(','))),
@@ -276,6 +290,8 @@ ingressplanner.gameworld = new (function() {
 					],
 					function(err,route) {
 
+						clearTimeout(serviceDownAlertTimer);
+						serviceDownAlertTimer = null;
 						var coords = null;
 						if (err)
 						{
