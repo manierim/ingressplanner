@@ -45,7 +45,7 @@ ingressplanner.gameworld = new (function() {
 
 	};
 
-	function loadData(data)
+	function loadData(data,lastMapDataRefreshStartPayload)
 	{
 		var updateMap = false;
 
@@ -68,8 +68,23 @@ ingressplanner.gameworld = new (function() {
 
 		if (typeof data.portals != 'undefined')
 		{
+			var updateBounds = null;
+			if (typeof lastMapDataRefreshStartPayload != 'undefined')
+			{
+				updateBounds = L.bounds(
+					L.point(
+						lastMapDataRefreshStartPayload.bounds._northEast.lat,
+						lastMapDataRefreshStartPayload.bounds._northEast.lng
+					),
+					L.point(
+						lastMapDataRefreshStartPayload.bounds._southWest.lat,
+						lastMapDataRefreshStartPayload.bounds._southWest.lng
+					)
+				);
+			}
+
 			$.each(data.portals, function(portalIDX,portal) {
-				addPortal(portal);
+				addPortal(portal,updateBounds)
 				updateMap = true;
 			});
 		}
@@ -124,8 +139,11 @@ ingressplanner.gameworld = new (function() {
 
 	};
 
-	function addPortal(portal)
+	function addPortal(portal, updateBounds)
 	{
+
+		// "fake portals" have partial portal, links and fields data
+		var fake = (typeof portal.title == 'undefined');
 
 		portal.teamDECODED = teamName(portal.team,'portal');
 		portal.llstring = ingressplanner.utils.llstring(portal.latlng);
@@ -154,13 +172,37 @@ ingressplanner.gameworld = new (function() {
 			});
 		});
 
+		// can we assume links & fields listed are complete?
+		var canDelete = true;
+
+		if (fake)
+		{
+			// it's a fake portal
+			if (updateBounds && (!updateBounds.contains(L.point(
+				portal.latlng.lat,
+				portal.latlng.lng
+			))))
+			{
+				// and it's outside the map bounds, links & fields listed could not be complete
+				canDelete = false;
+			}
+
+		}
+
 		if (typeof linksByPortalLLstring[portal.llstring] != 'undefined')
 		{
 
 			$.each(linksByPortalLLstring[portal.llstring], function(index, linkguid) {
-				 if (portal_links.indexOf(linkguid)==-1)
+				 if (portal_links.indexOf(linkguid)==-1 && typeof links[linkguid] != 'undefined')
 				 {
+				 	if (canDelete)
+				 	{
 					 	delete links[linkguid];
+					}
+					else
+					{
+						portal_links.push(linkguid);
+					}
 				 }
 			});
 		}
@@ -169,15 +211,21 @@ ingressplanner.gameworld = new (function() {
 		if (typeof fieldsByPortalLLstring[portal.llstring] != 'undefined')
 		{
 			$.each(fieldsByPortalLLstring[portal.llstring], function(index, fieldguid) {
-				 if (portal.fields.indexOf(fieldguid)==-1)
+				 if (portal.fields.indexOf(fieldguid)==-1 && typeof fields[fieldguid] != 'undefined')
 				 {
+				 	if (canDelete)
+				 	{
 					 	delete fields[fieldguid];
+				 	}
+				 	else
+				 	{
+						portal.fields.push(fieldguid);
+				 	}
 				 }
 			});
 
 		}
 		fieldsByPortalLLstring[portal.guid] = portal.fields;
-
 	};
 
 	var router = L.Routing.osrm();
@@ -392,10 +440,10 @@ ingressplanner.gameworld = new (function() {
 
 		},
 
-		update: function(data)
+		update: function(data,lastMapDataRefreshStartPayload)
 		{
 
-			var updateMap = loadData(data);
+			var updateMap = loadData(data,lastMapDataRefreshStartPayload);
 
 			if (updateMap && typeof(Storage) !== "undefined") 
 			{

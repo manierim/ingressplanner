@@ -27,6 +27,9 @@ ingressplanner = new (function() {
 	// store current player opponent team
 	var opponentTeam = null;
 
+	// store last mapDataRefreshStart data
+	var lastMapDataRefreshStartPayload = null;
+
 	// store current agent data
 	var agentLoggableData = null;
 
@@ -353,12 +356,13 @@ ingressplanner = new (function() {
 						switch(payload.hookName)
 						{
 							case 'mapDataRefreshStart':
+								lastMapDataRefreshStartPayload = payload.data;
 								ingressplanner.ui.mapUpdating(true);
 								break;
 
 							case 'mapDataRefreshEnd':
 								ingressplanner.ui.mapUpdating(false);
-								if (ingressplanner.gameworld.update(payload.data) && lastPlan)
+								if (ingressplanner.gameworld.update(payload.data,lastMapDataRefreshStartPayload) && lastPlan)
 								{
 									loadAndAnalyzePlan(lastPlan,false);
 								}
