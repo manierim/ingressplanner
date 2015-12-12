@@ -42,26 +42,6 @@ echo $this->div(
                     $this->tag(
                         'a',
                         array(
-                            'href'      => 'https://github.com/manierim/ingressplanner',
-                            'target'    => '_blank',
-                            'style'     => 'text-decoration:none; ',
-                            'class'     => 'pull-left',
-                        ),
-                        $this->tag(
-                            'img',
-                            array(
-                                'src'   => 'img/GitHub-Mark-32px.png',
-                                'alt'   => 'GitHub',
-                                'style' => 'border:0; height: 32px; ',
-                            )
-                        )
-                    )
-                )
-                . $this->col(
-                    4,
-                    $this->tag(
-                        'a',
-                        array(
                             'href'      => 'https://www.youtube.com/playlist?list=PLJf23rcfHjvc1a3YYVFjqwBXgN4pctPeq',
                             'target'    => '_blank',
                             'style'     => 'text-decoration:none; ',
@@ -72,6 +52,26 @@ echo $this->div(
                             array(
                                 'src'   => 'img/YouTube-social-circle_red_48px.png',
                                 'alt'   => 'YouTube',
+                                'style' => 'border:0; height: 32px; ',
+                            )
+                        )
+                    )
+                )
+                . $this->col(
+                    4,
+                    $this->tag(
+                        'a',
+                        array(
+                            'href'      => 'https://github.com/manierim/ingressplanner',
+                            'target'    => '_blank',
+                            'style'     => 'text-decoration:none; ',
+                            'class'     => 'pull-left',
+                        ),
+                        $this->tag(
+                            'img',
+                            array(
+                                'src'   => 'img/GitHub-Mark-32px.png',
+                                'alt'   => 'GitHub',
                                 'style' => 'border:0; height: 32px; ',
                             )
                         )

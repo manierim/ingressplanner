@@ -746,6 +746,7 @@ ingressplanner.gdrive = new (function() {
 
             var writenewplan = function(newPlanName,planObject)
             {
+
                 insertFolderInApplicationDataFolder(newPlanName, function(folder){
                     insertObjectasJSONFile([{id:folder.id}], 'plan', planObject, function() {
                         readPlans(false,function(){
@@ -760,7 +761,7 @@ ingressplanner.gdrive = new (function() {
                 && typeof plans[from] != 'undefined'
             )
             {
-                loadPlan(from,function(version,result){
+                loadPlan(from,function(version,result) {
 
                     var plan = null;
 

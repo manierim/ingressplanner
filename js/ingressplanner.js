@@ -692,7 +692,7 @@ ingressplanner = new (function() {
 						}
 
 					case 'deleteItems':
-console.debug('move',payload);
+
 						var toMove = [];
 						var before = [];
 						var after = [];
@@ -1036,8 +1036,8 @@ console.debug('move',payload);
 			loggingEnabled 
 			&& typeof console[type] == 'function'
 			&& (
-				type == 'error'
-				||
+				type == 'error' ||
+				type == 'warn' ||
 				about.debug
 			)
 		)

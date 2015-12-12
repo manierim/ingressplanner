@@ -2822,14 +2822,15 @@ ingressplanner.ui = new (function() {
 				})
 
 				.on('click','a[role=button].copyPlan',function() {
+                    var origPlanName = $(this).parents("tr").data("planname");
                     bootbox.prompt({
                       title: "Name of the new Plan?",
-                      value: "copy of " + $(this).parents("tr").data("planname"),
+                      value: "copy of " + origPlanName,
                       callback: function(name) {
                         if (name !== null) 
                         {
                             unactivePlan();
-                            eventHandler('copyPlan',{name:name,from:$(this).parents("tr").data("planname")});
+                            eventHandler('copyPlan',{name:name,from:origPlanName});
                         }
                       }
                     });
