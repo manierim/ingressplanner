@@ -55,8 +55,10 @@ ingressplanner.gameworld = new (function() {
 		if (typeof data.links != 'undefined')
 		{
 			$.each(data.links, function(linkIDX, link) {
-				addLink(link);
-				updateMap = true;
+				if (addLink(link))
+				{
+					updateMap = true;
+				}
 			});
 			
 		}
@@ -64,8 +66,10 @@ ingressplanner.gameworld = new (function() {
 		if (typeof data.fields != 'undefined')
 		{
 			$.each(data.fields, function(fieldIDX, field) {
-				addField(field);
-				updateMap = true;
+				if (addField(field))
+				{
+					updateMap = true;
+				}
 			});
 		}
 
@@ -87,8 +91,10 @@ ingressplanner.gameworld = new (function() {
 			}
 
 			$.each(data.portals, function(portalIDX,portal) {
-				addPortal(portal,updateBounds)
-				updateMap = true;
+				if (addPortal(portal,updateBounds))
+				{
+					updateMap = true;
+				}
 			});
 		}
 
@@ -97,53 +103,73 @@ ingressplanner.gameworld = new (function() {
 
 	function addLink(link)
 	{
+		var updated = false;
 
 		link.teamDECODED = teamName(link.team,'link');
 		link.llstring = ingressplanner.utils.llstring(link._latlngsinit,true);
 
-		links[link.guid] = link;
+		if (typeof links[link.guid] == 'undefined')
+		{
+			updated = true;
 
-		$.each(link.llstring.split('|'), function(index, portalLLstring) {
+			links[link.guid] = link;
 
-			if (typeof linksByPortalLLstring[portalLLstring] == 'undefined')
-			{
-				linksByPortalLLstring[portalLLstring] = [];
-			}
+			$.each(link.llstring.split('|'), function(index, portalLLstring) {
 
-			if (linksByPortalLLstring[portalLLstring].indexOf(link.guid)==-1)
-			{
-				linksByPortalLLstring[portalLLstring].push(link.guid);
-			}
-				
-		});
+				if (typeof linksByPortalLLstring[portalLLstring] == 'undefined')
+				{
+					linksByPortalLLstring[portalLLstring] = [];
+				}
+
+				if (linksByPortalLLstring[portalLLstring].indexOf(link.guid)==-1)
+				{
+					linksByPortalLLstring[portalLLstring].push(link.guid);
+				}
+					
+			});
+
+		}
+
+		return updated;
 
 	};
 
 	function addField(field)
 	{
 
-		field.teamDECODED = teamName(field.team,'field');
-		field.llstring = ingressplanner.utils.llstring(field._latlngsinit,true);
-		fields[field.guid] = field;
+		var updated = false;
 
-		$.each(field.llstring.split('|'), function(index, portalLLstring) {
+		if (typeof fields[field.guid] == 'undefined')
+		{
+			updated = true;
 
-			if (typeof fieldsByPortalLLstring[portalLLstring] == 'undefined')
-			{
-				fieldsByPortalLLstring[portalLLstring] = [];
-			}
+			field.teamDECODED = teamName(field.team,'field');
+			field.llstring = ingressplanner.utils.llstring(field._latlngsinit,true);
+			fields[field.guid] = field;
 
-			if (fieldsByPortalLLstring[portalLLstring].indexOf(field.guid)==-1)
-			{
-				fieldsByPortalLLstring[portalLLstring].push(field.guid);
-			}
+			$.each(field.llstring.split('|'), function(index, portalLLstring) {
 
-		});
+				if (typeof fieldsByPortalLLstring[portalLLstring] == 'undefined')
+				{
+					fieldsByPortalLLstring[portalLLstring] = [];
+				}
+
+				if (fieldsByPortalLLstring[portalLLstring].indexOf(field.guid)==-1)
+				{
+					fieldsByPortalLLstring[portalLLstring].push(field.guid);
+				}
+
+			});
+		}
+
+		return updated;
 
 	};
 
 	function addPortal(portal, updateBounds)
 	{
+
+		var updated = false;
 
 		// "fake portals" have partial portal, links and fields data
 		var fake = (typeof portal.title == 'undefined');
@@ -154,14 +180,40 @@ ingressplanner.gameworld = new (function() {
 		if (typeof portals[portal.guid] != 'undefined')
 		{
 			$.each(Object.keys(portal), function(index, propertyName) {
-				 if (
-				 	typeof portal[propertyName] == 'undefined'
+
+				switch (propertyName)
+				{
+					case 'title':
+					case 'llstring':
+					case 'teamDECODED':
+					case 'resCount':
+					case 'keys':
+						if (
+							typeof portal[propertyName] != 'undefined'
+							&& (
+								typeof portals[portal.guid][propertyName] == 'undefined'
+								|| portals[portal.guid][propertyName] != portal[propertyName]
+							)
+						)
+						{
+							updated = true;
+						}
+						break;
+
+				}
+
+				if (
+					typeof portal[propertyName] == 'undefined'
 				 	&& typeof portals[portal.guid][propertyName] != 'undefined'
-				 )
-				 {
+				)
+				{
 				 	portal[propertyName] = portals[portal.guid][propertyName];
-				 }
+				}
 			});
+		}
+		else
+		{
+			updated = true;
 		}
 
 		portals[portal.guid] = portal;
@@ -200,6 +252,7 @@ ingressplanner.gameworld = new (function() {
 				 {
 				 	if (canDelete)
 				 	{
+				 		updated = true;
 					 	delete links[linkguid];
 					}
 					else
@@ -208,7 +261,29 @@ ingressplanner.gameworld = new (function() {
 					}
 				 }
 			});
+
+			if (!updated)
+			{
+				updated = linksByPortalLLstring[portal.llstring].length != portal_links.length;
+			}
+
+			if (!updated)
+			{
+				$.each(portal_links, function(index, linkguid) {
+					 if (linksByPortalLLstring[portal.llstring].indexOf(linkguid)==-1)
+					 {
+						updated = true;
+						return false;
+					 }
+				});
+			}
+
 		}
+		else if (portal_links.length)
+		{
+			updated = true;
+		}
+
 		linksByPortalLLstring[portal.llstring] = portal_links;
 
 		if (typeof fieldsByPortalLLstring[portal.llstring] != 'undefined')
@@ -218,6 +293,7 @@ ingressplanner.gameworld = new (function() {
 				 {
 				 	if (canDelete)
 				 	{
+				 		updated = true;
 					 	delete fields[fieldguid];
 				 	}
 				 	else
@@ -227,8 +303,32 @@ ingressplanner.gameworld = new (function() {
 				 }
 			});
 
+			if (!updated)
+			{
+				updated = fieldsByPortalLLstring[portal.llstring].length != portal.fields.length;
+			}
+
+			if (!updated)
+			{
+				$.each(portal.fields, function(index, fieldguid) {
+					 if (fieldsByPortalLLstring[portal.llstring].indexOf(fieldguid)==-1)
+					 {
+						updated = true;
+						return false;
+					 }
+				});
+			}
+
 		}
+		else if (portal.fields.length)
+		{
+			updated = true;
+		}
+
 		fieldsByPortalLLstring[portal.guid] = portal.fields;
+
+		return updated;
+
 	};
 
 	var router = L.Routing.osrm();
@@ -472,7 +572,6 @@ ingressplanner.gameworld = new (function() {
 			}
 
 			return updateMap;
-		
 		},
 
 		dataProvider: function() {
