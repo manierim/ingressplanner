@@ -2800,7 +2800,11 @@ ingressplanner.ui = new (function() {
                 resizeScrollable();
             });
 
-			$('#toolsCollapse, #exportCollapse').on('shown.bs.collapse', function (e) {
+            $('[data-stepsCollapse]').on('show.bs.collapse', function (e) {
+                $(this).siblings('[data-stepsCollapse]').collapse('hide');
+            });
+
+			$('[data-stepsCollapse]').on('shown.bs.collapse', function (e) {
 		        resizeScrollable();
 		    });
 
