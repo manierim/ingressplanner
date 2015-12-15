@@ -5,6 +5,14 @@ $news = array(
 
     array(
         'date'      => 'Dec. 15, 2015',
+        'version'   => '2.0.2b',
+        'body' => array(
+            'Fixed privacy settings not showing',
+        ),
+    ),
+
+    array(
+        'date'      => 'Dec. 15, 2015',
         'version'   => '2.0.2',
         'body' => array(
             'Improved gameworld changes detection (to avoid unnecessary plan analysis if nothing changed)',
@@ -26,11 +34,11 @@ $news = array(
     array(
         'date'      => 'Dec. 10, 2015',
         'title'     => 'v 2.0 online!',
-        'body' => 
+        'body' =>
         $html->tag(
             'p',
             'Version 2, a brand new rewrite, is online!<br>Check the '
-            . $html->link('video','https://youtu.be/f96PTPUh2lY',true)
+            . $html->link('video', 'https://youtu.be/f96PTPUh2lY', true)
             .'!'
         ),
     ),
