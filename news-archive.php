@@ -17,20 +17,28 @@ $news = array(
         'date'      => 'Dec. 12, 2015',
         'version'   => '2.0.1',
         'body' => array(
+            'Visual Preview: added alert for OSRM router down',
             'Fixed "copy plan" creating an empty plan',
             'Fixed "fake" portals out of map bounds not having all links & fields information and therefore removing them from gameworld',
-            'Visual Preview: added alert for OSRM router down',
+        ),
+    ),
+
+    array(
+        'date'      => 'Dec. 11, 2015',
+        'version'   => '2.0b',
+        'body' => array(
+            'Fixed new (empty) plans not working at all',
         ),
     ),
 
     array(
         'date'      => 'Dec. 10, 2015',
         'title'     => 'v 2.0 online!',
-        'body' => 
+        'body' =>
         $html->tag(
             'p',
             'Version 2, a brand new rewrite, is online!<br>Check the '
-            . $html->link('video','https://youtu.be/f96PTPUh2lY',true)
+            . $html->link('video', 'https://youtu.be/f96PTPUh2lY', true)
             .'!'
         ),
     ),
