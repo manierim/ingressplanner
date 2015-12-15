@@ -5,6 +5,9 @@ error_reporting(E_ALL);
 ini_set('error_log', 'php-error.log');
 ini_set('log_errors', true);
 
+require 'htmlHelper.php';
+$html = new Helpers\HtmlHelper;
+
 require 'basics.php';
 
 define('BUILD', '@@BUILD@@ @@BUILDDATE@@');
@@ -57,10 +60,7 @@ $requiredPlugins = array(
     ),
 );
 
-require 'htmlHelper.php';
-$html = new Helpers\HtmlHelper;
-
-$content = $html->view('index', compact('requiredPlugins', 'agents', 'agents_since'));
+$content = $html->view('index', compact('requiredPlugins', 'agents', 'agents_since','news'));
 $jsbuffer = $html->getJsBuffer();
 
 require 'layout.php';

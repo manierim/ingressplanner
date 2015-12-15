@@ -6,7 +6,16 @@ date_default_timezone_set('Europe/Rome');
 
 define('AGENTSLOG', 'agentslog.json');
 define('PRODUCTNAME', 'Ingress Planner');
-define('VERSION', '2.0');
+
+require 'news-archive.php';
+
+foreach ($news as $new) {
+	if (isset($new['version']))
+	{
+		define('VERSION', $new['version']);
+		break;
+	}
+}
 
 $agents = array();
 $agents_since = null;

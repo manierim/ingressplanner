@@ -350,3 +350,25 @@ tr[data-planidx] .colorbox:hover {
     border: 4px double gray;
 }
 
+#news li h5 {
+	margin-bottom: 0;
+    border-bottom: 1px solid gray;
+}
+
+#news li .date {
+	font-size: 75%;
+}
+
+#news li p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+#news li p,
+#news li ul {
+	font-size: 85%;
+}
+
+#news li ul {
+	padding-left: 16px;
+}

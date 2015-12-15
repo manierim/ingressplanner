@@ -31,6 +31,18 @@ class HtmlHelper
 
     private function addItemtoAttribute($attrsArray, $attributeKey, $itemsToAdd)
     {
+        if (is_string($attrsArray))
+        {
+            if (substr($attrsArray, 0,1)=='#')
+            {
+                $attrsArray=array('id'=>substr($attrsArray,1));
+            }
+            else
+            {
+                $attrsArray=array('class'=>$attrsArray);
+            }
+        }
+
         if (empty($attrsArray)) {
             $attrsArray = array();
         }
@@ -219,7 +231,14 @@ class HtmlHelper
                     $content = $attrsArray;
                     $attrsArray = array();
                 } else {
-                    $attrsArray = array('class'=>$attrsArray);
+                    if (substr($attrsArray, 0,1)=='#')
+                    {
+                        $attrsArray = array('id'=>substr($attrsArray,1));
+                    }
+                    else
+                    {
+                        $attrsArray = array('class'=>$attrsArray);
+                    }
                 }
             }
 

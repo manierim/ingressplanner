@@ -8,7 +8,7 @@ echo $this->div(
             'welcomeTab' => array(
                 'icon'      => 'home',
                 'title'     => 'Home',
-                'view'      => array('welcome'=>compact('requiredPlugins')),
+                'view'      => array('welcome'=>compact('requiredPlugins','news')),
             ),
             'gdriveTab' => array(
                 'icon'      => 'question-sign',

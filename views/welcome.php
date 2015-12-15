@@ -78,6 +78,14 @@ echo $this->div(
                     )
                 )
             )
+            . $this->row(
+                $this->col(
+                    12,
+                    '#news',
+                    $this->tag('h3','News')
+                    . $this->view('news',compact('news'))
+                )
+            )
         )
         . $this->col(
             10,
