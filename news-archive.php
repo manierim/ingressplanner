@@ -5,6 +5,14 @@ $news = array(
 
     array(
         'date'      => 'Dec. 15, 2015',
+        'version'   => '2.0.2b',
+        'body' => array(
+            'Fixed privacy settings not showing',
+        ),
+    ),
+
+    array(
+        'date'      => 'Dec. 15, 2015',
         'version'   => '2.0.2',
         'body' => array(
             'Improved gameworld changes detection (to avoid unnecessary plan analysis if nothing changed)',
