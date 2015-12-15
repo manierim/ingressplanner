@@ -56,6 +56,28 @@ $this->div(
                 ),
                 $this->view('plantools')
             )
+            . $this->tag(
+                'button',
+                array(
+                    'class'         => 'btn btn-success',
+                    'role'          => 'button',
+                    'data-toggle'   => 'collapse',
+                    'href'          => '#exportCollapse',
+                    'aria-expanded' => 'true',
+                    'aria-controls' => 'exportCollapse',
+                    'style'         => 'margin-top: 20px; ',
+                ),
+                'Export ' . $this->tag('span', array('class'=>'caret'), '')
+            )
+            .
+            $this->div(
+                'collapse',
+                array(
+                    'id'    => 'exportCollapse',
+                    'data-stepsCollapse' => true,
+                ),
+                $this->view('export')
+            )
         )
     )
     . $this->div(
@@ -86,23 +108,6 @@ $this->div(
                 )
             )
             . $this->tag('tbody')
-        )
-        . $this->tag(
-            'form',
-            array('role'=>'form'),
-            $this->div(
-                'form-group',
-                $this->tag('label', array('for'=>'todoList'), 'Textual')
-                . $this->tag(
-                    'textarea',
-                    array(
-                        'class'     => 'form-control',
-                        'id'        => 'todoList',
-                        'readonly'  => 'readonly',
-                    ),
-                    ''
-                )
-            )
         )
     )
 )

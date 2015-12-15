@@ -1650,7 +1650,6 @@ ingressplanner.ui = new (function() {
         var totalAP = null;
 
         todoListContainer.html('');
-        todoListContainer.attr('rows', 1);
         var todolines = [];
 
         var selectOptions = [];
@@ -2561,7 +2560,6 @@ ingressplanner.ui = new (function() {
         }
 
         todoListContainer.html(todolines.join('\n'));
-        todoListContainer.attr('rows', todolines.length+1);
 
         stepsListBody.find('.colorbox').each(function(index) {
 
@@ -2802,7 +2800,7 @@ ingressplanner.ui = new (function() {
                 resizeScrollable();
             });
 
-			$('#toolsCollapse').on('shown.bs.collapse', function (e) {
+			$('#toolsCollapse, #exportCollapse').on('shown.bs.collapse', function (e) {
 		        resizeScrollable();
 		    });
 
