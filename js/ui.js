@@ -1236,9 +1236,12 @@ ingressplanner.ui = new (function() {
 
             $innerListItem.parents('td').addClass('success');
 
-            $parentDiv.scrollTop($parentDiv.scrollTop() + $innerListItem.position().top
-                - $parentDiv.height()/2 + $innerListItem.height()/2)
-            ;
+            if ($('#planPreviewModal').is(':visible'))
+            {
+                $parentDiv.scrollTop($parentDiv.scrollTop() + $innerListItem.position().top
+                    - $parentDiv.height()/2 + $innerListItem.height()/2)
+                ;
+            }
 
             var playerLL = L.latLng(step.marker);
 
