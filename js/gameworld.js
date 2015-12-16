@@ -15,9 +15,6 @@ ingressplanner.gameworld = new (function() {
 	var fields = {};
 	var fieldsByPortalLLstring = {};
 
-	var serviceDownWarning = null;
-	var serviceDownAlertTimer = null;
-
 	function teamName(fromiitc,what)
 	{
 	    var internal = fromiitc;
@@ -331,10 +328,6 @@ ingressplanner.gameworld = new (function() {
 
 	};
 
-	var router = L.Routing.osrm();
-
-	var routes = {};
-
 	if(typeof(Storage) !== "undefined") 
 	{
 		var gwCache = sessionStorage.getItem('gameworld');
@@ -344,16 +337,6 @@ ingressplanner.gameworld = new (function() {
     		loadData(gwCache);
     	}
 
-		var routesCache = sessionStorage.getItem('routes');
-    	if (routesCache)
-    	{
-    		$.each(JSON.parse(routesCache), function(hash, coords) {
-    			 routes[hash] = $.map(coords, function(coord) {
-    			 	return L.latLng(coord);
-    			 });
-    		});
-    	}
-
 	}
 	else
 	{
@@ -361,61 +344,6 @@ ingressplanner.gameworld = new (function() {
 	};
 
 	return {
-
-		addRoutePoly: function(fromHash,toHash,layer,options)
-		{
-			var hash = [fromHash,toHash].join('|');
-
-			if (typeof routes[hash]=='undefined')
-			{
-
-				var pl = new L.polyline([L.latLng(fromHash.split(',')),L.latLng(toHash.split(','))],options);
-				layer.addLayer(pl);
-
-				if ((!serviceDownWarning) && (!serviceDownAlertTimer))
-				{
-					serviceDownAlertTimer = setTimeout(
-						function() {
-							serviceDownWarning = true;
-							bootbox.alert("OSRM public routing engine is down, route preview not available at this time");
-						}
-						,5000
-					);
-				}
-
-				router.route(
-					[
-						new L.Routing.Waypoint(L.latLng(fromHash.split(','))),
-						new L.Routing.Waypoint(L.latLng(toHash.split(',')))
-					],
-					function(err,route) {
-
-						clearTimeout(serviceDownAlertTimer);
-						serviceDownAlertTimer = null;
-						var coords = null;
-						if (err)
-						{
-							ingressplanner.warn('Route',hash,'error',err);
-						}
-						else
-						{
-							routes[hash] = route[0].coordinates;
-							sessionStorage.setItem('routes',JSON.stringify(routes));
-							pl.setLatLngs(routes[hash]);
-						}
-					},
-					null,
-					{
-						geometryOnly: true
-					}
-				);
-			}
-			else
-			{
-				layer.addLayer(L.polyline(routes[hash],options));
-			}
-
-		},
 
 		Now: function()
 		{

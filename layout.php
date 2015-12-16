@@ -77,24 +77,9 @@
     <script type="text/javascript" src="js/ui.js"></script>
     <script type="text/javascript" src="js/aprewards.js"></script>
     <script type="text/javascript" src="js/tools.js"></script>
+    <script type="text/javascript" src="js/router.js"></script>
 
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=gdriveClientLoad"></script>
-
-<!--
-    <script type="text/javascript" src="js/globals.js"></script>
-    <script type="text/javascript" src="js/aprewards.js"></script>
-
-    <script type="text/javascript" src="js/linkhelper.js"></script>
-
-    <script type="text/javascript" src="js/gameworld.js"></script>
-    <script type="text/javascript" src="js/iitc.js"></script>
-
-    <script type="text/javascript" src="js/plan.js"></script>
-
-    <script type="text/javascript" src="js/ui.js"></script>
-
-    <script type="text/javascript" src="js/gdrive2.js"></script>
--->
 
  <?php if (!DEBUG) : ?>
     <script>

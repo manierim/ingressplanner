@@ -1303,7 +1303,7 @@ ingressplanner.ui = new (function() {
                             leg.reverse();
                         }
 
-                        ingressplanner.gameworld.addRoutePoly(
+                        ingressplanner.router.addRoutePoly(
                             leg[0],
                             leg[1],
                             preview.layers.portals,
@@ -1650,7 +1650,8 @@ ingressplanner.ui = new (function() {
         var totalAP = null;
 
         todoListContainer.html('');
-        var todolines = [];
+//        var todolines = [];
+        var textualInfo = [];
 
         var selectOptions = [];
 
@@ -1769,6 +1770,8 @@ ingressplanner.ui = new (function() {
             {
                 return;
             }
+
+            textualInfo[planIDX] = [];
 
             var rowActions = [];
 
@@ -1903,7 +1906,9 @@ ingressplanner.ui = new (function() {
 
 					parts.unshift(verb + ' ' + minmax.join('/'));
 
-	            	todolines.push('KEYS ' + fromPortal.name + ': ' + parts.join(', '));
+                    textualInfo[planIDX].push('KEYS: ' + parts.join(', '))
+
+//	            	todolines.push('KEYS ' + fromPortal.name + ': ' + parts.join(', '));
 
 	            	var totstops = todo['keys'].doneVisits+1;
 	            	if (fromPortal.keysFarmed)
@@ -1972,7 +1977,8 @@ ingressplanner.ui = new (function() {
 	                reverses.count++;
 	                type = reverses.name;
                     nothingtodo = false;
-	                todolines.push(reverses.action + fromPortal.name);
+                    textualInfo[planIDX].push(reverses.action)
+//	                todolines.push(reverses.action + fromPortal.name);
 	            }
 
             	if (type=='Portal')
@@ -1987,7 +1993,8 @@ ingressplanner.ui = new (function() {
 		            if (todo['take-down'])
 		            {
 		                type = 'Take Down';
-		                todolines.push('Take Down ' + fromPortal.name);
+                        textualInfo[planIDX].push('Take Down');
+//		                todolines.push('Take Down ' + fromPortal.name);
                         nothingtodo = false;
 		            }
 
@@ -2000,13 +2007,15 @@ ingressplanner.ui = new (function() {
 		                {
 		                	todoAction += '& full resos ';
 		                }
-		                todolines.push(todoAction + fromPortal.name);
+                        textualInfo[planIDX].push(todoAction);
+//		                todolines.push(todoAction + fromPortal.name);
                         nothingtodo = false;
 		            }
 		            else if (todo['full-resos'])
 		            {
 		            	type = 'Full resos';
-		                todolines.push('Full resos ' + fromPortal.name);
+                        textualInfo[planIDX].push('Full resos');
+//		                todolines.push('Full resos ' + fromPortal.name);
                         nothingtodo = false;
 		            }
 
@@ -2020,12 +2029,13 @@ ingressplanner.ui = new (function() {
 
                 if (nothingtodo)
                 {
-                    var verb = '? Visit ';
+                    var verb = '? Visit';
                     if (stepAP)
                     {
-                        verb = 'Take Down (for AP) ';
+                        verb = 'Take Down (for AP)';
                     }
-                    todolines.push(verb + fromPortal.name);
+                    textualInfo[planIDX].push(verb);
+//                    todolines.push(verb + fromPortal.name);
 
                 }
 
@@ -2215,7 +2225,8 @@ ingressplanner.ui = new (function() {
                         		name: fromPortal.name,
                         		needed: needed
                         	};
-	                        todolines.push('Check/equip o total of ' + needed + ' SBULA on ' + fromPortal.name);
+                            textualInfo[planIDX].push('Check/equip o total of ' + needed + ' SBULA');
+//	                        todolines.push('Check/equip o total of ' + needed + ' SBULA on ' + fromPortal.name);
                         }
                         break;
 
@@ -2257,7 +2268,7 @@ ingressplanner.ui = new (function() {
 
                 	}
 
-	                var todo = 'LINK ' + fromPortal.name + ' <-> ' + toPortal.name;
+	                var todo = 'LINK -> ' + toPortal.name;
 
 	                var suffix = '';
 
@@ -2281,7 +2292,8 @@ ingressplanner.ui = new (function() {
 	                    todo += ' (' + suffix + ')';
 	                }
 
-	                todolines.push(todo);                	
+                    textualInfo[planIDX].push(todo);
+//	                todolines.push(todo);                	
                 }
             	else
             	{
@@ -2544,6 +2556,8 @@ ingressplanner.ui = new (function() {
 
         var totSBULAs = 0;
 
+        var todolines = [];
+
         $.each(SBULAs, function(ppLLstring, pp) {
         	totSBULAs += pp.needed;
         	todolines.unshift('* Check ' + pp.name + ' on Intel to make sure it is/can be equipped with ' + pp.needed + ' SBULA.');
@@ -2558,6 +2572,60 @@ ingressplanner.ui = new (function() {
         {
             todolines.unshift('** Check ' + reverses.name + ' inventory: ' + reverses.count + ' min.');
         }
+
+        var before = null;
+
+        $.each(textualInfo, function(planIDX, lines) {
+
+            var llstring = plan.steps[planIDX].portals.split('|')[0];
+
+             if ((!before) || before != llstring)
+             {
+
+                var name = ingressplanner.gameworld.hashToNames(llstring);
+                var line = 'GO TO ' + name;
+
+                var maplink = true;
+                
+                if (before)
+                {
+                    var summary = ingressplanner.router.getSummary(before,llstring,buildStepsTable);
+                    if (summary)
+                    {
+                        // distance limit to not show map link should be an option
+                        if (summary.distance<100)
+                        {
+                            maplink = false;
+                        }
+
+                        var distance = (Math.ceil(summary.distance/100)/10).toFixed(1);
+                        var time = [Math.ceil(summary.time/60),'\''];
+
+                        if (time[0]>=60)
+                        {
+                            time.unshift(Math.floor(time/60) ,':');
+                            time[2] = time[2] % 60;
+                        }
+
+                        line += ' ('+distance+' km, '+ time.join('') +')';
+                    }
+                }
+
+                todolines.push(line);
+
+                if (maplink)
+                {
+                    todolines.push('https://maps.google.com/maps?ll='+llstring+'&q='+llstring+encodeURIComponent(' ('+name+')'));
+                }
+
+                before = llstring;
+             }
+
+             lines.forEach(function(line) {
+                 todolines.push('  '+line);
+             });
+
+        });
 
         todoListContainer.html(todolines.join('\n'));
 
