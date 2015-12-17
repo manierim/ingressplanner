@@ -403,7 +403,7 @@ ingressplanner.gameworld = new (function() {
 		                        	Δλ = ingressplanner.utils.toRad(target[1]-range.latLng.lng), 
 		                        	R = 6371000; // gives d in metres
 
-		                        distance = Math.acos( Math.sin(φ1)*Math.sin(φ2) + Math.cos(φ1)*Math.cos(φ2) * Math.cos(Δλ) ) * R;
+		                        distance = ingressplanner.utils.distance(portal.llstring,[range.latLng.lat,range.latLng.lng].join(','));
 
 		                        if (distance <= range.radius)
 		                        {

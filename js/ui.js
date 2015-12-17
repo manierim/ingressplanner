@@ -359,28 +359,27 @@ ingressplanner.ui = new (function() {
 
             var llstring = plan.steps[planIDX].portals.split('|')[0];
 
-             if ((!before) || before != llstring)
-             {
+            var line = false;
+
+            if ((!before) || before != llstring)
+            {
 
                 var name = ingressplanner.gameworld.hashToNames(llstring);
-                var line = 'GO TO ' + name;
+                line = 'GO TO ' + name;
 
                 var maplink = true;
                 
                 if (before)
                 {
-                    var summary = ingressplanner.router.getSummary(before,llstring);
+                    var distance = ingressplanner.utils.distance(before,llstring);
+                    var time = null;
 
+                    var summary = ingressplanner.router.getSummary(before,llstring);
                     if (summary)
                     {
-                        // distance limit to not show map link should be an option
-                        if (summary.distance<100)
-                        {
-                            maplink = false;
-                        }
 
-                        var distance = (Math.ceil(summary.distance/100)/10).toFixed(1);
-                        var time = [Math.ceil(summary.time/60),'\''];
+                        distance = summary.distance;
+                        time = [Math.ceil(summary.time/60),'\''];
 
                         if (time[0]>=60)
                         {
@@ -388,7 +387,7 @@ ingressplanner.ui = new (function() {
                             time[2] = time[2] % 60;
                         }
 
-                        line += ' ('+distance+' km, '+ time.join('') +')';
+                        
                     }
                     else if (!summaryUpdateRebuild)
                     {
@@ -396,9 +395,29 @@ ingressplanner.ui = new (function() {
                             buildTextuals(todolines,textualInfo,true);
                         });
                     }
-                }
 
-                linesToShow.push(line);
+                    // distance limit to not show map link should be an option
+                    if (distance<100)
+                    {
+                        maplink = false;
+                    }
+
+                    distance = (Math.ceil(distance/100)/10).toFixed(1);
+
+                    line += ' ('+distance+' km';
+
+                    if (time)
+                    {
+                        line += ', '+ time.join('');
+                    }
+                    else
+                    {
+                        line += ' straight line';
+                    }
+
+                    line += ')';
+
+                }
 
                 if (maplink)
                 {
@@ -414,15 +433,20 @@ ingressplanner.ui = new (function() {
                             buildTextuals(todolines,textualInfo,true);
                         });
                     }
-                    linesToShow.push(url);
+                    line += ' ' + url;
                 }
 
                 before = llstring;
-             }
+            }
 
-             lines.forEach(function(line) {
+            if (line)
+            {
+                linesToShow.push(line);
+            }
+
+            lines.forEach(function(line) {
                  linesToShow.push('  '+line);
-             });
+            });
 
         });
 

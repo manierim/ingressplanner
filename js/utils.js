@@ -6,6 +6,8 @@ ingressplanner.utils = new (function() {
 
 // private vars & functions
 
+	R = 6371000; // gives d in metres
+
 	// named colors
 
 	var colorsByHex = {
@@ -419,6 +421,18 @@ ingressplanner.utils = new (function() {
 		    var b3 = (this.sign(portal, v[2], v[0]) < 0);
 
 		    return ((b1 == b2) && (b2 == b3));
+		},
+
+		distance: function(hash1,hash2)
+		{
+			var p1 = hash1.split(',');
+			var p2 = hash2.split(',');
+            // Spherical Law of Cosines - from http://www.movable-type.co.uk/scripts/latlong.html
+            var φ1 = ingressplanner.utils.toRad(p2[0]), 
+            	φ2 = ingressplanner.utils.toRad(p1[0]), 
+            	Δλ = ingressplanner.utils.toRad(p1[1]-p2[1]);
+
+            return Math.acos( Math.sin(φ1)*Math.sin(φ2) + Math.cos(φ1)*Math.cos(φ2) * Math.cos(Δλ) ) * R;
 		},
 
 		intersect: function(link1Hash,link2Hash) 
