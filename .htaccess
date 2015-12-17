@@ -1,3 +1,18 @@
 <IfModule pagespeed_module>
     ModPagespeed unplugged
 </IfModule>
+
+<Files "*.json">
+    Order deny,allow
+    Deny from all
+</Files>
+
+<Files "*.sh">
+    Order deny,allow
+    Deny from all
+</Files>
+
+<Files "*.log">
+    Order deny,allow
+    Deny from all
+</Files>
