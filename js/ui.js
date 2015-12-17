@@ -345,6 +345,79 @@ ingressplanner.ui = new (function() {
 		});
 	};
 
+    function buildTextuals(todolines,textualInfo,summaryUpdateRebuild)
+    {
+        var linesToShow = todolines.slice(0);
+        if (typeof summaryUpdateRebuild == 'undefined')
+        {
+            summaryUpdateRebuild = false;
+        }
+
+        var before = null;
+
+        $.each(textualInfo, function(planIDX, lines) {
+
+            var llstring = plan.steps[planIDX].portals.split('|')[0];
+
+             if ((!before) || before != llstring)
+             {
+
+                var name = ingressplanner.gameworld.hashToNames(llstring);
+                var line = 'GO TO ' + name;
+
+                var maplink = true;
+                
+                if (before)
+                {
+                    var summary = ingressplanner.router.getSummary(before,llstring);
+
+                    if (summary)
+                    {
+                        // distance limit to not show map link should be an option
+                        if (summary.distance<100)
+                        {
+                            maplink = false;
+                        }
+
+                        var distance = (Math.ceil(summary.distance/100)/10).toFixed(1);
+                        var time = [Math.ceil(summary.time/60),'\''];
+
+                        if (time[0]>=60)
+                        {
+                            time.unshift(Math.floor(time/60) ,':');
+                            time[2] = time[2] % 60;
+                        }
+
+                        line += ' ('+distance+' km, '+ time.join('') +')';
+                    }
+                    else if (!summaryUpdateRebuild)
+                    {
+                        ingressplanner.router.getSummary(before, llstring, function(){
+                            buildTextuals(todolines,textualInfo,true);
+                        });
+                    }
+                }
+
+                linesToShow.push(line);
+
+                if (maplink)
+                {
+                    linesToShow.push('https://maps.google.com/maps?ll='+llstring+'&q='+llstring+encodeURIComponent(' ('+name+')'));
+                }
+
+                before = llstring;
+             }
+
+             lines.forEach(function(line) {
+                 linesToShow.push('  '+line);
+             });
+
+        });
+
+        todoListContainer.html(linesToShow.join('\n'));
+
+    };
+
     function buildPortalsTable() 
     {
 
@@ -1649,8 +1722,6 @@ ingressplanner.ui = new (function() {
 		$("#steps tfoot").remove();
         var totalAP = null;
 
-        todoListContainer.html('');
-//        var todolines = [];
         var textualInfo = [];
 
         var selectOptions = [];
@@ -2573,61 +2644,7 @@ ingressplanner.ui = new (function() {
             todolines.unshift('** Check ' + reverses.name + ' inventory: ' + reverses.count + ' min.');
         }
 
-        var before = null;
-
-        $.each(textualInfo, function(planIDX, lines) {
-
-            var llstring = plan.steps[planIDX].portals.split('|')[0];
-
-             if ((!before) || before != llstring)
-             {
-
-                var name = ingressplanner.gameworld.hashToNames(llstring);
-                var line = 'GO TO ' + name;
-
-                var maplink = true;
-                
-                if (before)
-                {
-                    var summary = ingressplanner.router.getSummary(before,llstring,buildStepsTable);
-                    if (summary)
-                    {
-                        // distance limit to not show map link should be an option
-                        if (summary.distance<100)
-                        {
-                            maplink = false;
-                        }
-
-                        var distance = (Math.ceil(summary.distance/100)/10).toFixed(1);
-                        var time = [Math.ceil(summary.time/60),'\''];
-
-                        if (time[0]>=60)
-                        {
-                            time.unshift(Math.floor(time/60) ,':');
-                            time[2] = time[2] % 60;
-                        }
-
-                        line += ' ('+distance+' km, '+ time.join('') +')';
-                    }
-                }
-
-                todolines.push(line);
-
-                if (maplink)
-                {
-                    todolines.push('https://maps.google.com/maps?ll='+llstring+'&q='+llstring+encodeURIComponent(' ('+name+')'));
-                }
-
-                before = llstring;
-             }
-
-             lines.forEach(function(line) {
-                 todolines.push('  '+line);
-             });
-
-        });
-
-        todoListContainer.html(todolines.join('\n'));
+        buildTextuals(todolines,textualInfo);
 
         stepsListBody.find('.colorbox').each(function(index) {
 

@@ -5,6 +5,7 @@ ini_set('display_errors', DEBUG?'1':'0');
 date_default_timezone_set('Europe/Rome');
 
 define('AGENTSLOG', 'agentslog.json');
+
 define('PRODUCTNAME', 'Ingress Planner');
 
 require 'news-archive.php';

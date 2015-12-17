@@ -1,3 +1,10 @@
 <IfModule pagespeed_module>
     ModPagespeed unplugged
 </IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^(.*)$ shortener.php?shorturl=$1 [QSA,L]
+</IfModule>
