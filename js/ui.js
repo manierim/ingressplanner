@@ -402,7 +402,19 @@ ingressplanner.ui = new (function() {
 
                 if (maplink)
                 {
-                    linesToShow.push('https://maps.google.com/maps?ll='+llstring+'&q='+llstring+encodeURIComponent(' ('+name+')'));
+                    var url = 'https://maps.google.com/maps?ll='+llstring+'&q='+llstring+encodeURIComponent(' ('+name+')');
+                    var shortUrl = ingressplanner.shortener.getShortUrl(url);
+                    if (shortUrl)
+                    {
+                        url = shortUrl;
+                    }
+                    else
+                    {
+                        ingressplanner.shortener.getShortUrl(url,function(){
+                            buildTextuals(todolines,textualInfo,true);
+                        });
+                    }
+                    linesToShow.push(url);
                 }
 
                 before = llstring;

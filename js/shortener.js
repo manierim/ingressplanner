@@ -8,127 +8,32 @@ ingressplanner.shortener = new (function() {
 
 	var urls = {};
 
-	function queueRequest(longurl,callback)
-	{
-		if (typeof urls[hash]!='undefined')
-		{
-			callback(urls[hash]);
-		}
-		else
-		{
-			if (typeof queue[hash] == 'undefined')
-			{
-				queue[hash] = [];
-			}
-
-			queue[hash].push(callback);
-
-			if ((!serviceDownWarning) && (!serviceDownAlertTimer))
-			{
-				serviceDownAlertTimer = setTimeout(
-					function() {
-						serviceDownWarning = true;
-						bootbox.alert('OSRM public routing engine is down, ' + serviceDownText);
-					}
-					,5000
-				);
-			}
-
-			router.route(
-				[
-					new L.Routing.Waypoint(L.latLng(fromHash.split(','))),
-					new L.Routing.Waypoint(L.latLng(toHash.split(',')))
-				],
-
-				function(err,route) {
-
-					clearTimeout(serviceDownAlertTimer);
-					serviceDownAlertTimer = null;
-
-					if (err)
-					{
-						if ((!serviceDownWarning))
-						{
-							serviceDownWarning = true;
-							bootbox.alert('OSRM public routing engine error, ' + serviceDownText);
-						}
-					}
-					else
-					{
-						routes[hash] = {
-							coordinates: route[0].coordinates,
-							//distance for the route, in meters
-							distance: route[0].summary.totalDistance,
-							//estimated time for the route, in seconds
-							time: route[0].summary.totalTime,
-						};
-
-						sessionStorage.setItem('routes',JSON.stringify(routes));
-
-						while (callback = queue[hash].shift())
-						{
-							callback(routes[hash]);
-						}
-					}
-				},
-				null,
-				{
-					geometryOnly: true
-				}
-			);
-		}
-	}
-
 	return {
 
-		getSummary: function(fromHash,toHash,callback)
+		getShortUrl: function(extendedUrl,callback)
 		{
-			var hash = getHash(fromHash,toHash);
 
-			if (typeof routes[hash]=='undefined')
+			if (typeof urls[extendedUrl]=='undefined')
 			{
 				if (typeof callback != 'undefined')
 				{
-					queueRequest(fromHash, toHash, function(route) {
-						callback({
-							distance: route.distance,
-							time: route.time,
-						});
+					$.post('shortener.php', {extendedUrl: extendedUrl}, function(data, textStatus, xhr) {
+						if (data)
+						{
+							urls[extendedUrl] = data;
+							callback(urls[extendedUrl]);
+						}
 					});
 				}
 				return null;
 			}
 			else
 			{
-				return {
-					distance: routes[hash].distance,
-					time: routes[hash].time,
-				};
+				return urls[extendedUrl];
 			}
 
+		}
 
-		},
-
-		addRoutePoly: function(fromHash,toHash,layer,options)
-		{
-			var hash = getHash(fromHash,toHash);
-
-			if (typeof routes[hash]=='undefined')
-			{
-				var pl = new L.polyline([L.latLng(fromHash.split(',')),L.latLng(toHash.split(','))],options);
-				layer.addLayer(pl);
-
-				queueRequest(fromHash, toHash, function(route) {
-					pl.setLatLngs(route.coordinates);
-				});
-
-			}
-			else
-			{
-				layer.addLayer(L.polyline(routes[hash].coordinates,options));
-			}
-
-		},
 	}
 
 })

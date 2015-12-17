@@ -78,6 +78,7 @@
     <script type="text/javascript" src="js/aprewards.js"></script>
     <script type="text/javascript" src="js/tools.js"></script>
     <script type="text/javascript" src="js/router.js"></script>
+    <script type="text/javascript" src="js/shortener.js"></script>
 
     <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=gdriveClientLoad"></script>
 

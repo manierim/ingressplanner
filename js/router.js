@@ -40,8 +40,6 @@ ingressplanner.router = new (function() {
 	    ingressplanner.warn('No HTML5 Web Storage available');
 	};
 
-	ingressplanner.debug('Routes from cache',routeCacheCnt);
-
 	var queue = {};
 
 	function getHash(fromHash,toHash)
