@@ -1,62 +1,18 @@
 /*
-	router module
+	shortener module
 */
 
-ingressplanner.router = new (function() {
+ingressplanner.shortener = new (function() {
 
 	// private vars & functions
 
-	var serviceDownWarning = null;
-	var serviceDownAlertTimer = null;
+	var urls = {};
 
-	var router = L.Routing.osrm();
-
-	var routes = {};
-	var routeCacheCnt=0;
-
-	if(typeof(Storage) !== "undefined") 
+	function queueRequest(longurl,callback)
 	{
-
-		var routesCache = sessionStorage.getItem('routes');
-
-    	if (routesCache)
-    	{
-    		$.each(JSON.parse(routesCache), function(hash, data) {
-
-    			if (!(data instanceof Array))
-    			{
-    				data.coordinates = $.map(data.coordinates, function(coord) {
-				 		return L.latLng(coord);
-				 	});
-	    			routes[hash] = data;
-	    			routeCacheCnt++;
-    			}
-    		});
-    	}
-
-	}
-	else
-	{
-	    ingressplanner.warn('No HTML5 Web Storage available');
-	};
-
-	ingressplanner.debug('Routes from cache',routeCacheCnt);
-
-	var queue = {};
-
-	function getHash(fromHash,toHash)
-	{
-		return [fromHash,toHash].join('|');
-	}
-
-	function queueRequest(fromHash, toHash,callback)
-	{
-		var serviceDownText = 'route preview/information not available at this time';
-		var hash = getHash(fromHash,toHash);
-
-		if (typeof routes[hash]!='undefined')
+		if (typeof urls[hash]!='undefined')
 		{
-			callback(routes[hash]);
+			callback(urls[hash]);
 		}
 		else
 		{
