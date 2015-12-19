@@ -1,6 +1,6 @@
 <?php
 
-echo 
+echo
 	$this->tag('h1','Credits')
 	. $this->tag('ul',
 
@@ -17,6 +17,10 @@ echo
 		)
 
 		. $this->tag('li',
+			$this->tag('strong',$this->link('Leaflet.encoded','https://github.com/jieter/Leaflet.encoded/',true)) . ' 0.0.7'
+		)
+
+		. $this->tag('li',
 			'Various:' . $this->tag('ul',
 
 				$this->tag('li',
@@ -29,10 +33,6 @@ echo
 
 				. $this->tag('li',
 					'"Spherical Law of Cosines" ' . $this->link('Movable Type Scripts','http://www.movable-type.co.uk/scripts/latlong.html',true)
-				)
-
-				. $this->tag('li',
-					$this->link('Leaflet Routing Machine','http://www.liedman.net/leaflet-routing-machine/download/',true) . ' 2.5.0'
 				)
 
 				. $this->tag('li',

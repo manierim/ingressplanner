@@ -4,6 +4,14 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Dec. 19, 2015',
+        'version'   => '2.0.2c',
+        'body' => array(
+            'Fixed routes not showing in Visual preview due to OSRM protocol change',
+        ),
+    ),
+
+    array(
         'date'      => 'Dec. 15, 2015',
         'version'   => '2.0.2b',
         'body' => array(

@@ -331,7 +331,44 @@ ingressplanner.gameworld = new (function() {
 
 	};
 
-	var router = L.Routing.osrm();
+	function decodePolyline(routeGeometry) {
+
+		var cs = L.PolylineUtil.decode(routeGeometry, 6),
+			result = new Array(cs.length),
+			i;
+		for (i = cs.length - 1; i >= 0; i--) {
+			result[i] = L.latLng(cs[i]);
+		}
+
+		return result;
+
+	}
+
+	function route(fromHash,toHash,callback)
+	{
+console.debug('route',fromHash,toHash);
+
+		$.getJSON(
+			'http://router.project-osrm.org/viaroute?instructions=false&alt=false&loc=' + fromHash + '&loc=' + toHash,
+			function(data,status)
+			{
+				if (data.status==200)
+				{
+console.debug(data.route_geometry);
+					var route = {
+						coordinates: decodePolyline(data.route_geometry)
+					}
+console.debug(route);
+					callback(null,route);
+				}
+				else
+				{
+					callback({data},null);
+
+				}
+			}
+		);
+	}
 
 	var routes = {};
 
@@ -383,11 +420,9 @@ ingressplanner.gameworld = new (function() {
 					);
 				}
 
-				router.route(
-					[
-						new L.Routing.Waypoint(L.latLng(fromHash.split(','))),
-						new L.Routing.Waypoint(L.latLng(toHash.split(',')))
-					],
+				route(
+					fromHash,
+					toHash,
 					function(err,route) {
 
 						clearTimeout(serviceDownAlertTimer);
@@ -399,14 +434,10 @@ ingressplanner.gameworld = new (function() {
 						}
 						else
 						{
-							routes[hash] = route[0].coordinates;
+							routes[hash] = route.coordinates;
 							sessionStorage.setItem('routes',JSON.stringify(routes));
 							pl.setLatLngs(routes[hash]);
 						}
-					},
-					null,
-					{
-						geometryOnly: true
 					}
 				);
 			}
