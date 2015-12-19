@@ -10,6 +10,7 @@ $this->div(
                 'type'  => 'checkbox',
                 'id'    => 'HLPlanningInput',
                 'name'  => 'HLPlanning',
+                'class' => 'planoption',
             )
         )
         . $this->tag(
@@ -26,6 +27,7 @@ $this->div(
                 'type'  => 'checkbox',
                 'id'    => 'showDoneLinksInput',
                 'name'  => 'showDoneLinks',
+                'class' => 'planoption',
             )
         )
         . $this->tag(
@@ -42,6 +44,7 @@ $this->div(
                 'type'  => 'checkbox',
                 'id'    => 'fullresosOnTouchedPortalsInput',
                 'name'  => 'fullresosOnTouchedPortals',
+                'class' => 'planoption',
             )
         )
         . $this->tag(
@@ -59,7 +62,8 @@ $this->div(
             'step'  => 1,
             'id'    => 'keyFarmLimitInput',
             'name'  => 'keyFarmLimit',
-            'style' => 'width: 3em; text-align: center; '
+            'style' => 'width: 3em; text-align: center; ',
+            'class' => 'planoption',
         )
     )
     . ' keys/visit ' . $this->tag('small', 'warn if at any point the planned farming rate is higher than this limit.')

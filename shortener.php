@@ -13,16 +13,17 @@ define('SHORTURLSDB', 'shortURLs.json');
 
 $urls = array();
 
-if (is_file(SHORTURLSDB))
-{
-    $urls = json_decode(file_get_contents(SHORTURLSDB),true);
+if (is_file(SHORTURLSDB)) {
+    $urls = json_decode(file_get_contents(SHORTURLSDB), true);
 }
 
-if (isset($_REQUEST['extendedUrl']))
-{
+if (empty($urls)) {
+    $urls = array();
+}
+
+if (isset($_REQUEST['extendedUrl'])) {
     $shorturl = array_search($_REQUEST['extendedUrl'], $urls);
-    if (!$shorturl)
-    {
+    if (!$shorturl) {
         do {
             $shorturl = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
         } while (isset($urls[$shorturl]));
@@ -37,16 +38,12 @@ if (isset($_REQUEST['extendedUrl']))
 
 }
 
-if (isset($_REQUEST['shorturl']))
-{
-    if (isset($urls[$_REQUEST['shorturl']]))
-    {
+if (isset($_REQUEST['shorturl'])) {
+    if (isset($urls[$_REQUEST['shorturl']])) {
         header('HTTP/ 308 Expansion Redirect');
         header('location: ' . $urls[$_REQUEST['shorturl']]);
         die();
-    }
-    else
-    {
+    } else {
         header('HTTP/ 400 Invalid token ' . $_REQUEST['shorturl']);
         die();
     }

@@ -93,6 +93,7 @@ ingressplanner.router = new (function() {
 						{
 							serviceDownWarning = true;
 							bootbox.alert('OSRM public routing engine error, ' + serviceDownText);
+							ingressplanner.warn('OSRM public routing engine error',err,route);
 						}
 					}
 					else

@@ -20,6 +20,8 @@ ingressplanner = new (function() {
 		showDoneLinks: false,
 		fullresosOnTouchedPortals: true,
 		keyFarmLimit: 2,
+		textualPlanAddLinks: true,
+		textualPlanAddLinksMinDistance: 100,
 	};
 
 	// store current player team

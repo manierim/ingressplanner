@@ -332,7 +332,7 @@ ingressplanner.ui = new (function() {
 	{
 		$.each(plan.options, function(option, value) {
 
-			var $ctr = $('#optionsCollapse input[name="'+option+'"]');
+			var $ctr = $('input[name="'+option+'"].planoption');
 
 			if ($ctr.attr('type')=='checkbox')
 			{
@@ -343,6 +343,8 @@ ingressplanner.ui = new (function() {
 				$ctr.val(value);
 			}
 		});
+
+        $("#textualPlanAddLinksMinDistanceContainer").toggle(plan.options.textualPlanAddLinks);
 	};
 
     function buildTextuals(todolines,textualInfo,summaryUpdateRebuild)
@@ -367,7 +369,7 @@ ingressplanner.ui = new (function() {
                 var name = ingressplanner.gameworld.hashToNames(llstring);
                 line = 'GO TO ' + name;
 
-                var maplink = true;
+                var maplink = plan.options.textualPlanAddLinks;
                 
                 if (before)
                 {
@@ -396,8 +398,8 @@ ingressplanner.ui = new (function() {
                         });
                     }
 
-                    // distance limit to not show map link should be an option
-                    if (distance<100)
+                    // distance limit to not show map link
+                    if (maplink && distance<plan.options.textualPlanAddLinksMinDistance)
                     {
                         maplink = false;
                     }
@@ -2903,17 +2905,20 @@ ingressplanner.ui = new (function() {
 
 	        });
 
+            $("input[name].planoption").change(function(event) {
+                var $this = $(this);
+                if ($this.attr('type')=='checkbox')
+                {
+                    var value = $this.is(':checked');
+                }
+                else
+                {
+                    var value = $this.val();
+                }
+                eventHandler('planOptionChange',{option:$this.attr('name'),newValue:value});
+            });
+
 	        $("#optionsCollapse input[name]").change(function(event) {
-	        	var $this = $(this);
-	        	if ($this.attr('type')=='checkbox')
-	        	{
-	        		var value = $this.is(':checked');
-	        	}
-	        	else
-	        	{
-	        		var value = $this.val();
-	        	}
-	        	eventHandler('planOptionChange',{option:$this.attr('name'),newValue:value});
 	        	$("#optionsCollapse").collapse('hide');
 	        });
 
