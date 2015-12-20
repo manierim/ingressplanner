@@ -61,11 +61,11 @@
     <!-- Leaflet -->
     <script src="js/leaflet.js"></script>
 
-    <!-- Leaflet Routing Machine -->
-    <script src="js/leaflet-routing-machine.min.js"></script>
-
     <!-- Leaflet.label -->
     <script src="js/leaflet.label.js"></script>
+
+    <!-- Leaflet.encoded -->
+    <script src="js/Polyline.encoded.js"></script>
 
     <!-- Main App -->
     <script type="text/javascript" src="js/ingressplanner.js"></script>

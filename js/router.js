@@ -9,10 +9,7 @@ ingressplanner.router = new (function() {
 	var serviceDownWarning = null;
 	var serviceDownAlertTimer = null;
 
-	var router = L.Routing.osrm();
-
 	var routes = {};
-	var routeCacheCnt=0;
 
 	if(typeof(Storage) !== "undefined") 
 	{
@@ -21,24 +18,56 @@ ingressplanner.router = new (function() {
 
     	if (routesCache)
     	{
-    		$.each(JSON.parse(routesCache), function(hash, data) {
-
-    			if (!(data instanceof Array))
-    			{
-    				data.coordinates = $.map(data.coordinates, function(coord) {
-				 		return L.latLng(coord);
-				 	});
-	    			routes[hash] = data;
-	    			routeCacheCnt++;
-    			}
-    		});
+    		routes = JSON.parse(routesCache);
     	}
-
 	}
 	else
 	{
 	    ingressplanner.warn('No HTML5 Web Storage available');
 	};
+
+	function decodePolyline(routeGeometry) {
+
+		var cs = L.PolylineUtil.decode(routeGeometry, 6),
+			result = new Array(cs.length),
+			i;
+		for (i = cs.length - 1; i >= 0; i--) {
+			result[i] = L.latLng(cs[i]);
+		}
+
+		return result;
+
+	}
+
+	function route(fromHash,toHash,callback)
+	{
+
+		$.getJSON(
+			'http://router.project-osrm.org/viaroute?instructions=false&alt=false&loc=' + fromHash + '&loc=' + toHash,
+			function(data,status)
+			{
+				if (data.status==200)
+				{
+console.debug('data',data);
+					var route = {
+						route_geometry: data.route_geometry,
+						//distance for the route, in meters
+						distance: data.route_summary.total_distance,
+						//estimated time for the route, in seconds
+						time: data.route_summary.total_time
+					}
+console.debug('route',route);
+
+					callback(null,route);
+				}
+				else
+				{
+					callback({data},null);
+
+				}
+			}
+		);
+	}
 
 	var queue = {};
 
@@ -76,12 +105,9 @@ ingressplanner.router = new (function() {
 				);
 			}
 
-			router.route(
-				[
-					new L.Routing.Waypoint(L.latLng(fromHash.split(','))),
-					new L.Routing.Waypoint(L.latLng(toHash.split(',')))
-				],
-
+			route(
+				fromHash,
+				toHash,
 				function(err,route) {
 
 					clearTimeout(serviceDownAlertTimer);
@@ -98,13 +124,7 @@ ingressplanner.router = new (function() {
 					}
 					else
 					{
-						routes[hash] = {
-							coordinates: route[0].coordinates,
-							//distance for the route, in meters
-							distance: route[0].summary.totalDistance,
-							//estimated time for the route, in seconds
-							time: route[0].summary.totalTime,
-						};
+						routes[hash] = route;
 
 						sessionStorage.setItem('routes',JSON.stringify(routes));
 
@@ -113,10 +133,6 @@ ingressplanner.router = new (function() {
 							callback(routes[hash]);
 						}
 					}
-				},
-				null,
-				{
-					geometryOnly: true
 				}
 			);
 		}
@@ -162,13 +178,13 @@ ingressplanner.router = new (function() {
 				layer.addLayer(pl);
 
 				queueRequest(fromHash, toHash, function(route) {
-					pl.setLatLngs(route.coordinates);
+					pl.setLatLngs(decodePolyline(route.route_geometry));
 				});
 
 			}
 			else
 			{
-				layer.addLayer(L.polyline(routes[hash].coordinates,options));
+				layer.addLayer(L.polyline(decodePolyline(routes[hash].route_geometry),options));
 			}
 
 		},
