@@ -1,4 +1,5 @@
 *.sublime-workspace
 agentslog.json
 shortURLs.json
+shortURLs.lock
 php-error.log

@@ -332,19 +332,22 @@ ingressplanner.ui = new (function() {
 	{
 		$.each(plan.options, function(option, value) {
 
-			var $ctr = $('input[name="'+option+'"].planoption');
+            $('select[name="'+option+'"].planoption, input[name="'+option+'"].planoption').each(function(index, el) {
+                var $ctr = $(el);
+                if ($ctr.attr('type')=='checkbox')
+                {
+                    $ctr.prop('checked', value);
+                }
+                else
+                {
+                    $ctr.val(value);
+                }
 
-			if ($ctr.attr('type')=='checkbox')
-			{
-				$ctr.prop('checked', value);
-			}
-			else
-			{
-				$ctr.val(value);
-			}
+            });
+
 		});
 
-        $("#textualPlanAddLinksMinDistanceContainer").toggle(plan.options.textualPlanAddLinks);
+        $("#textualPlanAddLinksParamsContainer").toggle(plan.options.textualPlanAddLinks);
 	};
 
     function buildTextuals(todolines,textualInfo,summaryUpdateRebuild)
@@ -423,19 +426,33 @@ ingressplanner.ui = new (function() {
 
                 if (maplink)
                 {
-                    var url = 'https://maps.google.com/maps?ll='+llstring+'&q='+llstring+encodeURIComponent(' ('+name+')');
-                    var shortUrl = ingressplanner.shortener.getShortUrl(url);
-                    if (shortUrl)
+                    var url = null;
+                    switch (plan.options.textualPlanAddLinksType)
                     {
-                        url = shortUrl;
+                        case 'gmap':
+                            url = 'https://maps.google.com/maps?ll='+llstring+'&q='+llstring+encodeURIComponent(' ('+name+')');
+                            break;
+
+                        case 'portal':
+                            url = 'https://www.ingress.com/intel?ll='+llstring+'&z=17&pll='+llstring;
+                            break;
                     }
-                    else
+
+                    if (url)
                     {
-                        ingressplanner.shortener.getShortUrl(url,function(){
-                            buildTextuals(todolines,textualInfo,true);
-                        });
+                        var shortUrl = ingressplanner.shortener.getShortUrl(url);
+                        if (shortUrl)
+                        {
+                            url = shortUrl;
+                        }
+                        else
+                        {
+                            ingressplanner.shortener.getShortUrl(url,function(){
+                                buildTextuals(todolines,textualInfo,true);
+                            });
+                        }
+                        line += ' ' + url;
                     }
-                    line += ' ' + url;
                 }
 
                 before = llstring;
@@ -2905,7 +2922,7 @@ ingressplanner.ui = new (function() {
 
 	        });
 
-            $("input[name].planoption").change(function(event) {
+            $("[name].planoption").change(function(event) {
                 var $this = $(this);
                 if ($this.attr('type')=='checkbox')
                 {

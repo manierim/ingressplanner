@@ -31,14 +31,10 @@ class HtmlHelper
 
     private function addItemtoAttribute($attrsArray, $attributeKey, $itemsToAdd)
     {
-        if (is_string($attrsArray))
-        {
-            if (substr($attrsArray, 0,1)=='#')
-            {
-                $attrsArray=array('id'=>substr($attrsArray,1));
-            }
-            else
-            {
+        if (is_string($attrsArray)) {
+            if (substr($attrsArray, 0, 1)=='#') {
+                $attrsArray=array('id'=>substr($attrsArray, 1));
+            } else {
                 $attrsArray=array('class'=>$attrsArray);
             }
         }
@@ -79,8 +75,13 @@ class HtmlHelper
         return $html;
     }
 
-    public function input($name, $options)
+    public function input($name, $options = null)
     {
+        if (is_array($name) and is_null($options)) {
+            $options = $name;
+            $name = false;
+        }
+
         if (isset($options['options'])  and (!isset($options['type']))) {
             $options['type'] = 'select';
         }
@@ -170,6 +171,11 @@ class HtmlHelper
         }
 
         $options = $this->addItemtoAttribute($options, 'class', 'form-control');
+
+        if (!empty($name)) {
+            $options['name'] = $name;
+        }
+
         $controlHtml = $this->tag($options['type'], $options, $content);
 
         if (is_array($divOpts)) {
@@ -231,12 +237,9 @@ class HtmlHelper
                     $content = $attrsArray;
                     $attrsArray = array();
                 } else {
-                    if (substr($attrsArray, 0,1)=='#')
-                    {
-                        $attrsArray = array('id'=>substr($attrsArray,1));
-                    }
-                    else
-                    {
+                    if (substr($attrsArray, 0, 1)=='#') {
+                        $attrsArray = array('id'=>substr($attrsArray, 1));
+                    } else {
                         $attrsArray = array('class'=>$attrsArray);
                     }
                 }

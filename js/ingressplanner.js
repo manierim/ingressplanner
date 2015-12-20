@@ -22,6 +22,7 @@ ingressplanner = new (function() {
 		keyFarmLimit: 2,
 		textualPlanAddLinks: true,
 		textualPlanAddLinksMinDistance: 100,
+		textualPlanAddLinksType: 'gmap',
 	};
 
 	// store current player team

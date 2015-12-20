@@ -4,6 +4,20 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Dec. 20, 2015',
+        'version'   => '2.0.3',
+        'body' => array(
+            'Textual plan instructions moved to new "Export" panel in Planning tab.',
+            'New Textual plan instruction format:<ul>'
+            . '<li>tree structure: GO TO portal then actions to perform</li>'
+            . '<li>GO TO line include time & distance from previous portal</li>'
+            . '<li>GO TO can include short urls to portal (Intel) or location (Gmaps)</li>'
+            . '</ul>'
+            ,
+        ),
+    ),
+
+    array(
         'date'      => 'Dec. 19, 2015',
         'version'   => '2.0.2c',
         'body' => array(
@@ -28,7 +42,7 @@ $news = array(
             '<em>Added this "news" section in Home tab</em>',
         ),
     ),
-
+/*
     array(
         'date'      => 'Dec. 12, 2015',
         'version'   => '2.0.1',
@@ -58,5 +72,5 @@ $news = array(
             .'!'
         ),
     ),
-
+*/
 );

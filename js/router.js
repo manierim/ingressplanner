@@ -48,7 +48,6 @@ ingressplanner.router = new (function() {
 			{
 				if (data.status==200)
 				{
-console.debug('data',data);
 					var route = {
 						route_geometry: data.route_geometry,
 						//distance for the route, in meters
@@ -56,8 +55,6 @@ console.debug('data',data);
 						//estimated time for the route, in seconds
 						time: data.route_summary.total_time
 					}
-console.debug('route',route);
-
 					callback(null,route);
 				}
 				else

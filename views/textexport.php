@@ -2,27 +2,43 @@
 
 echo
 $this->div(
-    'checkbox checkbox-inline',
-    $this->tag(
-        'input',
-        array(
-            'type'  => 'checkbox',
-            'name'  => 'textualPlanAddLinks',
-            'class' => 'planoption',
-        ),
-        ''
-    )
-    . $this->tag(
-        'label',
-        'Add links'
+    'form-inline',
+    $this->div(
+        'checkbox checkbox-inline',
+        $this->tag(
+            'input',
+            array(
+                'type'  => 'checkbox',
+                'name'  => 'textualPlanAddLinks',
+                'class' => 'planoption',
+            ),
+            ''
+        )
+        . $this->tag(
+            'label',
+            'Add links'
+        )
     )
     . $this->tag(
         'span',
         array(
-            'id'    => '#textualPlanAddLinksMinDistanceContainer',
+            'id'    => 'textualPlanAddLinksParamsContainer',
             'style' => 'vertical-align: middle;',
         ),
-        ' only if distance is '
+        '&nbsp;'
+        . $this->input(
+            'textualPlanAddLinksType',
+            array(
+                'type'  => 'select',
+                'empty' => false,
+                'options'  => array(
+                    'portal'    => 'to portal (Intel)',
+                    'gmap'      => 'to location (Google Maps)',
+                ),
+                'class' => 'planoption',
+            )
+        )
+        . ' only if distance is '
         . $this->tag(
             'input',
             array(

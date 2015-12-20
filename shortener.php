@@ -10,8 +10,13 @@ $html = new Helpers\HtmlHelper;
 
 require 'basics.php';
 define('SHORTURLSDB', 'shortURLs.json');
+define('SHORTURLSLOCK', 'shortURLs.lock');
 
 $urls = array();
+
+while (is_file(SHORTURLSLOCK)) {
+    usleep(500);
+}
 
 if (is_file(SHORTURLSDB)) {
     $urls = json_decode(file_get_contents(SHORTURLSDB), true);
@@ -24,12 +29,19 @@ if (empty($urls)) {
 if (isset($_REQUEST['extendedUrl'])) {
     $shorturl = array_search($_REQUEST['extendedUrl'], $urls);
     if (!$shorturl) {
+
+        while (is_file(SHORTURLSLOCK)) {
+            usleep(500);
+        }
+
+        touch(SHORTURLSLOCK);
         do {
             $shorturl = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
         } while (isset($urls[$shorturl]));
 
         $urls[$shorturl] = $_REQUEST['extendedUrl'];
         file_put_contents(SHORTURLSDB, json_encode($urls));
+        unlink(SHORTURLSLOCK);
     }
     $path = str_replace('shortener.php', '', $_SERVER['REQUEST_URI']);
     header('Content-Type: application/json');
