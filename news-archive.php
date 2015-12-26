@@ -5,6 +5,14 @@ $news = array(
 
     array(
         'date'      => 'Dec. 20, 2015',
+        'version'   => '2.0.3b',
+        'body' => array(
+            'Fixed done links generating an "empy" GO TO line in textual export.',
+        ),
+    ),
+
+    array(
+        'date'      => 'Dec. 20, 2015',
         'version'   => '2.0.3',
         'body' => array(
             'Textual plan instructions moved to new "Export" panel in Planning tab.',
