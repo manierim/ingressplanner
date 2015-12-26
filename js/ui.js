@@ -352,6 +352,7 @@ ingressplanner.ui = new (function() {
 
     function buildTextuals(todolines,textualInfo,summaryUpdateRebuild)
     {
+
         var linesToShow = todolines.slice(0);
         if (typeof summaryUpdateRebuild == 'undefined')
         {
@@ -361,6 +362,11 @@ ingressplanner.ui = new (function() {
         var before = null;
 
         $.each(textualInfo, function(planIDX, lines) {
+
+            if (typeof lines == 'undefined' || (!lines.length))
+            {
+                return true;
+            }
 
             var llstring = plan.steps[planIDX].portals.split('|')[0];
 
