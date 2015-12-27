@@ -213,7 +213,7 @@ ingressplanner.ui = new (function() {
 	                }
 	                rowspan++;
 
-	                if (!last.parents('tr').hasClass('nokeyTotalTD'))
+	                if (plan.options.planKeyFarming && (!last.parents('tr').hasClass('nokeyTotalTD')))
 	                {
 		                last.prop('rowspan',rowspan)
 		                    .next().prop('rowspan',rowspan)
@@ -228,14 +228,23 @@ ingressplanner.ui = new (function() {
 	                }
 	                else
 	                {
-		                last.prop('rowspan',rowspan)
-		                    .next().prop('rowspan',rowspan)
-		                ;
 
-		                ptTD.addClass('collapsed').hide()
-		                    .next().addClass('collapsed').hide()
-		                    .next().addClass('collapsed').hide()
-		                ;
+                        if (plan.options.planKeyFarming)
+                        {
+                            last.prop('rowspan',rowspan)
+                                .next().prop('rowspan',rowspan)
+                            ;
+                            ptTD.addClass('collapsed').hide()
+                                .next().addClass('collapsed').hide()
+                                .next().addClass('collapsed').hide()
+                            ;
+                        }
+                        else
+                        {
+                            last.prop('rowspan',rowspan);
+                            ptTD.addClass('collapsed').hide();
+                        }
+
 
 	                }
 
