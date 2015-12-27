@@ -1,6 +1,17 @@
+@font-face {
+  font-family: coda_regular;
+  src: url('../fonts/coda_regular.ttf');
+}
+
 .scroll {
 	overflow-y: auto;
 	position: relative;
+}
+
+h1, h2, h3, h4, h5, h6, h7, h8,
+.h1, .h2, .h3, .h4, .h5, .h6, .h7, .h8,
+a[role=tab], table.table thead th, .btn {
+	font-family: coda_regular;
 }
 
 [role=type].warning,
