@@ -31,6 +31,10 @@ class HtmlHelper
 
     private function addItemtoAttribute($attrsArray, $attributeKey, $itemsToAdd)
     {
+        if (empty($itemsToAdd)) {
+            return $attrsArray;
+        }
+
         if (is_string($attrsArray)) {
             if (substr($attrsArray, 0, 1)=='#') {
                 $attrsArray=array('id'=>substr($attrsArray, 1));
@@ -504,6 +508,11 @@ class HtmlHelper
 
         if (empty($content)) {
             $content = '';
+        }
+
+        if (substr($class, 0, 1)=='#') {
+            $attrsArray = $this->addItemtoAttribute($attrsArray, 'id', substr($class, 1));
+            $class='';
         }
 
         return $this->tag('div', $this->addItemtoAttribute($attrsArray, 'class', $class), $content);

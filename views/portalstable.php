@@ -15,12 +15,12 @@ echo $this->div(
                 'tr',
                 $this->tag('th', array('rowspan'=>2, 'data-sortable-sortfield'=>'title'), 'Name')
                 . $this->tag('th', array('rowspan'=>2, 'data-sortable-sortfield'=>'linksIn'), 'Links IN')
-                . $this->tag('th', array('colspan'=>2), 'Keys')
+                . $this->tag('th', array('colspan'=>2, 'data-keyfarming'), 'Keys')
             )
             . $this->tag(
                 'tr',
-                $this->tag('th', array('data-sortable-sortfield'=>'keys'), 'Owned')
-                . $this->tag('th', array('data-sortable-sortfield'=>'missing'), 'Missing')
+                $this->tag('th', array('data-sortable-sortfield'=>'keys', 'data-keyfarming'), 'Owned')
+                . $this->tag('th', array('data-sortable-sortfield'=>'missing', 'data-keyfarming'), 'Missing')
             )
         )
         . $this->tag('tbody')

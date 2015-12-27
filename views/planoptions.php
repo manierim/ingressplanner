@@ -53,19 +53,39 @@ $this->div(
             . ' ' . $this->tag('small', 'Check to assume any visited portal is captured & made full resos. Brought to NEUTRAL otherwise.')
         )
     )
-    . $this->tag('strong', 'Max farming rate ')
-    . $this->tag(
-        'input',
-        array(
-            'type'  => 'number',
-            'min'   => 1,
-            'step'  => 1,
-            'id'    => 'keyFarmLimitInput',
-            'name'  => 'keyFarmLimit',
-            'style' => 'width: 3em; text-align: center; ',
-            'class' => 'planoption',
+    . $this->div(
+        'checkbox',
+        $this->tag(
+            'input',
+            array(
+                'type'  => 'checkbox',
+                'id'    => 'planKeyFarmingInput',
+                'name'  => 'planKeyFarming',
+                'class' => 'planoption',
+            )
+        )
+        . $this->tag(
+            'label',
+            $this->tag('strong', 'Plan Key Farming')
+            . ' ' . $this->tag('small', 'Plan key farming basing on keys owned. Summarize needed keys otherwise.')
         )
     )
-    . ' keys/visit ' . $this->tag('small', 'warn if at any point the planned farming rate is higher than this limit.')
+    . $this->div(
+        '#keyFarmLimitContainer',
+        $this->tag('strong', 'Max farming rate ')
+        . $this->tag(
+            'input',
+            array(
+                'type'  => 'number',
+                'min'   => 1,
+                'step'  => 1,
+                'id'    => 'keyFarmLimitInput',
+                'name'  => 'keyFarmLimit',
+                'style' => 'width: 3em; text-align: center; ',
+                'class' => 'planoption',
+            )
+        )
+        . ' keys/visit ' . $this->tag('small', 'warn if at any point the planned farming rate is higher than this limit.')
+    )
 )
 ;

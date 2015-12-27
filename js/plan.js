@@ -118,17 +118,18 @@ ingressplanner.plan = new (function() {
 				// actions to perform at this step
 				actions: [],
 
-				// and we'll keep track of the key farming action indexOf in the above array
-				keyFarmActionIndex: null,
-
 				// apreward gathered by actions
 				aprewards: [],
 
 				// additional information (i.e. dropped friendly fields)
 				infos: [],
-
-
 			};
+
+			if (plan.options.planKeyFarming)
+			{
+				// and we'll keep track of the key farming action indexOf in the actions array
+				plan.steps[planIDX].analysis.keyFarmActionIndex = null;
+			}
 
 			//just a reference to keep typing a bit less
 			var analysis = plan.steps[planIDX].analysis;
@@ -185,8 +186,12 @@ ingressplanner.plan = new (function() {
 
 					// used for key calculation
 					plan.Portals[llstring].linksIn = 0;
-					plan.Portals[llstring].keysUsed = 0;
-					plan.Portals[llstring].keysFarmed = 0;
+
+					if (plan.options.planKeyFarming)
+					{
+						plan.Portals[llstring].keysUsed = 0;
+						plan.Portals[llstring].keysFarmed = 0;
+					}
 
 					// steps this portal has been visited till now
 					plan.Portals[llstring].steps = [];
@@ -457,135 +462,136 @@ ingressplanner.plan = new (function() {
 
 				// keys check
 
-					// do we have keys owned information?
-					if (typeof plan.Portals[stepPortals[1]].keys == 'undefined')
+					if (plan.options.planKeyFarming)
 					{
-						// no...
-						analysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'keys'});
-					}
-					else
-					{
-						// ok, we'll need another key
-						plan.Portals[stepPortals[1]].keysUsed++;
-
-						// do we have it?
-						var available = plan.Portals[stepPortals[1]].keys + plan.Portals[stepPortals[1]].keysFarmed - plan.Portals[stepPortals[1]].keysUsed;
-
-						// did we visist the destination before?
-						if (
-							typeof plan.Portals[stepPortals[1]].steps != 'undefined'
-							&& plan.Portals[stepPortals[1]].steps.length
-						)
+						// do we have keys owned information?
+						if (typeof plan.Portals[stepPortals[1]].keys == 'undefined')
 						{
+							// no...
+							analysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'keys'});
+						}
+						else
+						{
+							// ok, we'll need another key
+							plan.Portals[stepPortals[1]].keysUsed++;
 
-						// yes, we now backtrack the visits to flag how many keys are needed / to be farmed at each step
+							// do we have it?
+							var available = plan.Portals[stepPortals[1]].keys + plan.Portals[stepPortals[1]].keysFarmed - plan.Portals[stepPortals[1]].keysUsed;
 
-							// number of visits to the portal we have done
-							var doneVisits = plan.Portals[stepPortals[1]].steps.length-1;
+							// did we visist the destination before?
+							if (
+								typeof plan.Portals[stepPortals[1]].steps != 'undefined'
+								&& plan.Portals[stepPortals[1]].steps.length
+							)
+							{
 
-							// backtracking
-							$.each(plan.Portals[stepPortals[1]].steps, function(remainingVisits, visitIDX) {
+							// yes, we now backtrack the visits to flag how many keys are needed / to be farmed at each step
 
-								// did we already flagged a key need?
-								if (plan.steps[visitIDX].analysis.keyFarmActionIndex===null)
-								{
-									plan.steps[visitIDX].analysis.keyFarmActionIndex = plan.steps[visitIDX].analysis.actions.length;
-									plan.steps[visitIDX].analysis.actions.push({
+								// number of visits to the portal we have done
+								var doneVisits = plan.Portals[stepPortals[1]].steps.length-1;
 
-										type: 'keys',
+								// backtracking
+								$.each(plan.Portals[stepPortals[1]].steps, function(remainingVisits, visitIDX) {
 
-	            						doneVisits:0,
-	            						remainingVisits:0,
+									// did we already flagged a key need?
+									if (plan.steps[visitIDX].analysis.keyFarmActionIndex===null)
+									{
+										plan.steps[visitIDX].analysis.keyFarmActionIndex = plan.steps[visitIDX].analysis.actions.length;
+										plan.steps[visitIDX].analysis.actions.push({
 
-		            					allocated: {
-		            						now: 0,
-		            						after: 0
-		            					},
-		            					farm: {
-		            						now: 0,
-		            						after: 0
-		            					},
+											type: 'keys',
 
-									});
-								}
+		            						doneVisits:0,
+		            						remainingVisits:0,
 
-								// just a reference to reduce clutter
-								var keyFarmAction = plan.steps[visitIDX].analysis.actions[plan.steps[visitIDX].analysis.keyFarmActionIndex];
+			            					allocated: {
+			            						now: 0,
+			            						after: 0
+			            					},
+			            					farm: {
+			            						now: 0,
+			            						after: 0
+			            					},
 
-	            				// we'll track the overall number of keys allocated in all the future visits
-	            				// we track the max number of remainingVisits (at successive iterations for the same portal it will go up)
-	            				keyFarmAction.remainingVisits = remainingVisits;
+										});
+									}
 
-	            				// we track how many times we had visited this portal before, so how many opportunities to check/farm allocated keys
-	            				keyFarmAction.doneVisits = doneVisits;
+									// just a reference to reduce clutter
+									var keyFarmAction = plan.steps[visitIDX].analysis.actions[plan.steps[visitIDX].analysis.keyFarmActionIndex];
 
-								// we'll start with the key allocation situation
-		            			if (remainingVisits==0)
-		            			{
-		            				// no remainingVisits, so the allocation is right now
-		            				keyFarmAction['allocated'].now++;
-		            			}
-		            			else
-		            			{
-		            				// allocated in a future visit
-		            				keyFarmAction['allocated'].after++;
-		            			}
+		            				// we'll track the overall number of keys allocated in all the future visits
+		            				// we track the max number of remainingVisits (at successive iterations for the same portal it will go up)
+		            				keyFarmAction.remainingVisits = remainingVisits;
 
-								if (available<0)
-								{
-								// the allocation is also a farm need
+		            				// we track how many times we had visited this portal before, so how many opportunities to check/farm allocated keys
+		            				keyFarmAction.doneVisits = doneVisits;
 
+									// we'll start with the key allocation situation
 			            			if (remainingVisits==0)
 			            			{
-			            				// no remainingVisits, so we have to farm/have farmed right now
-			            				keyFarmAction['farm'].now++;
+			            				// no remainingVisits, so the allocation is right now
+			            				keyFarmAction['allocated'].now++;
 			            			}
 			            			else
 			            			{
-			            				// farm allocation is due to a future visit
-			            				keyFarmAction['farm'].after++;
+			            				// allocated in a future visit
+			            				keyFarmAction['allocated'].after++;
 			            			}
 
-									if (remainingVisits==0)
+									if (available<0)
 									{
-										// at the end of the last visit we have to had farmed 1 more key.
-										plan.steps[visitIDX].analysis.portalsState[0].keysFarmed++;
+									// the allocation is also a farm need
 
-										// same apply for following occurences of the same portal, this included
-										for (var nextIDX = visitIDX+1; nextIDX <= planIDX; nextIDX++) {
+				            			if (remainingVisits==0)
+				            			{
+				            				// no remainingVisits, so we have to farm/have farmed right now
+				            				keyFarmAction['farm'].now++;
+				            			}
+				            			else
+				            			{
+				            				// farm allocation is due to a future visit
+				            				keyFarmAction['farm'].after++;
+				            			}
 
-											$.each(plan.steps[nextIDX].analysis.portalsState, function(idx, portalsState) {
-												if (portalsState.llstring == stepPortals[1])
-												{
-													plan.steps[nextIDX].analysis.portalsState[idx].keysFarmed++;
-												}
-											});
-										};
+										if (remainingVisits==0)
+										{
+											// at the end of the last visit we have to had farmed 1 more key.
+											plan.steps[visitIDX].analysis.portalsState[0].keysFarmed++;
+
+											// same apply for following occurences of the same portal, this included
+											for (var nextIDX = visitIDX+1; nextIDX <= planIDX; nextIDX++) {
+
+												$.each(plan.steps[nextIDX].analysis.portalsState, function(idx, portalsState) {
+													if (portalsState.llstring == stepPortals[1])
+													{
+														plan.steps[nextIDX].analysis.portalsState[idx].keysFarmed++;
+													}
+												});
+											};
+
+										}
 
 									}
 
+									// decrement done visits
+									doneVisits--;
+										
+								});
+
+								if (available<0)
+								{
+									// since we had visited at least once the portal, we assume we farmed the needed key
+									plan.Portals[stepPortals[1]].keysFarmed++;
+									available++;
 								}
+							}
 
-								// decrement done visits
-								doneVisits--;
-									
-							});
-
+							// if we had no farming opportunities, we have a problem!
 							if (available<0)
 							{
-								// since we had visited at least once the portal, we assume we farmed the needed key
-								plan.Portals[stepPortals[1]].keysFarmed++;
-								available++;
+								plan.steps[planIDX].analysis.errors.push({type:'no-keys-available',missing:-available});
 							}
 						}
-
-						// if we had no farming opportunities, we have a problem!
-						if (available<0)
-						{
-							plan.steps[planIDX].analysis.errors.push({type:'no-keys-available',missing:-available});
-						}
-
-
 					}
 
 				// ownership & resos

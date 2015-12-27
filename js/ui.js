@@ -49,7 +49,10 @@ ingressplanner.ui = new (function() {
 	var plansListBody = $("#plansTable tbody");
 	var plansTableDiv = $("#plansTableDiv");
 
+    var portalsListHead = $('#portals thead');
 	var portalsListBody = $('#portals tbody');
+
+    var stepsListHead = $('#steps thead');
 	var stepsListBody = $('#steps tbody');
 
 	var todoListContainer = $('#todoList');
@@ -348,6 +351,7 @@ ingressplanner.ui = new (function() {
 		});
 
         $("#textualPlanAddLinksParamsContainer").toggle(plan.options.textualPlanAddLinks);
+        $("#keyFarmLimitContainer").toggle(plan.options.planKeyFarming);
 	};
 
     function buildTextuals(todolines,textualInfo,summaryUpdateRebuild)
@@ -485,6 +489,8 @@ ingressplanner.ui = new (function() {
     	clearPopovers();
         portalsListBody.html('');
 
+        portalsListHead.find('[data-keyfarming]').toggle(plan.options.planKeyFarming);
+
         var rows = [];
         var rowIDX = 0;
 
@@ -506,8 +512,6 @@ ingressplanner.ui = new (function() {
             	title = portalOriginalState.title;
             }
 
-            var keysHTML = '';
-
             var trAttrs={
             	'data-pll': llstring
            	};
@@ -517,28 +521,32 @@ ingressplanner.ui = new (function() {
                 trAttrs['data-portalguid'] = portalOriginalState.guid;
             }
 
-            if (typeof portalOriginalState.keys != 'undefined')
+            var keysHTML = '';
+            if (plan.options.planKeyFarming)
             {
-                keys = portalOriginalState.keys;
-                missing = linksIn - keys;
-
-                if (missing<=0)
+                if (typeof portalOriginalState.keys != 'undefined')
                 {
-                    missing = 0;
+                    keys = portalOriginalState.keys;
+                    missing = linksIn - keys;
+
+                    if (missing<=0)
+                    {
+                        missing = 0;
+                    }
+
+                    keysHTML = $('<input>').attr({
+                        type:   'number',
+                        min:    0,
+                        step:   1,
+                        value:  keys,
+                    });
+
                 }
 
-                keysHTML = $('<input>').attr({
-                    type:   'number',
-                    min:    0,
-                    step:   1,
-                    value:  keys,
-                });
-
-            }
-
-            if (missing==0)
-            {
-                missing = '';
+                if (missing==0)
+                {
+                    missing = '';
+                }
             }
 
             if (linksIn==0)
@@ -546,21 +554,34 @@ ingressplanner.ui = new (function() {
                 linksIn = '';
             }
 
-            portalsListBody.append(
-            	$('<tr>')
-                    .attr(trAttrs)
-                    .data('sorting',{
-		            	'idx': 		rowIDX++,
-		            	'title': 	title.trim().toLowerCase(),
-		            	'keys': 	keys,
-		            	'missing': 	missing,
-		            	'linksIn': 	linksIn,
-		            })
-                    .append(portalTDHTML(portalOriginalState,playerTeam))
-                    .append($('<td>').html(linksIn))
+            var sorting  = {
+                'idx':      rowIDX++,
+                'title':    title.trim().toLowerCase(),
+                'linksIn':  linksIn,
+            };
+
+            if (plan.options.planKeyFarming)
+            {
+                sorting['keys'] = keys;
+                sorting['missing'] = missing;
+            }
+
+            var tr = $('<tr>')
+                .attr(trAttrs)
+                .data('sorting',sorting)
+                .append(portalTDHTML(portalOriginalState,playerTeam))
+                .append($('<td>').html(linksIn))
+            ;
+
+            if (plan.options.planKeyFarming)
+            {
+                tr
                     .append($('<td>').attr('role','keys').html(keysHTML))
                     .append($('<td>').html(missing))
-            );
+                ;
+            }
+
+            portalsListBody.append(tr);
 
         });
 
@@ -1778,6 +1799,9 @@ ingressplanner.ui = new (function() {
     	clearPopovers();
 
         var tabIcon = 'remove';
+
+        stepsListHead.find('[data-keyfarming]').toggle(plan.options.planKeyFarming);
+
         stepsListBody.html('');
 
 		$("#steps tfoot").remove();
@@ -1805,11 +1829,11 @@ ingressplanner.ui = new (function() {
         {
             case 'ENLIGHTENED':
                 reverses.name = 'ADA Refactor';
-                reverses.action = 'ADA on ';
+                reverses.action = 'ADA on it';
                 break;
             case 'RESISTANCE':
                 reverses.name = 'Jarvis Virus';
-                reverses.action = 'Jarvis on ';
+                reverses.action = 'Jarvis on it';
                 break;
         }
 
@@ -1928,9 +1952,12 @@ ingressplanner.ui = new (function() {
 
             var prepToType = null;
 
-            var keyNowTD = $('<td>');
-            var keyTotalTD = $('<td>');
-            var keyAfterTD = $('<td>');
+            if (plan.options.planKeyFarming)
+            {
+                var keyNowTD = $('<td>');
+                var keyTotalTD = $('<td>');
+                var keyAfterTD = $('<td>');
+            }
 
             if (step.type == 'link')
             {
@@ -2040,8 +2067,6 @@ ingressplanner.ui = new (function() {
 
                     textualInfo[planIDX].push('KEYS: ' + parts.join(', '))
 
-//	            	todolines.push('KEYS ' + fromPortal.name + ': ' + parts.join(', '));
-
 	            	var totstops = todo['keys'].doneVisits+1;
 	            	if (fromPortal.keysFarmed)
 	            	{
@@ -2110,7 +2135,6 @@ ingressplanner.ui = new (function() {
 	                type = reverses.name;
                     nothingtodo = false;
                     textualInfo[planIDX].push(reverses.action)
-//	                todolines.push(reverses.action + fromPortal.name);
 	            }
 
             	if (type=='Portal')
@@ -2126,7 +2150,6 @@ ingressplanner.ui = new (function() {
 		            {
 		                type = 'Take Down';
                         textualInfo[planIDX].push('Take Down');
-//		                todolines.push('Take Down ' + fromPortal.name);
                         nothingtodo = false;
 		            }
 
@@ -2140,14 +2163,12 @@ ingressplanner.ui = new (function() {
 		                	todoAction += '& full resos ';
 		                }
                         textualInfo[planIDX].push(todoAction);
-//		                todolines.push(todoAction + fromPortal.name);
                         nothingtodo = false;
 		            }
 		            else if (todo['full-resos'])
 		            {
 		            	type = 'Full resos';
                         textualInfo[planIDX].push('Full resos');
-//		                todolines.push('Full resos ' + fromPortal.name);
                         nothingtodo = false;
 		            }
 
@@ -2167,7 +2188,6 @@ ingressplanner.ui = new (function() {
                         verb = 'Take Down (for AP)';
                     }
                     textualInfo[planIDX].push(verb);
-//                    todolines.push(verb + fromPortal.name);
 
                 }
 
@@ -2303,19 +2323,33 @@ ingressplanner.ui = new (function() {
 
 	                            });
 
-	                            stepsListBody.append(
+                                var tr = $('<tr>')
+                                    .addClass('auto ' + clclass)
+                                    .attr('data-planidx',planIDX)
+                                    .append($('<td>').attr({'colspan':3}).append($("<div>").addClass(clDivAddclass + 'text-danger').html(cllabel + ' Crosslink!')))
+                                    .append($('<td>').attr({'data-pll':origins[0]}).html(originsName[0]))
+                                ;
 
-	                                $('<tr>')
-	                                    .addClass('auto ' + clclass)
-	                                    .attr('data-planidx',planIDX)
-	                                    .append($('<td>').attr({'colspan':3}).append($("<div>").addClass(clDivAddclass + 'text-danger').html(cllabel + ' Crosslink!')))
-	                                    .append($('<td>').attr({'data-pll':origins[0]}).html(originsName[0]))
-	                                    .append($('<td>'))
-	                                    .append($('<td>'))
-	                                    .append($('<td>').attr({'data-pll':origins[1]}).html(originsName[1]))
-	                                    .append($('<td>'))
-	                                    .append($('<td>'))
-	                            );
+                                if (plan.options.planKeyFarming)
+                                {
+                                    tr
+                                        .append($('<td>'))
+                                        .append($('<td>'))
+                                    ;
+                                }
+                                tr
+                                    .append($('<td>').attr({'data-pll':origins[1]}).html(originsName[1]))
+                                    .append($('<td>'))
+                                ;
+
+                                if (plan.options.planKeyFarming)
+                                {
+                                    tr
+                                        .append($('<td>'))
+                                    ;
+                                }
+
+	                            stepsListBody.append(tr);
 	                        });
 	                        break;
 
@@ -2358,7 +2392,6 @@ ingressplanner.ui = new (function() {
                         		needed: needed
                         	};
                             textualInfo[planIDX].push('Check/equip o total of ' + needed + ' SBULA');
-//	                        todolines.push('Check/equip o total of ' + needed + ' SBULA on ' + fromPortal.name);
                         }
                         break;
 
@@ -2380,7 +2413,7 @@ ingressplanner.ui = new (function() {
 
                 if (!doneLink)
                 {
-                	if (!plan.options.HLPlanning)
+                	if ((!plan.options.HLPlanning) && plan.options.planKeyFarming)
                 	{
 	            		// keys situation before th visit
 	            		var available = 
@@ -2425,7 +2458,6 @@ ingressplanner.ui = new (function() {
 	                }
 
                     textualInfo[planIDX].push(todo);
-//	                todolines.push(todo);                	
                 }
             	else
             	{
@@ -2509,7 +2541,6 @@ ingressplanner.ui = new (function() {
 
             }
 
-
             if (doneLink)
             {
             	rowClass.push('success');
@@ -2551,8 +2582,7 @@ ingressplanner.ui = new (function() {
                 ;
             }
 
-            stepsListBody.append(
-            $('<tr>')
+            var tr = $('<tr>')
                 .attr({
                     'data-planidx': planIDX,
                     'class':        rowClass.join(' ')
@@ -2561,12 +2591,26 @@ ingressplanner.ui = new (function() {
                 .append(typeTD)
                 .append($('<td>').addClass('animstep').attr(animTDattr).append(animStep))
                 .append(fromPortalTD)
-                .append(keyNowTD)
-                .append(keyTotalTD)
-                .append(toPortalTD)
-                .append(keyAfterTD)
-                .append(APTD)
-            );
+            ;
+
+            if (plan.options.planKeyFarming)
+            {
+                tr
+                    .append(keyNowTD)
+                    .append(keyTotalTD)
+                ;
+            }
+
+            tr.append(toPortalTD);
+
+            if (plan.options.planKeyFarming)
+            {
+                tr.append(keyAfterTD);
+            }
+
+            tr.append(APTD);
+
+            stepsListBody.append(tr);
 
         });
 
@@ -2578,7 +2622,7 @@ ingressplanner.ui = new (function() {
 	            $('<tfoot>')
 	            .append(
 	                $('<tr>')
-	                .append($('<td>').addClass('text-right').attr({'colspan': 8}).html('Total:'))
+	                .append($('<td>').addClass('text-right').attr({'colspan': (plan.options.planKeyFarming?8:5)}).html('Total:'))
 	                .append($('<td>').html(totalAP.toLocaleString()))
 	            )
 	        );
@@ -2704,6 +2748,45 @@ ingressplanner.ui = new (function() {
         {
             todolines.unshift('** Check ' + reverses.name + ' inventory: ' + reverses.count + ' min.');
         }
+
+        if (!plan.options.planKeyFarming)
+        {
+
+            var keyPortals = $.map(plan.Portals, function(portal) {
+                if (portal.linksIn)
+                {
+                    var title = ingressplanner.gameworld.hashToNames(portal.llstring);
+                    return {
+                        title: title,
+                        keys:  portal.linksIn,
+                        ordering: title.trim().toLowerCase()
+                    };
+                }
+            }).sort(function(a,b){
+                if (a.ordering==b.ordering)
+                {
+                    return 0
+                }
+
+                if (a.ordering<b.ordering)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+            });
+
+            if (keyPortals.length)
+            {
+                todolines.push('** Check keys:');
+                $.each(keyPortals, function(index, keyPortal) {
+                     todolines.push('  ' + keyPortal.title + ': ' + keyPortal.keys);
+                });
+            }
+        }
+
 
         buildTextuals(todolines,textualInfo);
 
