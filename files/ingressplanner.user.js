@@ -214,9 +214,6 @@ function wrapper() {
                 // nedded to access localstorage (injected hook generates an error when trying to access it from eval()'d code)
                 window.addHook('pluginDrawTools', window.plugin.ingressplanner.updateDrawing);
 
-                // yet to be converted to v2
-                window.addHook('pluginKeysUpdateKey', window.plugin.ingressplanner.onUpdateKey);
-
 // WebApp injected hooks (v2)
                 $.each(window.VALID_HOOKS, function(hookIDX,hookName) {
 
@@ -366,12 +363,6 @@ function wrapper() {
         window.plugin.ingressplanner.sendMessage('update-drawing',localStorage['plugin-draw-tools-layer']);
 
     };
-
-
-    self.onUpdateKey = function(data) {
-         window.plugin.ingressplanner.sendMessage('update-keys',data);
-    };
-
 
     self.setup = function init() {
     
