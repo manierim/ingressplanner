@@ -372,15 +372,16 @@ ingressplanner = new (function() {
 								}
 								break;
 
+							case 'pluginKeysUpdateKey':
+								ingressplanner.gameworld.updateKeys(payload.data);
+								if (lastPlan.options.planKeyFarming)
+								{
+									loadAndAnalyzePlan(lastPlan,false);
+								}
 
-						}
-						break;
+								break;
 
-					case 'update-keys':
-						ingressplanner.gameworld.updateKeys(payload);
-						if (plan.options.planKeyFarming)
-						{
-							loadAndAnalyzePlan(lastPlan,false);
+
 						}
 						break;
 
