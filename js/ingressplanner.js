@@ -19,6 +19,7 @@ ingressplanner = new (function() {
 		HLPlanning: false,
 		showDoneLinks: false,
 		fullresosOnTouchedPortals: true,
+		planKeyFarming: true,
 		keyFarmLimit: 2,
 		textualPlanAddLinks: true,
 		textualPlanAddLinksMinDistance: 100,
@@ -377,7 +378,10 @@ ingressplanner = new (function() {
 
 					case 'update-keys':
 						ingressplanner.gameworld.updateKeys(payload);
-						loadAndAnalyzePlan(lastPlan,false);
+						if (plan.options.planKeyFarming)
+						{
+							loadAndAnalyzePlan(lastPlan,false);
+						}
 						break;
 
 					case 'update-drawing':

@@ -4,15 +4,15 @@ $news = array(
 // add newest to the top!
 
     array(
-        'date'      => 'Dec. 27, 2015',
-        'version'   => '2.0.3b',
+        'date'      => 'Dec. 28, 2015',
+        'version'   => '2.0.4',
         'body' => array(
-            'Fixed done links generating an "empy" GO TO line in textual export.',
+            'Key farm planning is now an option. You can turn it off and get just a summary of the keys needed.',
         ),
     ),
 
     array(
-        'date'      => 'Dec. 20, 2015',
+        'date'      => 'Dec. 27, 2015',
         'version'   => '2.0.3b',
         'body' => array(
             'Fixed done links generating an "empy" GO TO line in textual export.',
@@ -41,6 +41,7 @@ $news = array(
         ),
     ),
 
+/*
     array(
         'date'      => 'Dec. 15, 2015',
         'version'   => '2.0.2b',
@@ -58,7 +59,6 @@ $news = array(
             '<em>Added this "news" section in Home tab</em>',
         ),
     ),
-/*
     array(
         'date'      => 'Dec. 12, 2015',
         'version'   => '2.0.1',
