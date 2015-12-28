@@ -21,10 +21,18 @@ ingressplanner.plan = new (function() {
 	function analyzePlan(plan, playerTeam, opponentTeam)
 	{
 
-		// will store the list of portal touched by the plan and their current state through the plan, indexed by llstring
-		plan.Portals = {};
+		var analysis = {
 
-		plan.colors = {};
+			// will store each step analysis
+			steps: [],
+
+			// will store the list of portal touched by the plan and their current state through the plan, indexed by llstring
+			Portals: {},
+
+			// will store the distinct colors used in the plan
+			colors: {},
+
+		};
 
 		// will store the current links & fields as the plan will drop or create them, indexed by llstring
 		var worldLinks = {};
@@ -48,24 +56,8 @@ ingressplanner.plan = new (function() {
 		var droppedLinks = {};
 		var droppedFields = {};
 
-		// flag and remove bad steps
-		var good = $.map(plan.steps, function(step,planIDX) {
-			var stepPortals = step.portals.split('|');
-			if (stepPortals.length==2 && stepPortals[0]==stepPortals[1])
-			{
-				// this is an undetected error, a link with same origin and detsination
-				ingressplanner.warn('Step',planIDX,'is a "false" link and will be removed',step);
-				return null;
-			}
-			return step;
-		});
-
-		plan.steps = good;
-		delete good;
-
 		// used to detect a stop to a new portal (different from previous one)
 		var lastVisited = null;
-
 
 		$.each(plan.steps, function(planIDX, step) {
 
@@ -87,13 +79,13 @@ ingressplanner.plan = new (function() {
 				step.color = defaultColor;
 			}
 
-			if (typeof plan.colors[step.color] == 'undefined')
+			if (typeof analysis.colors[step.color] == 'undefined')
 			{
-				plan.colors[step.color] = ingressplanner.utils.colorName(step.color);
+				analysis.colors[step.color] = ingressplanner.utils.colorName(step.color);
 
-				if (!plan.colors[step.color])
+				if (!analysis.colors[step.color])
 				{
-					plan.colors[step.color] = step.color;
+					analysis.colors[step.color] = step.color;
 				}
 			}
 
@@ -104,7 +96,7 @@ ingressplanner.plan = new (function() {
 			var llstringOrdered = stepPortals.slice(0).sort().join('|');
 
 			// will store the analysis informatio
-			plan.steps[planIDX].analysis = {
+			analysis.steps[planIDX] = {
 
 				// the state of the portals before the step 
 				portalsState:[],
@@ -125,14 +117,14 @@ ingressplanner.plan = new (function() {
 				infos: [],
 			};
 
+			//just a reference to keep typing a bit less
+			var stepAnalysis = analysis.steps[planIDX];
+
 			if (plan.options.planKeyFarming)
 			{
 				// and we'll keep track of the key farming action indexOf in the actions array
-				plan.steps[planIDX].analysis.keyFarmActionIndex = null;
+				stepAnalysis.keyFarmActionIndex = null;
 			}
-
-			//just a reference to keep typing a bit less
-			var analysis = plan.steps[planIDX].analysis;
 
 			// will be used to flag a planned link that is already been done
 			var linkDone = false;
@@ -149,7 +141,7 @@ ingressplanner.plan = new (function() {
 					if (worldLinks[llstringOrdered].teamDECODED == playerTeam)
 					{
 						// let's flag this as an already done/exisitng own faction link
-						analysis['infos'].push({type:'link-done'});
+						stepAnalysis['infos'].push({type:'link-done'});
 						linkDone = true;
 					}
 				}
@@ -158,7 +150,7 @@ ingressplanner.plan = new (function() {
 			// state and record the actual state of the portal
 			$.each(stepPortals, function(portalIDX, llstring) {
 
-				if (typeof plan.Portals[llstring] == 'undefined')
+				if (typeof analysis.Portals[llstring] == 'undefined')
 				{
 					// first occurence of this portal
 					var known = ingressplanner.gameworld.getPortalByllstring(llstring);
@@ -167,38 +159,38 @@ ingressplanner.plan = new (function() {
 					if (known)
 					{
 						// yes - we use clonePortalData do dereference the original object
-						plan.Portals[llstring] = ingressplanner.utils.clonePortalData(known);
+						analysis.Portals[llstring] = ingressplanner.utils.clonePortalData(known);
 						// used for max #of outgoing links check
-						plan.Portals[llstring].linksOut = known.links.out.length;
+						analysis.Portals[llstring].linksOut = known.links.out.length;
 
 					}
 					else
 					{
 						// no, unknown gameworld portal, lets mock it
-						plan.Portals[llstring] = {
+						analysis.Portals[llstring] = {
 							// commodity
 							llstring: llstring,
 						}
 					}
 
 					// let's store the original state of the portal (used for plan portals list), dereferenced
-					plan.Portals[llstring].originalState = ingressplanner.utils.clonePortalData(plan.Portals[llstring]);
+					analysis.Portals[llstring].originalState = ingressplanner.utils.clonePortalData(analysis.Portals[llstring]);
 
 					// used for key calculation
-					plan.Portals[llstring].linksIn = 0;
+					analysis.Portals[llstring].linksIn = 0;
 
 					if (plan.options.planKeyFarming)
 					{
-						plan.Portals[llstring].keysUsed = 0;
-						plan.Portals[llstring].keysFarmed = 0;
+						analysis.Portals[llstring].keysUsed = 0;
+						analysis.Portals[llstring].keysFarmed = 0;
 					}
 
 					// steps this portal has been visited till now
-					plan.Portals[llstring].steps = [];
+					analysis.Portals[llstring].steps = [];
 				}
 
 				// let's store the portal state at the beginning of the step
-				analysis.portalsState[portalIDX] = ingressplanner.utils.clonePortalData(plan.Portals[llstring]);
+				stepAnalysis.portalsState[portalIDX] = ingressplanner.utils.clonePortalData(analysis.Portals[llstring]);
 
 				// we assume that if the link is already the step will not be performed at all
 				if (!linkDone)
@@ -208,7 +200,7 @@ ingressplanner.plan = new (function() {
 						if (step.type=='link')
 						{
 							// incoming link, we'll need a key (this is just for the plan portal list)
-							plan.Portals[llstring].linksIn++;
+							analysis.Portals[llstring].linksIn++;
 						}
 					}
 					else 
@@ -218,17 +210,17 @@ ingressplanner.plan = new (function() {
 						if ((!lastVisited) || lastVisited != llstring)
 						{
 							// we visited this portal at this step, last visit is first element of array
-							plan.Portals[llstring].steps.unshift(planIDX);
+							analysis.Portals[llstring].steps.unshift(planIDX);
 							lastVisited = llstring;
 						}
 
 						// to check if we are going to capture/reverse the portal we need to know it's faction
-						if (typeof plan.Portals[llstring].teamDECODED == 'undefined')
+						if (typeof analysis.Portals[llstring].teamDECODED == 'undefined')
 						{
 							// we don't have faction information
 							if (!plan.options.HLPlanning)
 							{
-								analysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'teamDECODED'});
+								stepAnalysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'teamDECODED'});
 							}
 
 						}
@@ -241,17 +233,17 @@ ingressplanner.plan = new (function() {
 							// the plan foresse the use of a Jarvis/Ada
 							if (step.type=='reverse')
 							{
-								if (plan.Portals[llstring].teamDECODED==playerTeam)
+								if (analysis.Portals[llstring].teamDECODED==playerTeam)
 								{
 									// the portal is own faction, so reverse it
-									plan.Portals[llstring].teamDECODED = opponentTeam;
-									plan.Portals[llstring].linksOut = 0;
+									analysis.Portals[llstring].teamDECODED = opponentTeam;
+									analysis.Portals[llstring].linksOut = 0;
 
 									// will take down the portal
 									tdAPGain = false;
 
 									// UI will allow to cancel the Jarvis/Ada
-									analysis.infos.push({type:'can-cancelreverse'});
+									stepAnalysis.infos.push({type:'can-cancelreverse'});
 								}
 								else
 								{
@@ -263,74 +255,74 @@ ingressplanner.plan = new (function() {
 							if (step.type!='reverse')
 							{
 								// is it enemy portal?								
-								if (plan.Portals[llstring].teamDECODED!=playerTeam)
+								if (analysis.Portals[llstring].teamDECODED!=playerTeam)
 								{
 
 									// yes, capture/take down it
 									tdAPGain = true;
 
 									// do we have resonator qty information?
-									if (!typeof plan.Portals[llstring].resCount == 'undefined')
+									if (!typeof analysis.Portals[llstring].resCount == 'undefined')
 									{
 										// no
-										analysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'resCount'});
+										stepAnalysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'resCount'});
 									}
 									else
 									{
 										// do we need to take down resos?
-										if (plan.Portals[llstring].resCount>0)
+										if (analysis.Portals[llstring].resCount>0)
 										{
 											// AP for destroyed resos
-											analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('dropped-reso',plan.Portals[llstring].resCount));
+											stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('dropped-reso',analysis.Portals[llstring].resCount));
 										}
 									}
 
 									// the porta is now neutral
-									plan.Portals[llstring].resCount = 0;
-									plan.Portals[llstring].linksOut = 0;
+									analysis.Portals[llstring].resCount = 0;
+									analysis.Portals[llstring].linksOut = 0;
 
 									// we flag it as own faction for comodity
-									plan.Portals[llstring].teamDECODED = 'NEUTRAL';
+									analysis.Portals[llstring].teamDECODED = 'NEUTRAL';
 
 								}
 								else if (
 									// is it own faction and is this a portal (not link) step?
-									plan.Portals[llstring].teamDECODED == playerTeam 
+									analysis.Portals[llstring].teamDECODED == playerTeam 
 									&& step.type == 'portal'
 								)
 								{
 									// yes, UI will possibly allow to use a Jarvis/Ada
-									analysis.infos.push({type:'can-reverse'});
+									stepAnalysis.infos.push({type:'can-reverse'});
 								}
 							}
 
 							// setting - or if we are are we going to link (we'll for sure equip full resos)?
 							if (plan.options.fullresosOnTouchedPortals || step.type=='link')
 							{
-								if (plan.Portals[llstring].teamDECODED!=playerTeam)
+								if (analysis.Portals[llstring].teamDECODED!=playerTeam)
 								{
 									// we have captured it
-									plan.Portals[llstring].teamDECODED = playerTeam;
-									analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('capture-portal',1));
+									analysis.Portals[llstring].teamDECODED = playerTeam;
+									stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('capture-portal',1));
 								}
 
-								if (!typeof plan.Portals[llstring].resCount == 'undefined')
+								if (!typeof analysis.Portals[llstring].resCount == 'undefined')
 								{
 									// no
-									analysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'resCount'});
+									stepAnalysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'resCount'});
 								}
 								else
 								{
-									var deployed = 8-plan.Portals[llstring].resCount;
+									var deployed = 8-analysis.Portals[llstring].resCount;
 
 									if (deployed>0)
 									{
-										analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-resonator',deployed));
-										analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-last-resonator',1));
+										stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-resonator',deployed));
+										stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-last-resonator',1));
 									}
 								}
 								// and fully deployed resos
-								plan.Portals[llstring].resCount = 8;
+								analysis.Portals[llstring].resCount = 8;
 							}
 
 							// need to compute gameworld takedowns?
@@ -367,11 +359,11 @@ ingressplanner.plan = new (function() {
 
 									if (!tdAPGain)
 									{
-										analysis.infos.push({type:'dropped-fields',droppedFields:stepDroppedFields});
+										stepAnalysis.infos.push({type:'dropped-fields',droppedFields:stepDroppedFields});
 									}
 									else
 									{
-										analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('dropped-field',stepDroppedFields.length));
+										stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('dropped-field',stepDroppedFields.length));
 									}
 									
 								}
@@ -408,11 +400,11 @@ ingressplanner.plan = new (function() {
 
 									if (!tdAPGain)
 									{
-										analysis.infos.push({type:'dropped-links',droppedLinks:stepDroppedLinks});
+										stepAnalysis.infos.push({type:'dropped-links',droppedLinks:stepDroppedLinks});
 									}
 									else
 									{
-										analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('dropped-link',stepDroppedLinks.length));
+										stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('dropped-link',stepDroppedLinks.length));
 									}
 
 								}
@@ -432,26 +424,26 @@ ingressplanner.plan = new (function() {
 			// origin portal checks
 
 				// do we have linkOut gameworld information?
-				if (typeof plan.Portals[stepPortals[0]].linksOut == 'undefined')
+				if (typeof analysis.Portals[stepPortals[0]].linksOut == 'undefined')
 				{
 					// no...
-					analysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'linksOut'});
+					stepAnalysis.errors.push({type:'no-IITC-portal-data',portalIDX:0,needed:'linksOut'});
 				}
 				else
 				{
 					// yes, so we track one more..
-					plan.Portals[stepPortals[0]].linksOut++;
+					analysis.Portals[stepPortals[0]].linksOut++;
 
 					// overall max
-					if (plan.Portals[stepPortals[0]].linksOut>maxLinkOutErr)
+					if (analysis.Portals[stepPortals[0]].linksOut>maxLinkOutErr)
 					{
-						analysis.errors.push({type:'linksOut',linksOut:plan.Portals[stepPortals[0]].linksOut,maxLinkOut:maxLinkOutErr});
+						stepAnalysis.errors.push({type:'linksOut',linksOut:analysis.Portals[stepPortals[0]].linksOut,maxLinkOut:maxLinkOutErr});
 					}
 					// warn over standard max
-					else if (plan.Portals[stepPortals[0]].linksOut>maxLinkOutWarn)
+					else if (analysis.Portals[stepPortals[0]].linksOut>maxLinkOutWarn)
 					{
 						// will need to advice for SBULA usage & check mod slots
-						analysis.warnings.push({type:'linksOut',linksOut:plan.Portals[stepPortals[0]].linksOut,maxLinkOut:maxLinkOutWarn});
+						stepAnalysis.warnings.push({type:'linksOut',linksOut:analysis.Portals[stepPortals[0]].linksOut,maxLinkOut:maxLinkOutWarn});
 					}
 				}
 
@@ -465,39 +457,39 @@ ingressplanner.plan = new (function() {
 					if (plan.options.planKeyFarming)
 					{
 						// do we have keys owned information?
-						if (typeof plan.Portals[stepPortals[1]].keys == 'undefined')
+						if (typeof analysis.Portals[stepPortals[1]].keys == 'undefined')
 						{
 							// no...
-							analysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'keys'});
+							stepAnalysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'keys'});
 						}
 						else
 						{
 							// ok, we'll need another key
-							plan.Portals[stepPortals[1]].keysUsed++;
+							analysis.Portals[stepPortals[1]].keysUsed++;
 
 							// do we have it?
-							var available = plan.Portals[stepPortals[1]].keys + plan.Portals[stepPortals[1]].keysFarmed - plan.Portals[stepPortals[1]].keysUsed;
+							var available = analysis.Portals[stepPortals[1]].keys + analysis.Portals[stepPortals[1]].keysFarmed - analysis.Portals[stepPortals[1]].keysUsed;
 
 							// did we visist the destination before?
 							if (
-								typeof plan.Portals[stepPortals[1]].steps != 'undefined'
-								&& plan.Portals[stepPortals[1]].steps.length
+								typeof analysis.Portals[stepPortals[1]].steps != 'undefined'
+								&& analysis.Portals[stepPortals[1]].steps.length
 							)
 							{
 
 							// yes, we now backtrack the visits to flag how many keys are needed / to be farmed at each step
 
 								// number of visits to the portal we have done
-								var doneVisits = plan.Portals[stepPortals[1]].steps.length-1;
+								var doneVisits = analysis.Portals[stepPortals[1]].steps.length-1;
 
 								// backtracking
-								$.each(plan.Portals[stepPortals[1]].steps, function(remainingVisits, visitIDX) {
+								$.each(analysis.Portals[stepPortals[1]].steps, function(remainingVisits, visitIDX) {
 
 									// did we already flagged a key need?
-									if (plan.steps[visitIDX].analysis.keyFarmActionIndex===null)
+									if (analysis.steps[visitIDX].keyFarmActionIndex===null)
 									{
-										plan.steps[visitIDX].analysis.keyFarmActionIndex = plan.steps[visitIDX].analysis.actions.length;
-										plan.steps[visitIDX].analysis.actions.push({
+										analysis.steps[visitIDX].keyFarmActionIndex = analysis.steps[visitIDX].actions.length;
+										analysis.steps[visitIDX].actions.push({
 
 											type: 'keys',
 
@@ -517,7 +509,7 @@ ingressplanner.plan = new (function() {
 									}
 
 									// just a reference to reduce clutter
-									var keyFarmAction = plan.steps[visitIDX].analysis.actions[plan.steps[visitIDX].analysis.keyFarmActionIndex];
+									var keyFarmAction = analysis.steps[visitIDX].actions[analysis.steps[visitIDX].keyFarmActionIndex];
 
 		            				// we'll track the overall number of keys allocated in all the future visits
 		            				// we track the max number of remainingVisits (at successive iterations for the same portal it will go up)
@@ -556,15 +548,15 @@ ingressplanner.plan = new (function() {
 										if (remainingVisits==0)
 										{
 											// at the end of the last visit we have to had farmed 1 more key.
-											plan.steps[visitIDX].analysis.portalsState[0].keysFarmed++;
+											analysis.steps[visitIDX].portalsState[0].keysFarmed++;
 
 											// same apply for following occurences of the same portal, this included
 											for (var nextIDX = visitIDX+1; nextIDX <= planIDX; nextIDX++) {
 
-												$.each(plan.steps[nextIDX].analysis.portalsState, function(idx, portalsState) {
+												$.each(analysis.steps[nextIDX].portalsState, function(idx, portalsState) {
 													if (portalsState.llstring == stepPortals[1])
 													{
-														plan.steps[nextIDX].analysis.portalsState[idx].keysFarmed++;
+														analysis.steps[nextIDX].portalsState[idx].keysFarmed++;
 													}
 												});
 											};
@@ -581,7 +573,7 @@ ingressplanner.plan = new (function() {
 								if (available<0)
 								{
 									// since we had visited at least once the portal, we assume we farmed the needed key
-									plan.Portals[stepPortals[1]].keysFarmed++;
+									analysis.Portals[stepPortals[1]].keysFarmed++;
 									available++;
 								}
 							}
@@ -589,7 +581,7 @@ ingressplanner.plan = new (function() {
 							// if we had no farming opportunities, we have a problem!
 							if (available<0)
 							{
-								plan.steps[planIDX].analysis.errors.push({type:'no-keys-available',missing:-available});
+								stepAnalysis.errors.push({type:'no-keys-available',missing:-available});
 							}
 						}
 					}
@@ -597,83 +589,83 @@ ingressplanner.plan = new (function() {
 				// ownership & resos
 
 					// do we have faction gameworld information?
-					if (typeof plan.Portals[stepPortals[1]].teamDECODED == 'undefined')
+					if (typeof analysis.Portals[stepPortals[1]].teamDECODED == 'undefined')
 					{
 						// no...
-						analysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'teamDECODED'});
+						stepAnalysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'teamDECODED'});
 					}
 					else
 					{
 						// destination is not owned by the factio?
-						if (plan.Portals[stepPortals[1]].teamDECODED != playerTeam)
+						if (analysis.Portals[stepPortals[1]].teamDECODED != playerTeam)
 						{
 
 							// did we visiste the destination before?
 							if (
-								typeof plan.Portals[stepPortals[1]].steps != 'undefined'
-								&& plan.Portals[stepPortals[1]].steps.length
+								typeof analysis.Portals[stepPortals[1]].steps != 'undefined'
+								&& analysis.Portals[stepPortals[1]].steps.length
 							)
 							{
 								// we did, last time was
-								var lastVisit = plan.steps[plan.Portals[stepPortals[1]].steps[0]];
+								var lastVisitAnalysis = analysis.steps[analysis.Portals[stepPortals[1]].steps[0]];
 
 								// was it non own faction at that time?
-								if (lastVisit.analysis.portalsState[0].teamDECODED != playerTeam)
+								if (lastVisitAnalysis.portalsState[0].teamDECODED != playerTeam)
 								{
 									// yes, so we flag taht visit as a capture action
-									lastVisit.analysis.actions.push({type:'capture'});
+									lastVisitAnalysis.actions.push({type:'capture'});
 									// and we take ownership
-									analysis.portalsState[1].teamDECODED = playerTeam;
-									plan.Portals[stepPortals[1]].teamDECODED = playerTeam;
+									stepAnalysis.portalsState[1].teamDECODED = playerTeam;
+									analysis.Portals[stepPortals[1]].teamDECODED = playerTeam;
 								}
 							}
 						}
 
-						if (plan.Portals[stepPortals[1]].teamDECODED == playerTeam)
+						if (analysis.Portals[stepPortals[1]].teamDECODED == playerTeam)
 						{
 							// do we have rescount gameworld information?
-							if (typeof plan.Portals[stepPortals[1]].resCount == 'undefined')
+							if (typeof analysis.Portals[stepPortals[1]].resCount == 'undefined')
 							{
 								// no...
-								analysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'resCount'});
+								stepAnalysis.errors.push({type:'no-IITC-portal-data',portalIDX:1,needed:'resCount'});
 							}
-							else if (plan.Portals[stepPortals[1]].resCount < 8)
+							else if (analysis.Portals[stepPortals[1]].resCount < 8)
 							{
 								// destination is not full resos, did we visited it before?
 								if (
-									typeof plan.Portals[stepPortals[1]].steps != 'undefined'
-									&& plan.Portals[stepPortals[1]].steps.length
+									typeof analysis.Portals[stepPortals[1]].steps != 'undefined'
+									&& analysis.Portals[stepPortals[1]].steps.length
 								)
 								{
 
 									// we did, so we flag to make full resos at the last visit
-									var lastVisit = plan.steps[plan.Portals[stepPortals[1]].steps[0]];
-									lastVisit.analysis.actions.push({type:'full-resos'});
+									var lastVisitAnalysis = analysis.steps[analysis.Portals[stepPortals[1]].steps[0]];
+									lastVisitAnalysis.actions.push({type:'full-resos'});
 
 									// how many resos must we deploy for full reso at lasti visit?
-									var deployed = 8-plan.Portals[stepPortals[1]].resCount;
+									var deployed = 8-analysis.Portals[stepPortals[1]].resCount;
 
 									if (deployed==8)
 									{
 										// we had to captured it
-										lastVisit.analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('capture-portal',1));
+										lastVisitAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('capture-portal',1));
 									}
 									// and make full resos
-									lastVisit.analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-resonator',deployed));
-									lastVisit.analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-last-resonator',1));
+									lastVisitAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-resonator',deployed));
+									lastVisitAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('deploy-last-resonator',1));
 
-									analysis.portalsState[1].resCount = 8;
-									plan.Portals[stepPortals[1]].resCount = 8;
+									stepAnalysis.portalsState[1].resCount = 8;
+									analysis.Portals[stepPortals[1]].resCount = 8;
 								}
 								else
 								{
-									analysis.errors.push({type:'not-full-resos', resCount: plan.Portals[stepPortals[1]].resCount});
+									stepAnalysis.errors.push({type:'not-full-resos', resCount: analysis.Portals[stepPortals[1]].resCount});
 								}
 							}
 						}
 						else
 						{
-							analysis.errors.push({type:'not-own-faction'});
+							stepAnalysis.errors.push({type:'not-own-faction'});
 						}
 					}
 
@@ -685,7 +677,7 @@ ingressplanner.plan = new (function() {
 					if (ingressplanner.utils.portalInField(stepPortals[0],fieldLLstring))
 					{
 						// flag the step where the field was took down as a "take down" step
-						plan.steps[droppedAtStepIDX].analysis.actions.push({
+						analysis.steps[droppedAtStepIDX].actions.push({
 							type: 	'take-down',
 							reason: 'blocking-field',
 							field: 	fieldLLstring,
@@ -711,7 +703,7 @@ ingressplanner.plan = new (function() {
 
 				if (blockingFields.length)
 				{
-					analysis.errors.push({type:'portal-inside-fields',blockingFields:blockingFields});
+					stepAnalysis.errors.push({type:'portal-inside-fields',blockingFields:blockingFields});
 				}
 
 				// check if the link was blocked by previously taken down cross links
@@ -720,7 +712,7 @@ ingressplanner.plan = new (function() {
 					if (ingressplanner.utils.intersect(step.portals,linkLLstring))
 					{
 						// flag the step where the cross link was took down as a "take down" step
-						plan.steps[droppedAtStepIDX].analysis.actions.push({
+						analysis.steps[droppedAtStepIDX].actions.push({
 							type: 	'take-down',
 							reason: 'blocking-link',
 							link: 	linkLLstring,
@@ -765,7 +757,7 @@ ingressplanner.plan = new (function() {
 				// we identified some crosslinks
 				if (crosslinks.length)
 				{
-					analysis.errors.push({type:'crosslinks',crosslinks:crosslinks});
+					stepAnalysis.errors.push({type:'crosslinks',crosslinks:crosslinks});
 				}
 
 				// we have at least 1 connected portal for each of the new link origins.
@@ -825,7 +817,7 @@ ingressplanner.plan = new (function() {
 					});
 
 					// AP for created resos
-					analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('created-field',createdFields.length));
+					stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('created-field',createdFields.length));
 
 					var createdFieldsLLstrings = [];
 					// add the created fields to the gameworld
@@ -848,7 +840,7 @@ ingressplanner.plan = new (function() {
 					});
 
 					// number of created and wasted fields
-					analysis['infos'].push({
+					stepAnalysis['infos'].push({
 						type: 			'fields',
 						createdFields: 	createdFieldsLLstrings,
 						wastedFields: 	wastedFieldsLLstrings
@@ -857,7 +849,7 @@ ingressplanner.plan = new (function() {
 				}
 
 				// AP for created link
-				analysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('created-link',1));
+				stepAnalysis.aprewards.push(ingressplanner.aprewards.getApRewardsObject('created-link',1));
 
 				// add the created link to the gameworld
 				worldLinks[llstringOrdered] = {
@@ -870,7 +862,8 @@ ingressplanner.plan = new (function() {
 
 		});
 
-		return plan;
+console.debug('analysis',analysis);
+		return analysis;
 
 	}
 

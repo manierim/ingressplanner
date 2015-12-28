@@ -8,6 +8,11 @@ ingressplanner.ui = new (function() {
 
 	var eventHandler = null;
 
+    // stores the last plan, palyerteam and analysis data
+    var plan = null;
+    var playerTeam = null;
+    var analysis = null;
+
     // handles preview data
     var preview = {
         // map instance
@@ -335,11 +340,6 @@ ingressplanner.ui = new (function() {
         $('.cp-popover-container').popover('destroy').remove();
 	}
 
-	// stores the last plan & palyerteam data
-	var plan = null;
-	var playerTeam = null;
-
-
 	function setPlanOptions()
 	{
 		$.each(plan.options, function(option, value) {
@@ -503,7 +503,7 @@ ingressplanner.ui = new (function() {
         var rows = [];
         var rowIDX = 0;
 
-        $.each(plan.Portals, function(llstring, portal) {
+        $.each(analysis.Portals, function(llstring, portal) {
 
             var linksIn = 0;
             if (typeof portal.linksIn != 'undefined' && portal.linksIn)
@@ -944,9 +944,9 @@ ingressplanner.ui = new (function() {
 
                     var name = color;
 
-                    if (typeof plan.colors[color] != 'undefined')
+                    if (typeof analysis.colors[color] != 'undefined')
                     {
-                        name = plan.colors[color];
+                        name = analysis.colors[color];
                     }
 
                     $filter.append(
@@ -1087,6 +1087,7 @@ ingressplanner.ui = new (function() {
         $.each(previewSequence, function(sequenceIdx, planIDX) {
 
             var step = plan.steps[planIDX];
+            var stepAnalysis = analysis.steps[planIDX];
 
             step.sequenceIdx = sequenceIdx;
 
@@ -1123,7 +1124,7 @@ ingressplanner.ui = new (function() {
                 });
             }
 
-            $.each(step.analysis.actions, function(actionIdx, action) {
+            $.each(stepAnalysis.actions, function(actionIdx, action) {
 
                 switch (action.type)
                 {
@@ -1164,7 +1165,7 @@ ingressplanner.ui = new (function() {
                 preview.steps[sequenceIdx].links.push([step.portals,true]);
                 links.push([step.portals,false]);
 
-                $.each(step.analysis.infos, function(infoIdx, info) {
+                $.each(stepAnalysis.infos, function(infoIdx, info) {
                     if (info.type=='fields')
                     {
                         $.each(['createdFields','wastedFields'], function(whichIdx, which) {
@@ -1210,7 +1211,7 @@ ingressplanner.ui = new (function() {
 
             var crosslinks = [];
 
-            $.each(step.analysis.errors, function(errorIdx, error) {
+            $.each(stepAnalysis.errors, function(errorIdx, error) {
                  
                  switch (error.type)
                  {
@@ -1271,7 +1272,7 @@ ingressplanner.ui = new (function() {
                 }
                     
 
-                $.each(step.analysis.portalsState, function(index, portalState) {
+                $.each(stepAnalysis.portalsState, function(index, portalState) {
 
                     if (typeof preview.steps[backIdx].portals[portalState.llstring] == 'undefined')
                     {
@@ -1308,7 +1309,7 @@ ingressplanner.ui = new (function() {
 
         });
 
-        $.each(plan.Portals, function(llstring, portalState) {
+        $.each(analysis.Portals, function(llstring, portalState) {
 
             for (var backIdx = previewSequence.length-1; backIdx >= 0; backIdx--)
             {
@@ -1866,7 +1867,9 @@ ingressplanner.ui = new (function() {
 
             var revBtnClass = null;
 
-            $.each(step.analysis.infos, function(index, info) {
+            var stepAnalysis = analysis.steps[planIDX];
+
+            $.each(stepAnalysis.infos, function(index, info) {
                 switch(info.type)
                 {
                     case 'link-done':
@@ -1898,10 +1901,10 @@ ingressplanner.ui = new (function() {
             var APTD = $('<td>');
             var stepAP = 0;
 
-            if (step.analysis.aprewards.length)
+            if (stepAnalysis.aprewards.length)
             {
-                APTD.data('aprewards',step.analysis.aprewards).addClass('aprewards');
-                $.each(step.analysis.aprewards, function(index, apreward) {
+                APTD.data('aprewards',stepAnalysis.aprewards).addClass('aprewards');
+                $.each(stepAnalysis.aprewards, function(index, apreward) {
                      stepAP += apreward.value * apreward.qty
                 });
                 APTD.html(stepAP.toLocaleString());
@@ -1945,7 +1948,7 @@ ingressplanner.ui = new (function() {
 
             var animStep = true;
 
-            var fromPortal = step.analysis.portalsState[0];
+            var fromPortal = stepAnalysis.portalsState[0];
 
             fromPortal.name = fromPortal.llstring;
 
@@ -1981,7 +1984,7 @@ ingressplanner.ui = new (function() {
                     nothingtodo = false;
                 }
 
-                toPortal = step.analysis.portalsState[1];
+                toPortal = stepAnalysis.portalsState[1];
                 toPortal.name = toPortal.llstring;
 
 	            toPortalTD = portalTDHTML(toPortal,playerTeam).attr('data-pll',stepPortals[1]);
@@ -1999,7 +2002,7 @@ ingressplanner.ui = new (function() {
 
 	            var tdActions = Object.keys(todo);
 
-	            $.each(step.analysis.actions, function(actionIDX, action) {
+	            $.each(stepAnalysis.actions, function(actionIDX, action) {
 
 	            	if (tdActions.indexOf(action.type)!=-1)
 	            	{
@@ -2200,7 +2203,7 @@ ingressplanner.ui = new (function() {
 
                 }
 
-	            $.each(step.analysis.errors, function(index, error) {
+	            $.each(stepAnalysis.errors, function(index, error) {
 
 	                switch(error.type)
 	                {
@@ -2379,7 +2382,7 @@ ingressplanner.ui = new (function() {
             	TypeText.prepend(prepToType);
             }
 
-            $.each(step.analysis.warnings, function(index, warning) {
+            $.each(stepAnalysis.warnings, function(index, warning) {
                 switch(warning.type)
                 {
                 	case 'linksOut':
@@ -2426,9 +2429,9 @@ ingressplanner.ui = new (function() {
                 	{
 	            		// keys situation before th visit
 	            		var available = 
-	            			step.analysis.portalsState[1].keys 
-	            			+ step.analysis.portalsState[1].keysFarmed 
-	            			- step.analysis.portalsState[1].keysUsed 
+	            			stepAnalysis.portalsState[1].keys 
+	            			+ stepAnalysis.portalsState[1].keysFarmed 
+	            			- stepAnalysis.portalsState[1].keysUsed 
 	            			//  after the link
 	            			- 1
 	            		;
@@ -2560,7 +2563,7 @@ ingressplanner.ui = new (function() {
                 tabIcon = 'ok';
             }
 
-            if (step.analysis.errors.length)
+            if (stepAnalysis.errors.length)
             {
                 tabIcon = 'warning-sign';
             }
@@ -2761,7 +2764,7 @@ ingressplanner.ui = new (function() {
         if (!plan.options.planKeyFarming)
         {
 
-            var keyPortals = $.map(plan.Portals, function(portal) {
+            var keyPortals = $.map(analysis.Portals, function(portal) {
                 if (portal.linksIn)
                 {
                     var title = ingressplanner.gameworld.hashToNames(portal.llstring);
@@ -3838,10 +3841,11 @@ ingressplanner.ui = new (function() {
 
 		},
 
-		refreshPlan: function(_plan,_playerTeam) {
+		refreshPlan: function(_plan,_playerTeam,_analysis) {
 
 			plan = _plan;
-			playerTeam = _playerTeam;
+            playerTeam = _playerTeam;
+			analysis = _analysis;
 
 			setPlanOptions()
 			buildPortalsTable();

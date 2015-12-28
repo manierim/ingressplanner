@@ -947,6 +947,26 @@ ingressplanner = new (function() {
 							// property name chenged from cfg to options during development, dev plans might have plan.cfg...
 							delete plan.cfg;
 
+							// legacy plan properties removal
+							delete plan.Portals;
+							delete plan.colors;
+							delete plan.result;
+
+							// flag and remove bad steps and legacy steps properties
+							plan.steps = $.map(plan.steps, function(step,planIDX) {
+								var stepPortals = step.portals.split('|');
+								if (stepPortals.length==2 && stepPortals[0]==stepPortals[1])
+								{
+									// this is an undetected error, a link with same origin and detsination
+									ingressplanner.warn('Step',planIDX,'is a "false" link and will be removed',step);
+									return null;
+								}
+								delete step.actionType;
+								delete step.analysis;
+								delete step.sequenceIdx;
+								return step;
+							});
+
 							loadAndAnalyzePlan(plan,true,false);
 
 							ingressplanner.iitc.sendMessage('center-drawing');
@@ -1092,11 +1112,11 @@ ingressplanner = new (function() {
 
 //		ingressplanner.group('plan.analyze');
 
-		var planAnalyzed = ingressplanner.plan.analyze(lastPlan, playerTeam, opponentTeam);
+		var analysis = ingressplanner.plan.analyze(lastPlan, playerTeam, opponentTeam);
 
 //		ingressplanner.groupEnd();
 
-		ingressplanner.ui.refreshPlan(lastPlan,playerTeam);
+		ingressplanner.ui.refreshPlan(lastPlan,playerTeam,analysis);
 
 	};
 
