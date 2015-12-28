@@ -233,6 +233,21 @@ ingressplanner = new (function() {
 		callback(plan);
 	}
 
+	function importPlanJson(planJson,planName)
+	{
+        bootbox.prompt({
+          title: "Name of the imported Plan?",
+          value: planName,
+          callback: function(name) {
+            if (name !== null) 
+            {
+                ingressplanner.gdrive.new(name,JSON.parse(planJson));
+            }
+          }
+        });
+
+	}
+
 	// wrapper to converter for previous versiones plan formats
 	function planConvertFrom(from,data,callback)
 	{
@@ -465,11 +480,22 @@ ingressplanner = new (function() {
 				switch (event)
 				{
 
+					case 'exportPlan':
+						$('#jsonDownload').remove();
+			            var blob = new Blob([JSON.stringify(lastPlan)], {'type':'text/plain'});
+			            var pom = $('<a>').attr({
+			                id:         'jsonDownload',
+			                href:       window.URL.createObjectURL(blob),
+			                download:   cfg.currentPlan + '-IPPlan.txt'
+			            });
+			            pom[0].click();
+						break;
+
 					case 'exportPlanDrawing':
-						$('#drawingDownload').remove();
+						$('#jsonDownload').remove();
 			            var blob = new Blob([JSON.stringify(ingressplanner.plan.iitcDrawing(lastPlan,true))], {'type':'text/plain'});
 			            var pom = $('<a>').attr({
-			                id:         'drawingDownload',
+			                id:         'jsonDownload',
 			                href:       window.URL.createObjectURL(blob),
 			                download:   cfg.currentPlan + '-IITCDrawTools.txt'
 			            });
@@ -848,6 +874,36 @@ ingressplanner = new (function() {
 						{
 							ingressplanner.ui.drawPlansList(plans);
 						}
+						break;
+
+					case 'importPlanText':
+						bootbox.prompt('Paste the JSON text of the plan', function(text) {                
+						  if (text) {                                             
+						    importPlanJson(text,'');
+						  }
+						});
+						break;
+
+					case 'importPlan':
+
+						var reader = new FileReader();
+
+						reader.onload = function(e) {
+
+							var origPlanName = null;
+
+							var suffPos = payload.file.name.indexOf('-IPPlan.txt');
+
+							if (suffPos!=-1)
+							{
+								origPlanName = payload.file.name.substr(0,suffPos);
+							}
+
+							importPlanJson(reader.result,origPlanName);
+
+						}
+						reader.readAsText(payload.file);
+
 						break;
 
 					case 'newPlan':

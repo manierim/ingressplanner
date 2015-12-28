@@ -14,6 +14,10 @@ $this->div(
                 'title'     => 'Drawing',
                 'view'      => 'drawingexport',
             ),
+            'planExportTab' => array(
+                'title'     => 'Plan',
+                'view'      => 'planexport',
+            ),
         )
     )
 )

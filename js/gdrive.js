@@ -758,6 +758,7 @@ ingressplanner.gdrive = new (function() {
 
             if (
                 from
+                && typeof from == 'string'
                 && typeof plans[from] != 'undefined'
             )
             {
@@ -782,6 +783,10 @@ ingressplanner.gdrive = new (function() {
                     }
                     
                 });
+            }
+            else if (from && typeof from == 'object')
+            {
+                writenewplan(planName,from);
             }
             else
             {

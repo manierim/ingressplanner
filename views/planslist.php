@@ -19,5 +19,8 @@ $this->div(
         . $this->tag('tbody')
     )
     . $this->button('New', array('class'=>'btn-primary','id'=>'newPlan'))
+    . '&nbsp;&nbsp;' . $this->button('Import from IPPlan.txt file', array('id'=>'importPlanFile'))
+    . $this->tag('input', array('id'=>'importPlanFileControl', 'type'=>'file', 'style' => 'display: none; '))
+    . '&nbsp;&nbsp;' . $this->button('Import from pasted text', array('id'=>'importPlanText'))
 )
 ;

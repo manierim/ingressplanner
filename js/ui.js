@@ -63,6 +63,7 @@ ingressplanner.ui = new (function() {
 	var todoListContainer = $('#todoList');
 
     var exportDrwToFileButton = $("#exportDrwToFile");
+    var exportPlanToFileButton = $("#exportPlanToFile");
 
 	var noplanactivewarning = $('.noplanactivewarning');
 
@@ -339,9 +340,10 @@ ingressplanner.ui = new (function() {
         $('.cp-popover-container').popover('destroy').remove();
 	}
 
-    function setDrawingJSON()
+    function setJSONs()
     {
         $('#drawingJSON').html(JSON.stringify(ingressplanner.plan.iitcDrawing(plan,true)));
+        $('#planJSON').html(JSON.stringify(plan));
     }
 
 	function setPlanOptions()
@@ -2867,6 +2869,28 @@ ingressplanner.ui = new (function() {
                 return false;
             });
 
+            exportPlanToFileButton.on('click', function() {
+                eventHandler('exportPlan');
+                return false;
+            });
+
+            $("#importPlanText").on('click', function() {
+                eventHandler('importPlanText');
+            });
+
+            $("#importPlanFile").on('click', function() {
+                $('#importPlanFileControl').click();
+            });
+
+            $('#importPlanFileControl').on('change',function() {
+                if ($(this).val())
+                {
+                    eventHandler('importPlan',{file:this.files[0]});
+                }
+            })
+
+
+
             $('body')
 
                 .on('shown.bs.modal', '#planPreviewModal',function (event) {
@@ -2898,6 +2922,13 @@ ingressplanner.ui = new (function() {
                     $('#importIngraphControl').click();
                 })
 
+                .on('change','#importIngraphControl',function() {
+                    if ($(this).val())
+                    {
+                        eventHandler('importIngraph',{file:this.files[0],color:$('#iGColor').val(),type:$('[name=iGimportType]').val()});
+                    }
+                })
+
                 .on('change','[name="iGsource"]',function() {
                     var selectedSource = $('[name="iGsource"]:checked').val();
                     $('.iGSelection').each(function() {
@@ -2919,13 +2950,6 @@ ingressplanner.ui = new (function() {
                     else
                     {
                         $('#importIngraphBtn').prop('disabled','disabled');
-                    }
-                })
-
-                .on('change','#importIngraphControl',function() {
-                    if ($(this).val())
-                    {
-                        eventHandler('importIngraph',{file:this.files[0],color:$('#iGColor').val(),type:$('[name=iGimportType]').val()});
                     }
                 })
 
@@ -3854,7 +3878,7 @@ ingressplanner.ui = new (function() {
             buildRanges();
 
             refreshFilters();
-            setDrawingJSON();
+            setJSONs();
 
 		},
 
