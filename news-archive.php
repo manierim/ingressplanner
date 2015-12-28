@@ -4,6 +4,15 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Dec. 29, 2015',
+        'version'   => '2.0.5',
+        'body' => array(
+            'New export formats: IITC drawing & Ingress Planner Plan.',
+            'Plans can now be imported from files / pasted text.',
+        ),
+    ),
+
+    array(
         'date'      => 'Dec. 28, 2015',
         'version'   => '2.0.4',
         'body' => array(
@@ -33,6 +42,7 @@ $news = array(
         ),
     ),
 
+/*
     array(
         'date'      => 'Dec. 19, 2015',
         'version'   => '2.0.2c',
@@ -41,7 +51,6 @@ $news = array(
         ),
     ),
 
-/*
     array(
         'date'      => 'Dec. 15, 2015',
         'version'   => '2.0.2b',
