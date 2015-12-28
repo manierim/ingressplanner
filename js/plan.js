@@ -862,7 +862,6 @@ ingressplanner.plan = new (function() {
 
 		});
 
-console.debug('analysis',analysis);
 		return analysis;
 
 	}
@@ -882,13 +881,24 @@ console.debug('analysis',analysis);
 		},
 
 		// will parse a plan and return the IITC draw tool drawing object representing it
-		iitcDrawing: function(plan)
+		iitcDrawing: function(plan,isExport)
 		{
 
 			var iitcDrawing = [];
 			var color = defaultColor;
 
-			if (typeof plan.ranges !='undefined')
+			if (typeof isExport == 'undefined')
+			{
+				isExport = false;
+			}
+
+			if (
+				typeof plan.ranges !='undefined' &&
+				(
+					(!isExport)
+					|| plan.options.drawingExportRanges
+				)
+			)
 			{
 				$.each(plan.ranges, function(index, drawItem) {
 					switch (drawItem.type)
@@ -923,10 +933,16 @@ console.debug('analysis',analysis);
 
 					case 'portal':
 					case 'reverse':
-						drawItem = {
-							type: 'marker',
-							latLng: ingressplanner.utils.llobject(item.portals)
-						};
+						if (
+							(!isExport)
+							|| plan.options.drawingExportMarkers
+						)
+						{
+							drawItem = {
+								type: 'marker',
+								latLng: ingressplanner.utils.llobject(item.portals)
+							};
+						}
 						break;
 
 					case 'link':
@@ -964,7 +980,10 @@ console.debug('analysis',analysis);
 
 					drawItem.color = color;
 
-					plan.steps[index].drawingIdx = iitcDrawing.length;
+					if (!isExport)
+					{
+						plan.steps[index].drawingIdx = iitcDrawing.length;
+					}
 
 					iitcDrawing.push(drawItem);
 

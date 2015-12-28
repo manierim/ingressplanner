@@ -19,11 +19,5 @@ $this->div(
         . $this->tag('tbody')
     )
     . $this->button('New', array('class'=>'btn-primary','id'=>'newPlan'))
-    . '<br>' . '<br>' . $this->button(
-        'Export current drawing to text file',
-        array(
-            'id'    => 'exportDrwToFile',
-        )
-    )
 )
 ;

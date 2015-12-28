@@ -110,7 +110,6 @@ ingressplanner.ui = new (function() {
 	function unactivePlan()
 	{
 		plansListBody.find('tr.success').removeClass('success');
-		exportDrwToFileButton.hide();
 		noplanactivewarning.show();
 		resizeScrollable();
 	};
@@ -340,8 +339,14 @@ ingressplanner.ui = new (function() {
         $('.cp-popover-container').popover('destroy').remove();
 	}
 
+    function setDrawingJSON()
+    {
+        $('#drawingJSON').html(JSON.stringify(ingressplanner.plan.iitcDrawing(plan,true)));
+    }
+
 	function setPlanOptions()
 	{
+
 		$.each(plan.options, function(option, value) {
 
             $('select[name="'+option+'"].planoption, input[name="'+option+'"].planoption').each(function(index, el) {
@@ -2799,7 +2804,6 @@ ingressplanner.ui = new (function() {
             }
         }
 
-
         buildTextuals(todolines,textualInfo);
 
         stepsListBody.find('.colorbox').each(function(index) {
@@ -2857,6 +2861,11 @@ ingressplanner.ui = new (function() {
             preview.layers.links.addTo(preview.map);
             preview.layers.fields.addTo(preview.map);
             preview.layers.blockings.addTo(preview.map);
+
+            exportDrwToFileButton.on('click', function() {
+                eventHandler('exportPlanDrawing');
+                return false;
+            });
 
             $('body')
 
@@ -3156,12 +3165,6 @@ ingressplanner.ui = new (function() {
                 }
 
             };
-
-            exportDrwToFileButton.hide();
-            exportDrwToFileButton.on('click', function() {
-                eventHandler('exportPlanDrawing');
-                return false;
-            });
 
             ingressplanner.ui.clearMlResults();
 
@@ -3760,7 +3763,6 @@ ingressplanner.ui = new (function() {
 			if (active)
 			{
 				document.title =  active + ' | ' + about.productname;
-				exportDrwToFileButton.show();
 				noplanactivewarning.hide();
 				resizeScrollable();
 			}
@@ -3840,7 +3842,6 @@ ingressplanner.ui = new (function() {
 			sortTable($('#plansTableDiv'));
 
 		},
-
 		refreshPlan: function(_plan,_playerTeam,_analysis) {
 
 			plan = _plan;
@@ -3853,6 +3854,7 @@ ingressplanner.ui = new (function() {
             buildRanges();
 
             refreshFilters();
+            setDrawingJSON();
 
 		},
 

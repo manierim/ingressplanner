@@ -10,6 +10,10 @@ $this->div(
                 'title'     => 'Textual',
                 'view'      => 'textexport',
             ),
+            'drawingExportTab' => array(
+                'title'     => 'Drawing',
+                'view'      => 'drawingexport',
+            ),
         )
     )
 )

@@ -24,6 +24,8 @@ ingressplanner = new (function() {
 		textualPlanAddLinks: true,
 		textualPlanAddLinksMinDistance: 100,
 		textualPlanAddLinksType: 'gmap',
+		drawingExportMarkers: true,
+		drawingExportRanges: true,
 	};
 
 	// store current player team
@@ -462,6 +464,17 @@ ingressplanner = new (function() {
 			case 'ui':
 				switch (event)
 				{
+
+					case 'exportPlanDrawing':
+						$('#drawingDownload').remove();
+			            var blob = new Blob([JSON.stringify(ingressplanner.plan.iitcDrawing(lastPlan,true))], {'type':'text/plain'});
+			            var pom = $('<a>').attr({
+			                id:         'drawingDownload',
+			                href:       window.URL.createObjectURL(blob),
+			                download:   cfg.currentPlan + '-IITCDrawTools.txt'
+			            });
+			            pom[0].click();
+						break;
 
 					case 'swapportals':
 
