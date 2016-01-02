@@ -414,7 +414,7 @@ ingressplanner.ui = new (function() {
 
                         if (time[0]>=60)
                         {
-                            time.unshift(Math.floor(time/60) ,':');
+                            time.unshift(Math.floor(time[0]/60) ,'h ');
                             time[2] = time[2] % 60;
                         }
 
