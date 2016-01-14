@@ -4,6 +4,14 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Jan. 14, 2016',
+        'version'   => '2.0.6',
+        'body' => array(
+            'Backend data storage is now SQLite instead of JSON files (no more URL shortener issues).',
+        ),
+    ),
+
+    array(
         'date'      => 'Dec. 29, 2015',
         'version'   => '2.0.5',
         'body' => array(
@@ -28,6 +36,7 @@ $news = array(
         ),
     ),
 
+/*
     array(
         'date'      => 'Dec. 20, 2015',
         'version'   => '2.0.3',
@@ -42,7 +51,6 @@ $news = array(
         ),
     ),
 
-/*
     array(
         'date'      => 'Dec. 19, 2015',
         'version'   => '2.0.2c',

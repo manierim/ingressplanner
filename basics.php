@@ -74,7 +74,6 @@ if (!$existed)
 		$stmt->bindParam(':optin', $optin);
 
 		$fieldsMap = array(
-//			'nickname' 			=> 'nickname',
 			'team' 				=> 'team',
 			'level' 			=> 'level',
 			'last_time_seen' 	=> 'lastseen',
@@ -123,9 +122,6 @@ if (!$existed)
 				$errors++;
 			}
 		}
-
-//		unlink($AGENTSLOG);
-
 	}
 
 	$db->exec('INSERT INTO "config" values ("agentsSince","'.$agents_since->getTimestamp().'")');
@@ -156,8 +152,6 @@ if (!$existed)
 
 			));
 		}
-
-//		unlink($SHORTURLSDB);
 	}
 
 }
