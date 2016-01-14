@@ -1,40 +1,22 @@
 <?php
 
-$anonymous = 0;
+$anonymous = $agents['anonyms']['count'];
 
 $optedin = array();
 
 if (!empty($agents)) {
     $now = new DateTime();
-    usort(
-        $agents,
-        function ($agent1, $agent2) {
+    foreach ($agents['optin'] as $agent) {
 
-            $a = new DateTime($agent1['last_time_seen']['date'], new DateTimeZone($agent1['last_time_seen']['timezone']));
-            $b = new DateTime($agent2['last_time_seen']['date'], new DateTimeZone($agent2['last_time_seen']['timezone']));
+        $date = new DateTime('@'.$agent['last_time_seen']);
 
-            if ($a == $b) {
-                return 0;
-            }
-            return ($a > $b) ? -1 : 1;
-        }
-    );
+        $interval = $now->diff($date);
 
-    foreach ($agents as $agent) {
-
-        if (empty($agent['opt-in']) or ($agent['opt-in']!='true')) {
-            $anonymous++;
-        } else {
-            $date = new DateTime($agent['last_time_seen']['date'], new DateTimeZone($agent['last_time_seen']['timezone']));
-
-            $interval = $now->diff($date);
-
-            $optedin[] = $this->tag(
-                'span',
-                array('class'=>'team-'.$agent['team'],'title'=>'L'.$agent['level'] . ', last seen ' . $interval->format('%a days ago')),
-                htmlentities($agent['nickname'])
-            );
-        }
+        $optedin[] = $this->tag(
+            'span',
+            array('class'=>'team-'.$agent['team'],'title'=>'L'.$agent['level'] . ', last seen ' . $interval->format('%a days ago')),
+            htmlentities($agent['nickname'])
+        );
     }
 
 }
@@ -42,7 +24,8 @@ if (!empty($agents)) {
 $since = '';
 
 if (!empty($agents_since)) {
-    $since = '&nbsp;' . $this->tag('small', '(since ' . $agents_since->format('F jS, Y').')');
+    $agents_sinceDT = new DateTime('@'.$agents_since);
+    $since = '&nbsp;' . $this->tag('small', '(since ' . $agents_sinceDT->format('F jS, Y').')');
 }
 
 $text = array();
@@ -69,7 +52,7 @@ echo $this->div(
         'container',
         $this->tag(
             'h2',
-            count($agents) . ' agents have been using ' . PRODUCTNAME . $since . ':'
+            count($agents['optin']) + $anonymous . ' agents have been using ' . PRODUCTNAME . $since . ':'
         )
         . $this->tag('p', $text)
     )

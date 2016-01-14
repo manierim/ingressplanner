@@ -11,7 +11,7 @@ $html = new Helpers\HtmlHelper;
 require 'basics.php';
 
 $optIn = null;
-
+die('check and rewrite');
 if (isset($agents[$_REQUEST['nickname']]) && isset($agents[$_REQUEST['nickname']]['opt-in'])) {
     $optIn = $agents[$_REQUEST['nickname']]['opt-in'];
 }
