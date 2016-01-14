@@ -45,12 +45,20 @@ if (!$existed)
 		)'
 	);
 
+	$agents_since = new DateTime();
 	$total = $saved = $errors = 0;
 
 	$AGENTSLOG = 'agentslog.json';
+
 	if (is_file($AGENTSLOG))
 	{
+
 		$content = json_decode(file_get_contents($AGENTSLOG),true);
+
+		if (!empty($content['agents_since']))
+		{
+			$agents_since = new DateTime($content['agents_since']['date'], new DateTimeZone($content['agents_since']['timezone']));
+		}
 
 		$stmt = $db->prepare('
 			INSERT INTO "agents"
@@ -116,22 +124,45 @@ if (!$existed)
 			}
 		}
 
-		$agents_since = new DateTime();
-
-		if (!empty($content['agents_since']))
-		{
-			$agents_since = new DateTime($content['agents_since']['date'], new DateTimeZone($content['agents_since']['timezone']));
-		}
-
-		$db->exec('INSERT INTO "config" values ("agentsSince","'.$agents_since->getTimestamp().'")');
+//		unlink($AGENTSLOG);
 
 	}
 
-// unlink($AGENTSLOG);
+	$db->exec('INSERT INTO "config" values ("agentsSince","'.$agents_since->getTimestamp().'")');
+
+	$db->exec('
+		CREATE TABLE shorturls (
+		    short    TEXT PRIMARY KEY
+		                  NOT NULL
+		                  UNIQUE,
+		    extended TEXT UNIQUE
+		                  NOT NULL
+		);
+	');
+
+	$SHORTURLSDB = 'shortURLs.json';
+	if (is_file($SHORTURLSDB))
+	{
+		$stmt = $db->prepare('
+			INSERT INTO "shorturls"
+			("short", "extended") 
+			values 
+			(:short, :extended)
+		');
+		foreach (json_decode(file_get_contents($SHORTURLSDB), true) as $short => $extended) {
+			$stmt->execute(array(
+				':short' 	=> $short,
+				':extended' => $extended,
+
+			));
+		}
+
+//		unlink($SHORTURLSDB);
+	}
 
 }
 
-$stmt = $db->prepare('SELECT * from "agents" where "opt-in" = "true" order by "lat_time_seen" desc');
+$stmt = $db->prepare('SELECT * from "agents" where "opt-in" = "true" order by "last_time_seen" desc');
 $stmt->execute();
 
 $agents = array(
@@ -147,19 +178,54 @@ $stmt->execute();
 $agents_since = $stmt->fetch(PDO::FETCH_ASSOC);
 $agents_since = $agents_since['value'];
 
-function save_agents()
+function save_agent($agentPostData)
 {
-	global $agents, $agents_since;
-	
-	if (!is_file(AGENTSLOG))
+
+	global $db;
+
+	$lastseen = time();
+	$nickname = $agentPostData['nickname'];
+	$team = $agentPostData['team'];
+	$level = $agentPostData['level'];
+
+	$optIn = null;
+
+	if (isset($agentPostData['opt-in']))
 	{
-		$agents_since = new DateTime();
+		$optIn = $agentPostData['opt-in'];
+	}
+	else
+	{
+		$stmt = $db->prepare('SELECT "opt-in" from "agents" where "nickname" = :nickname');
+		$stmt->execute(array(':nickname'=>$nickname));
+		if ($agentDB = $stmt->fetch(PDO::FETCH_ASSOC))
+		{
+			$optIn = $agentDB['opt-in'];
+		}
 	}
 
-	file_put_contents(AGENTSLOG, json_encode(compact(
-		'agents',
-		'agents_since'
-	)));
+	$stmt = $db->prepare('
+		INSERT OR REPLACE INTO "agents"
+		("nickname", "team", "level", "last_time_seen", "opt-in") 
+		values 
+		(:nickname, :team, :level, :lastseen, :optin)
+	');
+
+	$stmt->execute(array(
+		':nickname'	=> $nickname,
+		':team'		=> $team,
+		':level'	=> $level,
+		':lastseen'	=> $lastseen,
+		':optin'	=> $optIn,
+	));
+
+	return array(
+		'nickname'	=> $nickname,
+		'team'		=> $team,
+		'level'		=> $level,
+		'last_time_seen' => $lastseen,
+		'opt-in' => $optIn,
+	);
 }
 
 

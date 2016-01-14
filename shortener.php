@@ -9,39 +9,32 @@ require 'htmlHelper.php';
 $html = new Helpers\HtmlHelper;
 
 require 'basics.php';
-define('SHORTURLSDB', 'shortURLs.json');
-define('SHORTURLSLOCK', 'shortURLs.lock');
-
-$urls = array();
-
-while (is_file(SHORTURLSLOCK)) {
-    usleep(500);
-}
-
-if (is_file(SHORTURLSDB)) {
-    $urls = json_decode(file_get_contents(SHORTURLSDB), true);
-}
-
-if (empty($urls)) {
-    $urls = array();
-}
 
 if (isset($_REQUEST['extendedUrl'])) {
-    $shorturl = array_search($_REQUEST['extendedUrl'], $urls);
-    if (!$shorturl) {
 
-        while (is_file(SHORTURLSLOCK)) {
-            usleep(500);
-        }
-
-        touch(SHORTURLSLOCK);
+    $stmt = $db->prepare('SELECT * from "shorturls" where "extended" = :extended');
+    $stmt->execute(array(':extended'=>$_REQUEST['extendedUrl']));
+    if (!$shorturl = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        $stmt = $db->prepare('SELECT * from "shorturls" where "short" = :short');
         do {
             $shorturl = substr(str_shuffle("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 6);
-        } while (isset($urls[$shorturl]));
+            $stmt->execute(array(':short'=>$shorturl));
+        } while ($stmt->fetch(\PDO::FETCH_ASSOC));
 
-        $urls[$shorturl] = $_REQUEST['extendedUrl'];
-        file_put_contents(SHORTURLSDB, json_encode($urls));
-        unlink(SHORTURLSLOCK);
+        $stmt = $db->prepare('
+            INSERT INTO "shorturls"
+            ("short", "extended") 
+            values 
+            (:short, :extended)
+        ');
+        $stmt->execute(array(
+            ':short'    => $shorturl,
+            ':extended' => $_REQUEST['extendedUrl'],
+        ));
+    }
+    else
+    {
+        $shorturl = $shorturl['short'];
     }
     $path = str_replace('shortener.php', '', $_SERVER['REQUEST_URI']);
     header('Content-Type: application/json');
@@ -51,9 +44,13 @@ if (isset($_REQUEST['extendedUrl'])) {
 }
 
 if (isset($_REQUEST['shorturl'])) {
-    if (isset($urls[$_REQUEST['shorturl']])) {
+
+    $stmt = $db->prepare('SELECT * from "shorturls" where "short" = :short');
+    $stmt->execute(array(':short'=>$_REQUEST['shorturl']));
+
+    if ($shorturl = $stmt->fetch(\PDO::FETCH_ASSOC)) {
         header('HTTP/ 308 Expansion Redirect');
-        header('location: ' . $urls[$_REQUEST['shorturl']]);
+        header('location: ' . $shorturl['extended']);
         die();
     } else {
         header('HTTP/ 400 Invalid token ' . $_REQUEST['shorturl']);

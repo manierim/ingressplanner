@@ -10,21 +10,4 @@ $html = new Helpers\HtmlHelper;
 
 require 'basics.php';
 
-$optIn = null;
-die('check and rewrite');
-if (isset($agents[$_REQUEST['nickname']]) && isset($agents[$_REQUEST['nickname']]['opt-in'])) {
-    $optIn = $agents[$_REQUEST['nickname']]['opt-in'];
-}
-
-$agents[$_REQUEST['nickname']] = $_REQUEST;
-
-$agents[$_REQUEST['nickname']]['nickname'] = $_REQUEST['nickname'];
-$agents[$_REQUEST['nickname']]['last_time_seen'] = new \DateTime();
-
-if (!isset($_REQUEST['opt-in'])) {
-    $agents[$_REQUEST['nickname']]['opt-in'] = $optIn;
-}
-
-\save_agents();
-
-echo json_encode($agents[$_REQUEST['nickname']]);
+echo json_encode(\save_agent($_REQUEST));
