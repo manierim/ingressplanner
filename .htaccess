@@ -7,6 +7,11 @@
     Deny from all
 </Files>
 
+<Files "*.sqlite">
+    Order deny,allow
+    Deny from all
+</Files>
+
 <Files "*.sh">
     Order deny,allow
     Deny from all
