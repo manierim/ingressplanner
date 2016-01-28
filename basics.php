@@ -156,6 +156,9 @@ if (!$existed)
 
 }
 
+ini_set('session.save_handler', 'redis');
+ini_set('session.save_path', 'tcp://localhost:6379');
+
 $stmt = $db->prepare('SELECT * from "agents" where "opt-in" = "true" order by "last_time_seen" desc');
 $stmt->execute();
 
@@ -174,6 +177,7 @@ $agents_since = $agents_since['value'];
 
 function save_agent($agentPostData)
 {
+	session_start();
 
 	global $db;
 
@@ -213,13 +217,15 @@ function save_agent($agentPostData)
 		':optin'	=> $optIn,
 	));
 
-	return array(
-		'nickname'	=> $nickname,
-		'team'		=> $team,
-		'level'		=> $level,
+	$_SESSION['agent'] = array(
+		'nickname'		 => $nickname,
+		'team'			 => $team,
+		'level'			 => $level,
 		'last_time_seen' => $lastseen,
-		'opt-in' => $optIn,
+		'opt-in' 		 => $optIn,
 	);
+
+	return $_SESSION['agent'];
 }
 
 
