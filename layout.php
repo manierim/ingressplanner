@@ -11,21 +11,16 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/<?= LIB_BOOTSTRAP_VERS ?>/css/bootstrap.min.css" integrity="<?= LIB_BOOTSTRAP_CSS_INTEGRITY ?>" crossorigin="anonymous" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/<?= LIB_BOOTSTRAP_VERS ?>/css/bootstrap-theme.min.css" integrity="<?= LIB_BOOTSTRAP_CSS_THEME_INTEGRITY ?>" crossorigin="anonymous" rel="stylesheet">
 
-    <!-- Color Picker Sliders -->
-    <link href="css/bootstrap.colorpickersliders.min.css" rel="stylesheet">
+<?php 
 
-    <!-- Awesome Bootstrap Checkbox -->
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="css/awesome-bootstrap-checkbox.css" rel="stylesheet">
+if (!empty($additionalassetts['css']))
+{
+    foreach ($additionalassetts['css'] as $css) {
+        echo $html->tag('link',array('href'=>$css,'rel'=>'stylesheet'));
+    }
+}
 
-    <!-- Leaflet -->
-    <link rel="stylesheet" href="css/leaflet.css" />
-
-    <!-- leaflet.label -->
-    <link rel="stylesheet" href="css/leaflet.label.css" />
-
-    <!-- Site -->
-    <link href="css/main.css" rel="stylesheet">
+?>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,15 +30,17 @@
     <![endif]-->
   </head>
   <body style="overflow: hidden; ">
+<?php 
 
-  <?php echo $content; ?>
+echo $content;
 
-
-    <script type="text/javascript">
-    about = <?= json_encode(array('debug'=>DEBUG,'productname'=>PRODUCTNAME,'version'=>VERSION,'author'=>AUTHOR,'requiredPlugins'=>$requiredPlugins )) ?>;
-    about.site = window.location.href;
-    about.pluginVersion = <?= json_encode(PLUGINVERSION) ?>;
-    </script>
+if (!empty($additionalassetts['jsblocks']))
+{
+    foreach ($additionalassetts['jsblocks'] as $jsblock) {
+        echo $html->tag('script',array('type'=>'text/javascript'),$jsblock);
+    }
+}
+?>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/<?= LIB_JQUERY_VERS ?>/jquery.min.js"></script>
@@ -51,50 +48,17 @@
     <!-- Bootstrap -->
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/<?= LIB_BOOTSTRAP_VERS ?>/js/bootstrap.min.js" integrity="<?= LIB_BOOTSTRAP_JS_INTEGRITY ?>" crossorigin="anonymous"></script>
 
-    <!-- Bootbox.js -->
-    <script type="text/javascript" src="js/bootbox.min.js"></script>
 
-    <!-- Color Picker Sliders -->
-    <script type="text/javascript" src="js/tinycolor-min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.colorpickersliders.nocielch.min.js"></script>
+<?php 
 
-    <!-- Leaflet -->
-    <script src="js/leaflet.js"></script>
+if (!empty($additionalassetts['scripts']))
+{
+    foreach ($additionalassetts['scripts'] as $script) {
+        echo $html->tag('script',array('src'=>$script,'type'=>'text/javascript'));
+    }
+}
 
-    <!-- Leaflet.label -->
-    <script src="js/leaflet.label.js"></script>
-
-    <!-- Leaflet.encoded -->
-    <script src="js/Polyline.encoded.js"></script>
-
-    <!-- Main App -->
-    <script type="text/javascript" src="js/ingressplanner.js"></script>
-    <script type="text/javascript" src="js/utils.js"></script>
-    <script type="text/javascript" src="js/iitc.js"></script>
-    <script type="text/javascript" src="js/plan.js"></script>
-    <script type="text/javascript" src="js/gameworld.js"></script>
-    <script type="text/javascript" src="js/gdrive.js"></script>
-    <script type="text/javascript" src="js/ui.js"></script>
-    <script type="text/javascript" src="js/aprewards.js"></script>
-    <script type="text/javascript" src="js/tools.js"></script>
-    <script type="text/javascript" src="js/router.js"></script>
-    <script type="text/javascript" src="js/shortener.js"></script>
-
-    <script type="text/javascript" src="https://apis.google.com/js/client.js?onload=gdriveClientLoad"></script>
-
- <?php if (!DEBUG) : ?>
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-58916725-1', 'auto');
-      ga('send', 'pageview');
-
-    </script>
-<?php endif; 
-      echo $jsbuffer;
+echo $jsbuffer;
 ?>
 
   </body>

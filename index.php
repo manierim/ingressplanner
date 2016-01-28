@@ -60,7 +60,77 @@ $requiredPlugins = array(
     ),
 );
 
-$content = $html->view('index', compact('requiredPlugins', 'agents', 'agents_since','news'));
+$additionalassetts = array(
+    'css' => array(
+        // Color Picker Sliders
+        'css/bootstrap.colorpickersliders.min.css',
+        // Awesome Bootstrap Checkbox
+        '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
+        'css/awesome-bootstrap-checkbox.css',
+        // Leaflet
+        'css/leaflet.css',
+        // leaflet.label
+        'css/leaflet.label.css',
+        // main site
+        'css/main.css',
+    ),
+    'scripts' => array(
+        // Bootbox.js
+        'js/bootbox.min.js',
+        // Color Picker Sliders
+        'js/tinycolor-min.js',
+        'js/bootstrap.colorpickersliders.nocielch.min.js',
+        // Leaflet
+        'js/leaflet.js',
+        // Leaflet.label
+        'js/leaflet.label.js',
+        // Polyline.encoded
+        'js/Polyline.encoded.js',
+        // Main App
+        'js/ingressplanner.js',
+        'js/utils.js',
+        'js/iitc.js',
+        'js/plan.js',
+        'js/gameworld.js',
+        'js/gdrive.js',
+        'js/ui.js',
+        'js/aprewards.js',
+        'js/tools.js',
+        'js/router.js',
+        'js/shortener.js',
+        // GDrive bootstrap
+        'https://apis.google.com/js/client.js?onload=gdriveClientLoad',
+    ),
+
+    'jsblocks' => array(
+        'about = ' . json_encode(array(
+            'debug'           => DEBUG,
+            'productname'     => PRODUCTNAME,
+            'version'         => VERSION,
+            'pluginVersion'   => PLUGINVERSION,
+            'author'          => AUTHOR,
+            'requiredPlugins' => $requiredPlugins,
+        )) . ';
+        about.site = window.location.href;',
+    )
+
+);
+
+if (!DEBUG)
+{
+    $additionalassetts['jsblocks'][] = '
+    (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
+
+      ga("create", "UA-58916725-1", "auto");
+      ga("send", "pageview");
+    ';
+}
+
+
+$content = $html->view('index', compact('additionalassetts','requiredPlugins', 'agents', 'agents_since','news'));
 $jsbuffer = $html->getJsBuffer();
 
 require 'layout.php';
