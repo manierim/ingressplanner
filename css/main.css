@@ -1,3 +1,7 @@
+body {
+	overflow: hidden;
+}
+
 @font-face {
   font-family: coda_regular;
   src: url('../fonts/coda_regular.ttf');

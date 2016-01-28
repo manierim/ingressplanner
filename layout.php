@@ -29,7 +29,7 @@ if (!empty($additionalassetts['css']))
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body style="overflow: hidden; ">
+  <body>
 <?php 
 
 echo $content;

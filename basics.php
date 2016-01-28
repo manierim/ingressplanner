@@ -5,6 +5,12 @@ ini_set('display_errors', DEBUG?'1':'0');
 date_default_timezone_set('Europe/Rome');
 
 define('PRODUCTNAME', 'Ingress Planner');
+define('LIB_JQUERY_VERS', '1.11.3');
+
+define('LIB_BOOTSTRAP_VERS', '3.3.5');
+define('LIB_BOOTSTRAP_JS_INTEGRITY', 'sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==');
+define('LIB_BOOTSTRAP_CSS_INTEGRITY', 'sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==');
+define('LIB_BOOTSTRAP_CSS_THEME_INTEGRITY', 'sha384-aUGj/X2zp5rLCbBxumKTCw2Z50WgIr1vs/PFN4praOTvYXWlVyh2UtNUU0KAUhAX');
 
 require 'news-archive.php';
 
