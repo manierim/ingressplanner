@@ -158,6 +158,7 @@ if (!$existed)
 
 ini_set('session.save_handler', 'redis');
 ini_set('session.save_path', 'tcp://localhost:6379');
+session_start();
 
 $stmt = $db->prepare('SELECT * from "agents" where "opt-in" = "true" order by "last_time_seen" desc');
 $stmt->execute();
@@ -177,7 +178,6 @@ $agents_since = $agents_since['value'];
 
 function save_agent($agentPostData)
 {
-	session_start();
 
 	global $db;
 
