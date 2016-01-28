@@ -309,12 +309,22 @@ class HtmlHelper
         }
 
         $attrsArray = $this->addItemtoAttribute($attrsArray, 'class', 'btn');
-        $attrsArray['type'] = 'button';
-        $attrsArray['value'] = $text;
+
+        if (!isset($attrsArray['href'])) {
+            $attrsArray['type'] = 'button';
+            $attrsArray['value'] = $text;
+            $tag = 'input';
+            $content = null;
+        } else {
+            $tag = 'a';
+            $content = $text;
+            $attrsArray['role'] = 'button';
+        }
 
         return $this->tag(
-            'input',
-            $attrsArray
+            $tag,
+            $attrsArray,
+            $content
         );
 
     }

@@ -10,4 +10,4 @@ $html = new Helpers\HtmlHelper;
 
 require 'basics.php';
 
-echo json_encode(\save_agent($_REQUEST));
+echo json_encode(\saveAgent($_REQUEST));
