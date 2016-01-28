@@ -53,6 +53,10 @@ $requiredPlugins = array(
     ),
 );
 
+$content = $html->view('index', compact('requiredPlugins', 'agents', 'agents_since', 'news'));
+
+$jsbuffer = $html->getJsBuffer();
+
 $additionalassetts = array(
     'css' => array(
         // Color Picker Sliders
@@ -96,21 +100,22 @@ $additionalassetts = array(
     ),
 
     'jsblocks' => array(
-        'about = ' . json_encode(array(
-            'debug'           => DEBUG,
-            'productname'     => PRODUCTNAME,
-            'version'         => VERSION,
-            'pluginVersion'   => PLUGINVERSION,
-            'author'          => AUTHOR,
-            'requiredPlugins' => $requiredPlugins,
-        )) . ';
+        'about = ' . json_encode(
+            array(
+                'debug'           => DEBUG,
+                'productname'     => PRODUCTNAME,
+                'version'         => VERSION,
+                'pluginVersion'   => PLUGINVERSION,
+                'author'          => AUTHOR,
+                'requiredPlugins' => $requiredPlugins,
+            )
+        ) . ';
         about.site = window.location.href;',
     )
 
 );
 
-if (!DEBUG)
-{
+if (!DEBUG) {
     $additionalassetts['jsblocks'][] = '
     (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -121,9 +126,5 @@ if (!DEBUG)
       ga("send", "pageview");
     ';
 }
-
-
-$content = $html->view('index', compact('additionalassetts','requiredPlugins', 'agents', 'agents_since','news'));
-$jsbuffer = $html->getJsBuffer();
 
 require 'layout.php';
