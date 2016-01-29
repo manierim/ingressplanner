@@ -329,6 +329,24 @@ class HtmlHelper
 
     }
 
+    public function dismiss()
+    {
+        return $this->tag(
+            'button',
+            array(
+                'type'          => 'button',
+                'class'         => 'close',
+                'data-dismiss'  => 'alert',
+                'aria-label'    => 'Close',
+            ),
+            $this->tag(
+                'span',
+                array('aria-hidden'=>'true'),
+                '&times;'
+            )
+        );
+    }
+
     public function script($js)
     {
         return $this->tag('script', array('type'=>'text/javascript'), $js);
