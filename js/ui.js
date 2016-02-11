@@ -1842,13 +1842,17 @@ ingressplanner.ui = new (function() {
             $this.html('');
         });
 
+        var opposingTeam = null;
+
         switch (playerTeam)
         {
             case 'ENLIGHTENED':
+                opposingTeam = 'RESISTANCE';
                 reverses.name = 'ADA Refactor';
                 reverses.action = 'ADA on it';
                 break;
             case 'RESISTANCE':
+                opposingTeam = 'ENLIGHTENED';
                 reverses.name = 'Jarvis Virus';
                 reverses.action = 'Jarvis on it';
                 break;
@@ -2202,9 +2206,22 @@ ingressplanner.ui = new (function() {
                 if (nothingtodo)
                 {
                     var verb = '? Visit';
-                    if (stepAP)
+
+                    if (stepAP && fromPortal.teamDECODED == opposingTeam)
                     {
                         verb = 'Take Down (for AP)';
+                    }
+                    else if (plan.options.fullresosOnTouchedPortals && fromPortal.resCount<8)
+                    {
+                        if (fromPortal.teamDECODED == playerTeam)
+                        {
+                            verb = 'Full resos';
+                        }
+                        else
+                        {
+                            verb = 'Capture & Full resos';
+                        }
+                        
                     }
                     textualInfo[planIDX].push(verb);
 
