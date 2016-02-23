@@ -694,7 +694,14 @@ ingressplanner.ui = new (function() {
                     var value = $filter.find('select').val();
                     if (value)
                     {
-                        filters['portal0|portal1'] = [value];
+                        var subtypes = getCheckBoxGroupValue($filter);
+
+                        if (subtypes.length == 0)
+                        {
+                            subtypes = ["portal0", "portal1"];
+                        }
+
+                        filters[subtypes.join('|')] = [value];
                     }
                     break;
 
@@ -831,7 +838,34 @@ ingressplanner.ui = new (function() {
                 });
 
                 select.val(prevSelection);
-                $filter.append(select);
+                $filter
+                    .append(select)
+                    .append(
+                        $('<div>')
+                        .addClass('checkbox checkbox-inline')
+                        .append($('<input>').attr({
+                                type: 'checkbox',
+                                value: 'portal0',
+                                checked: false,
+                        })
+                        )
+                        .append($('<label>').html('Origin'))
+                    )
+                    .append(
+                        $('<div>')
+                        .addClass('checkbox checkbox-inline')
+                        .append($('<input>').attr({
+                                type: 'checkbox',
+                                value: 'portal1',
+                                checked: false,
+                        })
+                        )
+                        .append($('<label>').html('Destination'))
+                    )
+
+                ;
+
+                var div = $('<div>')
 
             }
 

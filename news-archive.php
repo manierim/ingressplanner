@@ -9,6 +9,7 @@ $news = array(
         'body' => array(
             'Added "Move Up/Down buttons in Steps table rows.',
             'Color picker in Steps table: auto placement, fixed multiple addition of same color to swatches, HSV now works.',
+            'Manage items: portal filter can now specify if it is origin/destination.',
         ),
     ),
 
