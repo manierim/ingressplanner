@@ -38,8 +38,8 @@ ingressplanner.ui = new (function() {
     var invertlinkBtn = '<button type="button" class="invertlink btn btn-default btn-xs" aria-label="Swap"><span title="Invert link (swap origin & destination)" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span></button>';
     var moveItemToolBtn = '<button type="button" class="moveItem btn btn-default btn-xs" aria-label="Move Item"><span title="Open Move items tool" class="glyphicon glyphicon-random" aria-hidden="true"></span></button>';
 
-    var moveItemUp = '<button type="button" class="moveStep btn btn-default btn-xs" aria-label="Move Up" data-direction="up"><span title="Move this step after the next" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>'
-    var moveItemDown = '<button type="button" class="moveStep btn btn-default btn-xs" aria-label="Move Down" data-direction="down"><span title="Move this step before the previous" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>'
+    var moveItemUp = '<button type="button" class="moveStep btn btn-default btn-xs" aria-label="Move Up" data-direction="up"><span title="Move this step before the previous" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>'
+    var moveItemDown = '<button type="button" class="moveStep btn btn-default btn-xs" aria-label="Move Down" data-direction="down"><span title="Move this step after the next" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>'
 
 	var authButton = $("#authorizeButton");
 	var authDiv = $("#authDiv");
