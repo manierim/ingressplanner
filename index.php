@@ -76,7 +76,8 @@ $additionalassetts = array(
         'js/bootbox.min.js',
         // Color Picker Sliders
         'js/tinycolor-min.js',
-        'js/bootstrap.colorpickersliders.nocielch.min.js',
+//      fixed to avoid multiple addition of same color to swatch
+        'js/bootstrap.colorpickersliders.nocielch-fix.js', //        'js/bootstrap.colorpickersliders.nocielch.min.js',
         // Leaflet
         'js/leaflet.js',
         // Leaflet.label
