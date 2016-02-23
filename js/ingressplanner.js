@@ -660,17 +660,37 @@ ingressplanner = new (function() {
                         break;
 
                     case 'changeItemColor':
-                        switch (payload.target.target[0])
-                        {
-                            case 'planIDX':
-                                lastPlan.steps[payload.target.target[1]].color = payload.newHex;
-                                loadAndAnalyzePlan(lastPlan,true);
-                                break;
 
-                            default:
-                                ingressplanner.error('unmanaged UI changeItemColor target',payload.target.target[0]);
-                                break;
+                        payload = [payload];
+
+                    case 'changeItemsColor':
+
+                        var changed = false;
+
+                        $.each(payload, function(index, item) {
+
+                            switch (item.target.target[0])
+                            {
+                                case 'planIDX':
+                                    if (lastPlan.steps[item.target.target[1]].color != item.newHex)
+                                    {
+                                        lastPlan.steps[item.target.target[1]].color = item.newHex;
+                                        changed = true;
+                                    }
+                                    break;
+
+                                default:
+                                    ingressplanner.error('unmanaged UI changeItemColor target',item.target.target[0]);
+                                    break;
+                            }
+                        });
+
+                        if (changed)
+                        {
+                            loadAndAnalyzePlan(lastPlan,true);
                         }
+
+
                         break;
 
                     case 'useReverse':
