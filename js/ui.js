@@ -72,6 +72,8 @@ ingressplanner.ui = new (function() {
 
     var moveItemBtn = $("#moveItemBtn");
     var deleteItemsBtn = $("#deleteItemsBtn");
+
+    var invertlinksBtn = $("#invertlinksBtn");
 	var swapPortalsBtn = $("#swapPortalsBtn");
 
 	var moveItemSelect = $("#moveItemSelect");
@@ -3311,6 +3313,18 @@ ingressplanner.ui = new (function() {
                 return false;
             });
 
+            invertlinksBtn.on('click',function () {
+
+                var planIDXs = moveItemSelect.val();
+                if (planIDXs.length)
+                {
+                    eventHandler('invertlinks', {
+                        planIdx: planIDXs,
+                    });
+                }
+                return false;
+            });
+
 			deleteItemsBtn.on('click',function () {
 
                 var planIDXs = moveItemSelect.val();
@@ -3362,6 +3376,7 @@ ingressplanner.ui = new (function() {
             	{
                     swapPortalsBtn.removeProp('disabled');
                     deleteItemsBtn.removeProp('disabled');
+                    invertlinksBtn.removeProp('disabled');
 	            	$.each(currSelect, function(index, val) {
 	            		 options.filter('[value='+val+']').attr('disabled', 'disabled');
 	            	});
@@ -3370,6 +3385,7 @@ ingressplanner.ui = new (function() {
                 {
                     swapPortalsBtn.prop('disabled','disabled');
                     deleteItemsBtn.prop('disabled','disabled');
+                    invertlinksBtn.prop('disabled','disabled');
                 }
                 enableMoveItemsBtn();
             });

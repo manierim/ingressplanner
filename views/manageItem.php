@@ -67,6 +67,24 @@ $this->div(
                     $this->col(
                         6,
                         $this->tag('button', array('class'=>'btn btn-danger', 'id'=>'deleteItemsBtn'), 'Delete the item(s)')
+                        . '&nbsp;&nbsp;'
+                        . $this->tag(
+                                    'button',
+                                    array(
+                                        'id'    => 'invertlinksBtn',
+                                        'class' => 'btn btn-default',
+                                        'aria-label'    => 'Swap',
+                                    ),
+                                    $this->tag(
+                                        'span',
+                                        array(
+                                            'title' => 'Invert link (swap origin & destination)',
+                                            'class' => 'glyphicon glyphicon-resize-horizontal',
+                                            'aria-hidden'   => 'true',
+                                        ),
+                                        ''
+                                    )
+                                )
                     )
                     . $this->col(
                         6,
