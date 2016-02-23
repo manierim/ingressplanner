@@ -38,6 +38,9 @@ ingressplanner.ui = new (function() {
     var invertlinkBtn = '<button type="button" class="invertlink btn btn-default btn-xs" aria-label="Swap"><span title="Invert link (swap origin & destination)" class="glyphicon glyphicon-resize-horizontal" aria-hidden="true"></span></button>';
     var moveItemToolBtn = '<button type="button" class="moveItem btn btn-default btn-xs" aria-label="Move Item"><span title="Open Move items tool" class="glyphicon glyphicon-random" aria-hidden="true"></span></button>';
 
+    var moveItemUp = '<button type="button" class="moveStep btn btn-default btn-xs" aria-label="Move Up" data-direction="up"><span title="Move this step after the next" class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span></button>'
+    var moveItemDown = '<button type="button" class="moveStep btn btn-default btn-xs" aria-label="Move Down" data-direction="down"><span title="Move this step before the previous" class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span></button>'
+
 	var authButton = $("#authorizeButton");
 	var authDiv = $("#authDiv");
 
@@ -2593,7 +2596,12 @@ ingressplanner.ui = new (function() {
             }
 
             rowActions.push(removeStepBtn);
+
+            rowActions.push(moveItemUp);
+            rowActions.push(moveItemDown);
+
             rowActions.push(moveItemToolBtn);
+
 
             var tdRowActions = $('<td>');
 
@@ -2649,6 +2657,9 @@ ingressplanner.ui = new (function() {
             stepsListBody.append(tr);
 
         });
+
+        stepsListBody.find('tr:first .moveStep[data-direction=up]').remove();
+        stepsListBody.find('tr:last .moveStep[data-direction=down]').remove();
 
         buildPreview(previewSequence);
 
@@ -2830,27 +2841,43 @@ ingressplanner.ui = new (function() {
             var $this = $(this);
             var target =  $this.data('itemColor');
             var prevColor = target.hex;
+            var newHex = prevColor;
 
-            $this.ColorPickerSliders({
-                color: target.hex,
-                size: 'sm',
-                placement: 'bottom',
-                title: 'Change item color',
-                previewformat: 'hex',
-                hsvpanel: true,
-                sliders: false,
-                swatches: ingressplanner.utils.colors(),
-                onchange: function(container, color)
-                {
-                    var newHex = color.tiny.toHexString();
+            var swatches = Object.keys(analysis.colors);
+
+            $.each(ingressplanner.utils.colors(), function(idx,hex) {
+                 if (swatches.indexOf(hex)==-1) {
+                    swatches.push(hex);
+                 }
+            });
+
+            $this
+                .ColorPickerSliders({
+                    color: target.hex,
+                    size: 'sm',
+                    placement: 'auto',
+                    title: 'Change item color',
+                    previewformat: 'hex',
+                    hsvpanel: true,
+                    sliders: false,
+                    swatches: swatches,
+                    customswatches: 'plan',
+
+                    onchange: function(container, color)
+                    {
+                        newHex = color.tiny.toHexString();
+                    }
+
+                  })
+                .on('hidden.bs.popover',function() {
                     if (newHex!=prevColor)
                     {
                         prevColor = newHex;
-                        var t = new Date();
                         eventHandler('changeItemColor',{target:target,newHex:newHex});
                     }
-                }
-              });
+                })
+            ;
+
         });
 	}
 
@@ -3883,6 +3910,7 @@ ingressplanner.ui = new (function() {
 			sortTable($('#plansTableDiv'));
 
 		},
+
 		refreshPlan: function(_plan,_playerTeam,_analysis) {
 
 			plan = _plan;

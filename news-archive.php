@@ -4,6 +4,15 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Feb. 23, 2016',
+        'version'   => '2.0.7',
+        'body' => array(
+            'Added "Move Up/Down buttons in Steps table rows.',
+            'Color picker in Steps table: auto placement, fixed multiple addition of same color to swatches, HSV now works.',
+        ),
+    ),
+
+    array(
         'date'      => 'Jan. 14, 2016',
         'version'   => '2.0.6',
         'body' => array(
