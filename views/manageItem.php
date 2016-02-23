@@ -69,22 +69,45 @@ $this->div(
                         $this->tag('button', array('class'=>'btn btn-danger', 'id'=>'deleteItemsBtn'), 'Delete the item(s)')
                         . '&nbsp;&nbsp;'
                         . $this->tag(
-                                    'button',
+                            'button',
+                            array(
+                                'id'    => 'invertlinksBtn',
+                                'class' => 'btn btn-default',
+                                'aria-label'    => 'Invert selected links',
+                            ),
+                            $this->tag(
+                                'span',
+                                array(
+                                    'title' => 'Invert selected links (swap origin & destination)',
+                                    'class' => 'glyphicon glyphicon-resize-horizontal',
+                                    'aria-hidden'   => 'true',
+                                ),
+                                ''
+                            )
+                        )
+                        . '&nbsp;&nbsp;'
+                        . $this->div(
+                            '#changeColorsDiv',
+                            array(
+                                'style' => 'display: inline-block; ',
+                            ),
+                            $this->tag(
+                                'button',
+                                array(
+                                    'id'    => 'changeColorsBtn',
+                                    'class' => 'btn btn-default',
+                                    'aria-label'    => 'Change color',
+                                ),
+                                $this->tag(
+                                    'span',
                                     array(
-                                        'id'    => 'invertlinksBtn',
-                                        'class' => 'btn btn-default',
-                                        'aria-label'    => 'Swap',
+                                        'title' => 'Change selected items color',
                                     ),
-                                    $this->tag(
-                                        'span',
-                                        array(
-                                            'title' => 'Invert link (swap origin & destination)',
-                                            'class' => 'glyphicon glyphicon-resize-horizontal',
-                                            'aria-hidden'   => 'true',
-                                        ),
-                                        ''
-                                    )
+                                    'Change color'
                                 )
+                            )
+                            . '&nbsp;' . $this->div('colorbox',array('style'=>'height: 2em; width: 2em; top: 0.7em;'))
+                        )
                     )
                     . $this->col(
                         6,

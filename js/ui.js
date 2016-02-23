@@ -74,7 +74,8 @@ ingressplanner.ui = new (function() {
     var deleteItemsBtn = $("#deleteItemsBtn");
 
     var invertlinksBtn = $("#invertlinksBtn");
-	var swapPortalsBtn = $("#swapPortalsBtn");
+    var swapPortalsBtn = $("#swapPortalsBtn");
+	var changeColorsDiv = $("#changeColorsDiv");
 
 	var moveItemSelect = $("#moveItemSelect");
 	var moveItemBeforeSelect = $("#moveItemBeforeSelect");
@@ -2872,20 +2873,41 @@ ingressplanner.ui = new (function() {
 
         buildTextuals(todolines,textualInfo);
 
+        var swatches = Object.keys(analysis.colors);
+
+        $.each(ingressplanner.utils.colors(), function(idx,hex) {
+             if (swatches.indexOf(hex)==-1) {
+                swatches.push(hex);
+             }
+        });
+
+        changeColorsDiv.find('.colorbox')
+            .ColorPickerSliders({
+                placement: 'auto',
+                title: 'Change selected items color',
+                previewformat: 'hex',
+                hsvpanel: true,
+                sliders: false,
+                swatches: swatches,
+                customswatches: 'plan',
+                onchange: function(container, color)
+                {
+                    var hex = color.tiny.toHexString();
+                    changeColorsDiv.find('.colorbox')
+                        .data('hex',hex)
+                        .css('background-color',hex);
+
+                    $('#changeColorsBtn').removeProp('disabled');
+                }
+              })
+        ;
+
         stepsListBody.find('.colorbox').each(function(index) {
 
             var $this = $(this);
             var target =  $this.data('itemColor');
             var prevColor = target.hex;
             var newHex = prevColor;
-
-            var swatches = Object.keys(analysis.colors);
-
-            $.each(ingressplanner.utils.colors(), function(idx,hex) {
-                 if (swatches.indexOf(hex)==-1) {
-                    swatches.push(hex);
-                 }
-            });
 
             $this
                 .ColorPickerSliders({
@@ -3325,6 +3347,25 @@ ingressplanner.ui = new (function() {
                 return false;
             });
 
+            $('#changeColorsBtn')
+                .prop('disabled','disabled')
+                .on('click',function() {
+
+                    var planIDXs = moveItemSelect.val();
+                    var newHex = changeColorsDiv.find('.colorbox').data('hex');
+
+                    if (planIDXs.length && newHex)
+                    {
+                        eventHandler('changeItemsColor',$.map(planIDXs, function(item, index) {
+                            return {
+                                target: {target:['planIDX',item]},
+                                newHex: newHex
+
+                            };
+                        }));
+                    }
+            });
+
 			deleteItemsBtn.on('click',function () {
 
                 var planIDXs = moveItemSelect.val();
@@ -3377,6 +3418,7 @@ ingressplanner.ui = new (function() {
                     swapPortalsBtn.removeProp('disabled');
                     deleteItemsBtn.removeProp('disabled');
                     invertlinksBtn.removeProp('disabled');
+                    changeColorsDiv.show();
 	            	$.each(currSelect, function(index, val) {
 	            		 options.filter('[value='+val+']').attr('disabled', 'disabled');
 	            	});
@@ -3386,6 +3428,7 @@ ingressplanner.ui = new (function() {
                     swapPortalsBtn.prop('disabled','disabled');
                     deleteItemsBtn.prop('disabled','disabled');
                     invertlinksBtn.prop('disabled','disabled');
+                    changeColorsDiv.hide();
                 }
                 enableMoveItemsBtn();
             });
