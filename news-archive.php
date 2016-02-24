@@ -7,6 +7,7 @@ $news = array(
         'date'      => 'Feb. 24, 2016',
         'version'   => '2.0.8',
         'body' => array(
+            'Manage items: item type filter now offer Links and Links crossed by own/enemy faction.',
             'Multi Layer helper: option to not create "Jet Links".',
         ),
     ),
