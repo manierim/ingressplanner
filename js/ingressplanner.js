@@ -714,37 +714,62 @@ ingressplanner = new (function() {
 
                     case 'addMlSequence':
 
-                        var lastMlVertex = null;
+                        var addMlSequence = function(createJetLinks) {
 
-                        $.each(payload.targets, function(index, vertex) {
+                            var lastMlVertex = null;
 
-                            // first anchor
-                            lastPlan.steps.push({
-                                type: 'link',
-                                color: payload.color,
-                                portals: [vertex,payload.baselink[0]].join('|')
-                            });
+                            $.each(payload.targets, function(index, vertex) {
 
-                            // second anchor
-                            lastPlan.steps.push({
-                                type: 'link',
-                                color: payload.color,
-                                portals: [vertex,payload.baselink[1]].join('|')
-                            });
-
-                            // jet link
-                            if (lastMlVertex)
-                            {
+                                // first anchor
                                 lastPlan.steps.push({
                                     type: 'link',
                                     color: payload.color,
-                                    portals: [vertex,lastMlVertex].join('|')
+                                    portals: [vertex,payload.baselink[0]].join('|')
                                 });
-                            }
 
-                            lastMlVertex = vertex;
+                                // second anchor
+                                lastPlan.steps.push({
+                                    type: 'link',
+                                    color: payload.color,
+                                    portals: [vertex,payload.baselink[1]].join('|')
+                                });
+
+                                // jet link
+                                if (createJetLinks && lastMlVertex)
+                                {
+                                    lastPlan.steps.push({
+                                        type: 'link',
+                                        color: payload.color,
+                                        portals: [vertex,lastMlVertex].join('|')
+                                    });
+                                }
+
+                                lastMlVertex = vertex;
+                            });
+                            loadAndAnalyzePlan(lastPlan,true);
+
+
+                        };
+
+                        bootbox.dialog({
+                          message: 'Create Jet Links?',
+                          title: 'Add Multilayer Sequence',
+                          buttons: {
+                            yes: {
+                              label: "Yes",
+                              className: "btn-success",
+                              callback: function() {
+                                addMlSequence(true);
+                              }
+                            },
+                            no: {
+                              label: "No",
+                              callback: function() {
+                                addMlSequence(false);
+                              }
+                            }
+                          }
                         });
-                        loadAndAnalyzePlan(lastPlan,true);
 
                     case 'clearMlResults':
                         ingressplanner.ui.clearMlResults();

@@ -2348,6 +2348,9 @@ ingressplanner.ui = new (function() {
 	                        break;
 
 	                    case 'crosslinks':
+
+                            var crossTypes = [];
+
 	                        $.each(error.crosslinks, function(crosslinkIDX, crosslink) {
 
 	                            var origins = crosslink.llstring.split('|');
@@ -2377,6 +2380,12 @@ ingressplanner.ui = new (function() {
 	                                {
 	                                    cllabel = 'Enemy faction';
 	                                }
+
+                                    if (crossTypes.indexOf(cllabel)==-1)
+                                    {
+                                        crossTypes.push(cllabel);
+                                    }
+
 	                            };
 
 	                            var clDivAddclass = ''
@@ -2427,6 +2436,12 @@ ingressplanner.ui = new (function() {
 
 	                            stepsListBody.append(tr);
 	                        });
+
+                            if (crossTypes.length)
+                            {
+                               type += ' (' + crossTypes.join(' and ') + ' Crosslinks)';
+                            }
+
 	                        break;
 
 	                    default:
