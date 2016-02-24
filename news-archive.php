@@ -4,6 +4,14 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Feb. 24, 2016',
+        'version'   => '2.0.8',
+        'body' => array(
+            'Multi Layer helper: option to not create "Jet Links".',
+        ),
+    ),
+
+    array(
         'date'      => 'Feb. 23, 2016',
         'version'   => '2.0.7',
         'body' => array(
