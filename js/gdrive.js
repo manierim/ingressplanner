@@ -370,12 +370,14 @@ ingressplanner.gdrive = new (function() {
 
         if (!callback) {
             var _callback = function(file) { 
+ingressplanner.debug('insertObjectasJSONFile',file);
                 setStatus('upload-stop');
             };
         }
         else
         {
             var _callback = function(file) {
+ingressplanner.debug('insertObjectasJSONFile',file);
                 setStatus('upload-stop');
                 callback(file);
             };
