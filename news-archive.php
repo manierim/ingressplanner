@@ -4,6 +4,14 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Apr. 14, 2016',
+        'version'   => '2.0.9',
+        'body' => array(
+            'Improved cached links & fields management by zoom level & map bounds',
+        ),
+    ),
+
+    array(
         'date'      => 'Feb. 24, 2016',
         'version'   => '2.0.8',
         'body' => array(
@@ -47,6 +55,7 @@ $news = array(
         ),
     ),
 
+/*
     array(
         'date'      => 'Dec. 27, 2015',
         'version'   => '2.0.3b',
@@ -55,7 +64,6 @@ $news = array(
         ),
     ),
 
-/*
     array(
         'date'      => 'Dec. 20, 2015',
         'version'   => '2.0.3',

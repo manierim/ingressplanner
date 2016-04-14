@@ -121,6 +121,61 @@ ingressplanner.iitc = new (function() {
 		sendMessage: function(type,data)
 		{
 			_sendMessage(type,data);
+		},
+
+		dataZoomToLinkLength: function(dataZoom) {
+
+			var linkLength = null;
+
+			if (dataZoom>=13)
+			{
+				linkLength = 0;
+			}
+			else
+			{
+				switch(dataZoom)
+				{
+					case 12:
+						linkLength = 300;
+						break;
+
+					case 11:
+						linkLength = 800;
+						break;
+
+					case 10:
+						linkLength = 2500;
+						break;
+
+					case 10:
+					case 9:
+						linkLength = 2500;
+						break;
+
+					case 8:
+						linkLength = 5000;
+						break;
+
+					case 7:
+						linkLength = 10000;
+						break;
+
+					case 6:
+					case 5:
+						linkLength = 60000;
+						break;
+
+					case 4:
+					case 3:
+						linkLength = 200000;
+						break;
+
+
+				}
+			}
+
+			return linkLength;
+
 		}
 
 	}

@@ -425,6 +425,13 @@ ingressplanner.utils = new (function() {
 
 		distance: function(hash1,hash2)
 		{
+			if (typeof hash2 == 'undefined')
+			{
+				hash1 = hash1.split('|');
+				hash2 = hash1[1];
+				hash1 = hash1[0];
+			}
+
 			var p1 = hash1.split(',');
 			var p2 = hash2.split(',');
             // Spherical Law of Cosines - from http://www.movable-type.co.uk/scripts/latlong.html

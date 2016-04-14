@@ -73,6 +73,8 @@ ingressplanner.gameworld = new (function() {
 		if (typeof data.portals != 'undefined')
 		{
 			var updateBounds = null;
+			var deleteAboveLength = null;
+
 			if (typeof lastMapDataRefreshStartPayload != 'undefined')
 			{
 				updateBounds = L.bounds(
@@ -85,10 +87,17 @@ ingressplanner.gameworld = new (function() {
 						lastMapDataRefreshStartPayload.bounds._southWest.lng
 					)
 				);
+
+				deleteAboveLength = ingressplanner.iitc.dataZoomToLinkLength(lastMapDataRefreshStartPayload.dataZoom);
+				if (deleteAboveLength == null)
+				{
+					ingressplanner.error('unknown dataZoom value',lastMapDataRefreshStartPayload.dataZoom);
+				}
+
 			}
 
 			$.each(data.portals, function(portalIDX,portal) {
-				if (addPortal(portal,updateBounds))
+				if (addPortal(portal,updateBounds,deleteAboveLength))
 				{
 					updateMap = true;
 				}
@@ -163,7 +172,7 @@ ingressplanner.gameworld = new (function() {
 
 	};
 
-	function addPortal(portal, updateBounds)
+	function addPortal(portal, updateBounds,deleteAboveLength)
 	{
 
 		var updated = false;
@@ -224,29 +233,52 @@ ingressplanner.gameworld = new (function() {
 			});
 		});
 
-		// can we assume links & fields listed are complete?
-		var canDelete = true;
-
-		if (fake)
-		{
-			// it's a fake portal
-			if (updateBounds && (!updateBounds.contains(L.point(
-				portal.latlng.lat,
-				portal.latlng.lng
-			))))
-			{
-				// and it's outside the map bounds, links & fields listed could not be complete
-				canDelete = false;
-			}
-
-		}
-
 		if (typeof linksByPortalLLstring[portal.llstring] != 'undefined')
 		{
 
 			$.each(linksByPortalLLstring[portal.llstring], function(index, linkguid) {
 				 if (portal_links.indexOf(linkguid)==-1 && typeof links[linkguid] != 'undefined')
 				 {
+
+					// can we delete this link from the gameworld?
+					var canDelete = true;
+
+				 	if (deleteAboveLength==null)
+				 	{
+				 		// we don't have zoom->link length information.
+				 		canDelete = false;
+				 	}
+				 	else
+				 	{
+				 		if (deleteAboveLength)
+				 		{
+				 			// zoom level cut out links below the given length
+				 			var linkLength = ingressplanner.utils.distance(links[linkguid].llstring);
+				 			// we delete only if the link length is higher
+				 			canDelete = linkLength>deleteAboveLength;
+				 		}
+				 	}
+
+					if (canDelete && fake && updateBounds)
+					{
+
+						// it's a fake portal, at least one of the disappeared link portals
+						// ends inside the map bound?
+
+						var canDelete = false;
+
+						$.each(links[linkguid]._latlngsinit, function(index, portalLatlng) {
+							if (updateBounds.contains(L.point(
+								portalLatlng.lat,
+								portalLatlng.lng
+							)))
+							{
+								canDelete = true;
+							}
+						});
+
+					}
+
 				 	if (canDelete)
 				 	{
 				 		updated = true;
@@ -288,6 +320,60 @@ ingressplanner.gameworld = new (function() {
 			$.each(fieldsByPortalLLstring[portal.llstring], function(index, fieldguid) {
 				 if (portal.fields.indexOf(fieldguid)==-1 && typeof fields[fieldguid] != 'undefined')
 				 {
+
+
+					// can we delete this field from the gameworld?
+					var canDelete = true;
+
+				 	if (deleteAboveLength==null)
+				 	{
+				 		// we don't have zoom->link length information.
+				 		canDelete = false;
+				 	}
+				 	else
+				 	{
+				 		if (deleteAboveLength)
+				 		{
+				 			// zoom level cut out links below the given length
+				 			// we assume only fields with at least one link above that length
+				 			// are shown
+
+				 			canDelete = false;
+
+				 			var anchors = fields[fieldguid].llstring.split('|');
+
+				 			var prev = anchors[2];
+
+				 			$.each(anchors, function(index, anchor) {
+				 				canDelete = ingressplanner.utils.distance(prev,anchor)>deleteAboveLength;
+				 				prev = anchor;
+
+				 			});
+
+				 		}
+				 	}
+
+
+					if (canDelete && fake && updateBounds)
+					{
+
+						// it's a fake portal, at least one of the disappeared field portals
+						// ends inside the map bound?
+
+						var canDelete = false;
+
+						$.each(fields[fieldguid]._latlngsinit, function(index, portalLatlng) {
+							if (updateBounds.contains(L.point(
+								portalLatlng.lat,
+								portalLatlng.lng
+							)))
+							{
+								canDelete = true;
+							}
+						});
+
+					}
+
 				 	if (canDelete)
 				 	{
 				 		updated = true;
@@ -297,6 +383,7 @@ ingressplanner.gameworld = new (function() {
 				 	{
 						portal.fields.push(fieldguid);
 				 	}
+
 				 }
 			});
 
