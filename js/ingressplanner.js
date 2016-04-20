@@ -165,7 +165,7 @@ ingressplanner = new (function() {
                             }
                           }
                         });
-                        return 2;
+                        return false;
                     }
                     
                     if (exisiting || item.type == 'circle' || polygonsAsRanges)
@@ -225,7 +225,7 @@ ingressplanner = new (function() {
                     break;
 
                 default:
-                    ingressplanner.warn('unmanaged drawing elemt type',item.type);
+                    ingressplanner.warn('unmanaged drawing element type',item.type);
                     break;
             };
 
