@@ -1863,6 +1863,7 @@ ingressplanner.ui = new (function() {
 
 		$("#steps tfoot").remove();
         var totalAP = null;
+        var totalCreatedFields = null;
 
         var textualInfo = [];
 
@@ -2616,6 +2617,13 @@ ingressplanner.ui = new (function() {
 	                    .addClass('label label-success createdFields')
 	                    .html("Δ  " + createdFields))
 	                ;
+
+	                if (totalCreatedFields === null)
+	                {
+	                  totalCreatedFields = 0;
+	                }
+
+	                totalCreatedFields += createdFields;
 	            }
 
 	            if (wastedFields)
@@ -2715,18 +2723,33 @@ ingressplanner.ui = new (function() {
 
         buildPreview(previewSequence);
 
-		if (totalAP !== null)
-		{
-	        $("#steps").append(
-	            $('<tfoot>')
-	            .append(
-	                $('<tr>')
-	                .append($('<td>').addClass('text-right').attr({'colspan': (plan.options.planKeyFarming?8:5)}).html('Total:'))
-	                .append($('<td>').html(totalAP.toLocaleString()))
-	            )
-	        );
+        var footColspan = plan.options.planKeyFarming ? 8 : 5;
+        var footTableRow = $('<tr>');
 
-		}
+        if (totalCreatedFields !== null)
+        {
+            footTableRow
+                .append($('<td>').addClass('text-right').html('Fields:'))
+                .append($('<td>').html(totalCreatedFields.toLocaleString()))
+            ;
+
+            footColspan -= 2;
+        }
+
+        if (totalAP !== null)
+        {
+            footTableRow
+                .append($('<td>').addClass('text-right').attr({'colspan': footColspan}).html('Total-AP:'))
+                .append($('<td>').html(totalAP.toLocaleString()))
+            ;
+        }
+
+        if ((totalCreatedFields !== null) || (totalAP !== null))
+        {
+            $("#steps")
+                .append($('<tfoot>').append(footTableRow))
+            ;
+        }
 
         StepsIcon.attr('class','glyphicon glyphicon-'+tabIcon);
 
