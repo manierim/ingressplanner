@@ -2088,7 +2088,7 @@ ingressplanner.ui = new (function() {
 					if (allocatedTotal!= 0 && farmTotal == allocatedTotal)
 					{
 						// we have no keys, everything is to be farmed
-						var verb = 'Farmed by now';
+						var verb = 'Farm';
 
 						// at least we need to farm the keys for the immediately following links
 						minmax.push(todo['keys']['farm'].now);
