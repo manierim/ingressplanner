@@ -4,6 +4,15 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Oct. 30, 2016',
+        'version'   => '2.0.10',
+        'body' => array(
+            '<b>senfomat</b>: Show the number of fields in a plan',
+            '<b>senfomat</b>: Better wording when keys have to get farmed',
+        ),
+    ),
+
+    array(
         'date'      => 'Apr. 14, 2016',
         'version'   => '2.0.9',
         'body' => array(
@@ -37,7 +46,7 @@ $news = array(
             'Backend data storage is now SQLite instead of JSON files (no more URL shortener issues).',
         ),
     ),
-
+/*
     array(
         'date'      => 'Dec. 29, 2015',
         'version'   => '2.0.5',
@@ -55,7 +64,6 @@ $news = array(
         ),
     ),
 
-/*
     array(
         'date'      => 'Dec. 27, 2015',
         'version'   => '2.0.3b',
