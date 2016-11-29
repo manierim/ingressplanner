@@ -24,43 +24,53 @@ ingressplanner.router = new (function() {
 	else
 	{
 	    ingressplanner.warn('No HTML5 Web Storage available');
-	};
+	}
 
 	function decodePolyline(routeGeometry) {
 
-		var cs = L.PolylineUtil.decode(routeGeometry, 6),
-			result = new Array(cs.length),
+        var cs = polyline.decode(routeGeometry, 6),
+           result = new Array(cs.length),
 			i;
-		for (i = cs.length - 1; i >= 0; i--) {
-			result[i] = L.latLng(cs[i]);
+        for (i = cs.length - 1; i >= 0; i--) {
+            result[i] = L.latLng(cs[i]);
 		}
-
+console.debug('decodePolyline',routeGeometry,result);
 		return result;
 
 	}
 
 	function route(fromHash,toHash,callback)
 	{
+        var pfrom = fromHash.split(',').reverse().join(',');
+        var pto = toHash.split(',').reverse().join(',');
 
 		$.getJSON(
-			'http://router.project-osrm.org/viaroute?instructions=false&alt=false&loc=' + fromHash + '&loc=' + toHash,
+            '//router.project-osrm.org/route/v1/driving/'+ encodeURI(pfrom)+';'+encodeURI(pto)+'.json',
+            {
+                "alternatives": false,
+                "steps": false,
+                "annotations": false,
+                "geometries": 'polyline6',
+                "overview": 'simplified',
+            },
 			function(data,status)
 			{
-				if (data.status==200)
+
+				if (status == 'success' && data.code=='Ok')
 				{
 					var route = {
-						route_geometry: data.route_geometry,
+						route_geometry: data.routes[0].geometry,
 						//distance for the route, in meters
-						distance: data.route_summary.total_distance,
+						distance: data.routes[0].distance,
 						//estimated time for the route, in seconds
-						time: data.route_summary.total_time
-					}
+						time: data.routes[0].duration
+					};
 					callback(null,route);
 				}
 				else
 				{
+                    ingressplanner.error('route error',status,data);
 					callback({data},null);
-
 				}
 			}
 		);
@@ -97,8 +107,8 @@ ingressplanner.router = new (function() {
 					function() {
 						serviceDownWarning = true;
 						bootbox.alert('OSRM public routing engine is down, ' + serviceDownText);
-					}
-					,5000
+					},
+                    5000
 				);
 			}
 
@@ -185,6 +195,6 @@ ingressplanner.router = new (function() {
 			}
 
 		},
-	}
+	};
 
-})
+})();
