@@ -4,6 +4,13 @@ $news = array(
 // add newest to the top!
 
     array(
+        'date'      => 'Nov. 29, 2016',
+        'body' => array(
+            'Fixed OSRM routing',
+        ),
+    ),
+
+    array(
         'date'      => 'Oct. 30, 2016',
         'version'   => '2.0.10',
         'body' => array(
