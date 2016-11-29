@@ -34,7 +34,6 @@ ingressplanner.router = new (function() {
         for (i = cs.length - 1; i >= 0; i--) {
             result[i] = L.latLng(cs[i]);
 		}
-console.debug('decodePolyline',routeGeometry,result);
 		return result;
 
 	}
