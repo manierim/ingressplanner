@@ -48,7 +48,6 @@ ingressplanner.router = new (function() {
             {
                 "alternatives": false,
                 "steps": false,
-                "annotations": false,
                 "geometries": 'polyline6',
                 "overview": 'simplified',
             },
