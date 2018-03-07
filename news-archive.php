@@ -4,6 +4,14 @@ $news = array(
 // add newest to the top!
 
     array(
+        'title'     => 'Fixes & improvements',
+        'date'      => 'Mar. 07, 2018',
+        'body' => array(
+            'Fixes and imrpovemets contributed by mrDinckleman',
+        ),
+    ),
+
+    array(
         'date'      => 'Nov. 29, 2016',
         'body' => array(
             'Fixed OSRM routing',

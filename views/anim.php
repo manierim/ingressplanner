@@ -13,16 +13,7 @@ echo $this->div(
             'modal-content',
             $this->div(
                 'modal-header',
-                $this->tag(
-                    'button',
-                    array(
-                        'type'  => 'button',
-                        'class' => 'close',
-                        'data-dismiss'  => 'modal',
-                        'aria-label'    => 'Close',
-                    ),
-                    $this->tag('span', array('aria-hidden'=>'true',), '&times;')
-                )
+                $this->dismiss('modal')
                 . $this->tag('h4', 'modal-title', 'Visual preview ' . $this->tag('small', '') . '&nbsp;' . $this->tag('span',''))
             )
             . $this->div(
