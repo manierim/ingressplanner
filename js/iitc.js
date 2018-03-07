@@ -8,7 +8,7 @@ ingressplanner.iitc = new (function() {
 
 	var eventHandler = null;
 
-	var messagingTarget = $('#ictFrame')[0].contentWindow;
+	var messagingTarget = $('#iitcFrame')[0].contentWindow;
 
 	var okToSend = false;
 
@@ -100,7 +100,7 @@ ingressplanner.iitc = new (function() {
 		    }
 
 		},
-		$("#ictFrame").attr('src')
+		$("#iitcFrame").attr('src')
 	);
 
 // exposed methods
