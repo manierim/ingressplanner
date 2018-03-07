@@ -17,10 +17,10 @@ $this->div(
     $this->tag(
         'textarea',
         array(
-            'class'     => 'screenHeigth form-control',
+            'class'     => 'screenHeight form-control',
             'id'        => 'planJSON',
             'readonly'  => 'readonly',
-            'data-screenHeigth-less' => 39
+            'data-screenHeight-less' => 39
         ),
         ''
     )

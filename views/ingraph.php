@@ -1,8 +1,8 @@
 <?php
 
 echo $this->div(
-    'screenHeigth',
-    array('data-screenHeigth-less' => 25),
+    'screenHeight',
+    array('data-screenHeight-less' => 25),
     $this->panel(
         array(
             'heading' => $this->tag(
@@ -66,8 +66,8 @@ echo $this->div(
                                 $this->tag(
                                     'select',
                                     array(
-                                        'class'         => 'form-control screenHeigth',
-                                        'data-screenHeigth-less' => 107,
+                                        'class'         => 'form-control screenHeight',
+                                        'data-screenHeight-less' => 107,
                                         'id'            => 'iGPortals',
                                         'multiple'      => 'multiple',
                                         'data-planportals'
@@ -81,8 +81,8 @@ echo $this->div(
                                 . $this->tag(
                                     'select',
                                     array(
-                                        'class'         => 'form-control screenHeigth',
-                                        'data-screenHeigth-less' => 107,
+                                        'class'         => 'form-control screenHeight',
+                                        'data-screenHeight-less' => 107,
                                         'id'            => 'iGRanges',
                                         'multiple'      => 'multiple',
                                         'data-ranges'
