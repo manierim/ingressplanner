@@ -329,14 +329,14 @@ class HtmlHelper
 
     }
 
-    public function dismiss()
+    public function dismiss($target = 'alert')
     {
         return $this->tag(
             'button',
             array(
                 'type'          => 'button',
                 'class'         => 'close',
-                'data-dismiss'  => 'alert',
+                'data-dismiss'  => $target,
                 'aria-label'    => 'Close',
             ),
             $this->tag(
