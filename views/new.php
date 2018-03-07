@@ -1,4 +1,7 @@
 <?php
+
+$title = '';
+
 if (
     (!isset($title))
     and isset($version)
