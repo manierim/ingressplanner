@@ -93,9 +93,9 @@ $steps[] = $this->tag(
     array('class'=>'qs-gdrivenoemptyplan'),
     'Start drawing your links with the Draw Tools in the '
     . $this->link(
-        '"IICT" tab',
+        '"IITC" tab',
         '.',
-        array('onclick'=>"ingressplanner.ui.gotab('ictTab'); return false;")
+        array('onclick'=>"ingressplanner.ui.gotab('iitcTab'); return false;")
     )
 );
 

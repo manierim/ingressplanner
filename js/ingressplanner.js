@@ -910,7 +910,7 @@ ingressplanner = new (function() {
                         }
 
                         ingressplanner.iitc.sendMessage('pan',request);
-                        ingressplanner.ui.gotab('ictTab');
+                        ingressplanner.ui.gotab('iitcTab');
 
                         break;
 
@@ -1052,7 +1052,7 @@ ingressplanner = new (function() {
                             // 1.1: step.portals now joined with '|'
                             plan.format = '1.1';
 
-                            ingressplanner.ui.gotab('ictTab');
+                            ingressplanner.ui.gotab('iitcTab');
 
                             if (!cfg)
                             {

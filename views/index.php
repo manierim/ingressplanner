@@ -15,9 +15,9 @@ echo $this->div(
                 'title'     => 'Plans',
                 'view'      => 'plans',
             ),
-            'ictTab' => array(
-                'title'     => 'IICT',
-                'view'      => 'iict',
+            'iitcTab' => array(
+                'title'     => 'IITC',
+                'view'      => 'iitc',
             ),
             'stepsTab' => array(
                 'icon'      => 'remove',

@@ -3938,10 +3938,10 @@ ingressplanner.ui = new (function() {
 
 		mapUpdating: function(running)
 		{
-			$('a[role="tab"][href="#ictTab"]').html('IICT');
+			$('a[role="tab"][href="#iitcTab"]').html('IITC');
 			if (running)
 			{
-				$('a[role="tab"][href="#ictTab"]')
+				$('a[role="tab"][href="#iitcTab"]')
 					.prepend('&nbsp;')
 					.prepend(
 						$('<span>').addClass('glyphicon glyphicon-hourglass')

@@ -121,7 +121,7 @@ for quick on-field reference.
 is a brilliant software written by Nigel Stepp that allows optimiziation of links between portals following different selectable algorithms.<br>
 <?= PRODUCTNAME?> can export the complete list of portals in the current plan to a Ingraph "graph" file (.gph) and then
 import back into the current plan the links created in the software (links from the graph file will replace/overwrite the current plan).<br>
-To "select" on the IICT map the portals to be exported you can either mark them with "markers" or join them with links.
+To "select" on the IITC map the portals to be exported you can either mark them with "markers" or join them with links.
 </p>
 
 <?php echo $this->view('credits') ?>
