@@ -3,37 +3,19 @@
 echo
 $this->div(
     'form-inline',
-    $this->div(
-        'checkbox',
-        $this->tag(
-            'input',
-            array(
-                'type'  => 'checkbox',
-                'name'  => 'drawingExportMarkers',
-                'class' => 'planoption',
-            ),
-            ''
-        )
-        . $this->tag(
-            'label',
-            'Export Portals (keys, take down, etc.) steps (markers)'
-        )
+    $this->checkbox(
+        array(
+            'name'  => 'drawingExportMarkers',
+            'class' => 'planoption',
+        ),
+        'Export Portals (keys, take down, etc.) steps (markers)'
     )
-    . $this->div(
-        'checkbox',
-        $this->tag(
-            'input',
-            array(
-                'type'  => 'checkbox',
-                'name'  => 'drawingExportRanges',
-                'class' => 'planoption',
-            ),
-            ''
-        )
-        . $this->tag(
-            'label',
-            'Export Ranges (polygons)'
-        )
+    . $this->checkbox(
+        array(
+            'name'  => 'drawingExportRanges',
+            'class' => 'planoption',
+        ),
+        'Export Ranges (polygons)'
     )
     . '&nbsp;&nbsp;' . $this->button(
         'Export to text file',
