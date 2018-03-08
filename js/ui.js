@@ -841,6 +841,7 @@ ingressplanner.ui = new (function() {
                 });
 
                 select.val(prevSelection);
+                var hash = Math.random().toString(36).substring(7);
                 $filter
                     .append(select)
                     .append(
@@ -850,9 +851,10 @@ ingressplanner.ui = new (function() {
                                 type: 'checkbox',
                                 value: 'portal0',
                                 checked: false,
+                                id: 'portal0-' + hash
                         })
                         )
-                        .append($('<label>').html('Origin'))
+                        .append($('<label for="portal0-' + hash + '">').html('Origin'))
                     )
                     .append(
                         $('<div>')
@@ -861,9 +863,10 @@ ingressplanner.ui = new (function() {
                                 type: 'checkbox',
                                 value: 'portal1',
                                 checked: false,
+                                id: 'portal1-' + hash
                         })
                         )
-                        .append($('<label>').html('Destination'))
+                        .append($('<label for="portal1-' + hash + '">').html('Destination'))
                     )
 
                 ;
