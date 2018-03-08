@@ -692,16 +692,17 @@ class HtmlHelper
             }
         }
 
-        if (!isset($attrsArray['id'])) {
-            if (isset($attrsArray['name'])) {
-                $attrsArray['id'] = $attrsArray['name'] . '-id';
-            } else {
-                $attrsArray['id'] = 'checkbox-' . substr(md5(microtime()),rand(0,26),5);
-            }
+        if (empty($attrsArray['type'])) {
+            $attrsArray['type'] = 'checkbox';
         }
 
-        if (!isset($attrsArray['type'])) {
-            $attrsArray['type'] = 'checkbox';
+        if (empty($attrsArray['id'])) {
+            if (!empty($attrsArray['name'])) {
+                $attrsArray['id'] = $attrsArray['name'];
+            } else {
+                $attrsArray['id'] = $attrsArray['type'];
+            }
+            $attrsArray['id'] .= '-' . substr(md5(microtime()),rand(0,26),5);
         }
 
         return $this->div(
