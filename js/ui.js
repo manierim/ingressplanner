@@ -854,7 +854,9 @@ ingressplanner.ui = new (function() {
                                 id: 'portal0-' + hash
                         })
                         )
-                        .append($('<label for="portal0-' + hash + '">').html('Origin'))
+                        .append($('<label>', {
+                          for: 'portal0-' + hash
+                        }).html('Origin'))
                     )
                     .append(
                         $('<div>')
@@ -866,7 +868,9 @@ ingressplanner.ui = new (function() {
                                 id: 'portal1-' + hash
                         })
                         )
-                        .append($('<label for="portal1-' + hash + '">').html('Destination'))
+                        .append($('<label>', {
+                          for: 'portal1-' + hash
+                        }).html('Destination'))
                     )
 
                 ;
@@ -922,17 +926,21 @@ ingressplanner.ui = new (function() {
                 $filter.append($('<div>').addClass('small').html(label));
 
                 $.each(actions, function(index, action) {
-
+                    var hash = Math.random().toString(36).substring(7);
                     $filter.append(
                         $('<div>')
                         .addClass('checkbox checkbox-inline')
                         .append($('<input>').attr({
                                 type: 'checkbox',
+                                id: 'checkbox-' + hash,
                                 value: action,
                                 checked: (prevSelection.indexOf(action)!=-1)
                         })
                         )
-                        .append($('<label>').attr('data-actiontype',action).append(action))
+                        .append($('<label>', {
+                          for: 'checkbox-' + hash,
+                          'data-actiontype': action
+                        }).append(action))
 
                     )
                 });
@@ -999,16 +1007,21 @@ ingressplanner.ui = new (function() {
                         name = analysis.colors[color];
                     }
 
+                    var hash = Math.random().toString(36).substring(7);
                     $filter.append(
                         $('<div>')
                         .addClass('checkbox checkbox-inline')
                         .append($('<input>').attr({
                                 type: 'checkbox',
+                                id: 'checkbox-' + hash,
                                 value: color,
                                 checked: (prevSelection.indexOf(color)!=-1)
                         })
                         )
-                        .append($('<label>').attr('data-color',color).append(name))
+                        .append($('<label>', {
+                          for: 'checkbox-' + hash,
+                          'data-color': color
+                        }).append(name))
 
                     )
                 });
