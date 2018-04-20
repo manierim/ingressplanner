@@ -5,9 +5,19 @@ $news = array(
 
     array(
         'title'     => 'Fixes & improvements',
+        'date'      => 'Apr. 20, 2018',
+        'version'   => '2.0.11',
+        'body' => array(
+            'Fix to allow planner functionality when missing IITC plugins (Sync)',
+            'Fixes and improvemets contributed by mrDinckleman',
+        ),
+    ),
+
+    array(
+        'title'     => 'Fixes & improvements',
         'date'      => 'Mar. 07, 2018',
         'body' => array(
-            'Fixes and imrpovemets contributed by mrDinckleman',
+            'Fixes and improvemets contributed by mrDinckleman',
         ),
     ),
 
