@@ -45,8 +45,7 @@ function wrapper() {
         }
 
         if (
-            (!window.plugin.ingressplanner.playerInfoSent)
-            && window.PLAYER
+            (!window.plugin.ingressplanner.playerInfoSent) && window.PLAYER
         )
         {
             request["ingess-planner"].player = window.PLAYER;
@@ -189,7 +188,7 @@ function wrapper() {
                         return plugin.name;
                     }
                     return null;
-                });;
+                });
 
                
                 if (missing_req.length)
@@ -207,7 +206,7 @@ function wrapper() {
                     }
 
                     alert(text);
-                    return;
+                    // return;
                 }
 
 // legacy hooks (v1)
@@ -234,13 +233,13 @@ function wrapper() {
 
                                 if (dataProvider)
                                 {
-                                    var payload=eval(dataProvider);
+                                    payload=eval(dataProvider);
                                 }
 
                                 window.plugin.ingressplanner.sendMessage('runHook',{
                                     'hookName': hookName,
                                     'data': payload,
-                                })
+                                });
                             });
 
                         }
@@ -254,12 +253,12 @@ function wrapper() {
                     var hookNames = Object.keys(data.hooks).join(', ');
                     console.error("%c" + window.plugin.ingressplanner.about.productname + " missing hooks: " + hookNames, 'background: #bb0; ');
                     alert(
-                        'Something changhed in IITC or some of its plugins. ' 
-                        + window.plugin.ingressplanner.about.productname
-                        + ' could possibly nolonger work correctly, please check the G+ group!'
-                        + "\n(missing hooks: "
-                        + hookNames
-                        + ')'
+                        'Something changhed in IITC or some of its plugins. ' +
+                        window.plugin.ingressplanner.about.productname +
+                        ' could possibly nolonger work correctly, please check the G+ group!'+ 
+                        "\n(missing hooks: " +
+                        hookNames +
+                        ')'
                     );
                 }
 
