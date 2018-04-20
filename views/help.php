@@ -1,4 +1,4 @@
-<div class="scroll screenHeight container">
+<div class="scroll screenHeigth container">
 <br><?= $this->view('quickstart',compact('requiredPlugins')) ?>
 <h1>Introduction</h1>
 <p><?= $this->tag('strong',PRODUCTNAME) ?> helps you define a "link sequence" checking and highlighting potential problems 

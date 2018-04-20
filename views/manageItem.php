@@ -1,8 +1,8 @@
 <?php
 echo
 $this->div(
-    'screenHeight',
-    array('data-screenHeight-less' => 25),
+    'screenHeigth',
+    array('data-screenHeigth-less' => 25),
     $this->panel(
         array(
             'heading' => $this->tag(
@@ -29,10 +29,10 @@ $this->div(
                         'select',
                         array(
                             'id' => 'moveItemSelect',
-                            'class' => 'form-control screenHeight',
+                            'class' => 'form-control screenHeigth',
                             'multiple' => 'multiple',
                             'data-steps="all"',
-                            'data-screenHeight-less' => 108
+                            'data-screenHeigth-less' => 108
                         )
                     )
                 )
@@ -53,11 +53,11 @@ $this->div(
                         'select',
                         array(
                             'id' => 'moveItemBeforeSelect',
-                            'class' => 'form-control screenHeight',
+                            'class' => 'form-control screenHeigth',
                             'multiple' => 'multiple',
                             'data-singleselect',
                             'data-steps="all"',
-                            'data-screenHeight-less' => 108
+                            'data-screenHeigth-less' => 108
                         )
                     )
                 )

@@ -4,7 +4,7 @@ echo
     . $this->tag(
         'iframe',
         array(
-            'class' => 'screenHeight',
+            'class' => 'screenHeigth',
             'id'    => 'iitcFrame',
             'src'   => STOCKINTELURL,
             'style' => 'border:0; padding:0, margin:0; width: 100%; height=auto;',

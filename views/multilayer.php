@@ -1,8 +1,8 @@
 <?php
 echo
 $this->div(
-    'screenHeight',
-    array('data-screenHeight-less' => 25),
+    'screenHeigth',
+    array('data-screenHeigth-less' => 25),
     $this->panel(
         array(
             'heading' => $this->tag(
@@ -32,8 +32,8 @@ $this->div(
                     . $this->tag(
                         'select',
                         array(
-                            'class'         => 'form-control screenHeight',
-                            'data-screenHeight-less' => 108,
+                            'class'         => 'form-control screenHeigth',
+                            'data-screenHeigth-less' => 108,
                             'id'            => 'mlBaseLink',
                             'multiple'      => 'multiple',
                             'data-singleselect',
@@ -47,8 +47,8 @@ $this->div(
                     . $this->tag(
                         'select',
                         array(
-                            'class'         => 'form-control screenHeight',
-                            'data-screenHeight-less' => 108,
+                            'class'         => 'form-control screenHeigth',
+                            'data-screenHeigth-less' => 108,
                             'id'            => 'mlRanges',
                             'multiple'      => 'multiple',
                             'data-ranges'
@@ -73,8 +73,8 @@ $this->div(
                 $this->col(
                     12,
                     $this->div(
-                        'screenHeight scroll',
-                        array('data-screenHeight-less' => 348,),
+                        'screenHeigth scroll',
+                        array('data-screenHeigth-less' => 348,),
                         $this->tag('h3', 'Results')
                         . $this->tag('ul', array('id'=>'ml-targets'), '')
                     )

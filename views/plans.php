@@ -2,7 +2,7 @@
 
 echo
     $this->div(
-        'scroll screenHeight container',
+        'scroll screenHeigth container',
         $this->div(
             'row',
             $this->div(

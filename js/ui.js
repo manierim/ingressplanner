@@ -84,7 +84,7 @@ ingressplanner.ui = new (function() {
 
 	function resizeScrollable() {
 
-    	$(".screenHeight").height( function() {
+    	$(".screenHeigth").height( function() {
 
             var shown = false;
             var parentTab = $(this).closest('[role="tabpanel"]');
@@ -100,7 +100,7 @@ ingressplanner.ui = new (function() {
 
 	        if (shown)
 	        {
-                var bottomOffset = $(this).attr('data-screenHeight-less');
+                var bottomOffset = $(this).attr('data-screenHeigth-less');
                 if (!bottomOffset)
                 {
                     bottomOffset = 5;

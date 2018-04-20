@@ -41,7 +41,7 @@ if (!empty($anonymous)) {
 $text = implode(' and ', $text);
 
 echo $this->div(
-    'scroll screenHeight',
+    'scroll screenHeigth',
     '<br>'
     . $this->div(
         'container',
