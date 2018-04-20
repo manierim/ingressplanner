@@ -23,8 +23,8 @@ define('INGRESSURL', 'http://www.ingress.com/');
 define('STOCKINTELURL', 'https://www.ingress.com/intel/');
 define('INGRAPHURL', 'http://atistar.net/~stepp/ingraph/');
 
-define('IITCHOMEURL', 'http://iitc.jonatkins.com/');
-define('IITCINTALLURL', 'http://iitc.jonatkins.com/?page=desktop');
+define('IITCHOMEURL', 'https://static.iitc.me/');
+define('IITCINTALLURL', 'https://iitc.me/desktop/');
 
 define('FIXEDIITC', false);   // set false if official IITC script is ok.
 //define('FIXEDIITC', 'files/total-conversion-build.user.js');   // set to relative url to download fixed IITC.
@@ -36,19 +36,19 @@ $requiredPlugins = array(
     'Draw Tools'    => array(
         'description'   => 'allows quick drawing of links directly on the map, portal to portal',
         'infoURL'       => IITCINTALLURL . '#' . 'plugin-draw-tools',
-        'downloadURL'   => IITCHOMEURL . 'release/plugins/draw-tools.user.js',
+        'downloadURL'   => IITCHOMEURL . 'build/release/plugins/draw-tools.user.js',
         'objectName'    => 'drawTools',
     ),
     'Keys'          => array(
         'description'   => 'support the player in keeping track, directly from the map interface, of the number of "portal keys" for each portal, being them necessary to build links',
         'infoURL'       => IITCINTALLURL . '#' . 'plugin-keys',
-        'downloadURL'   => IITCHOMEURL . 'release/plugins/keys.user.js',
+        'downloadURL'   => IITCHOMEURL . 'build/release/plugins/keys.user.js',
         'objectName'    => 'keys',
     ),
     'Sync'          => array(
         'description'   => 'stores Keys plugin data for the user in Google Drive',
         'infoURL'       => IITCINTALLURL . '#' . 'plugin-sync',
-        'downloadURL'   => IITCHOMEURL . 'release/plugins/sync.user.js',
+        'downloadURL'   => IITCHOMEURL . 'build/release/plugins/sync.user.js',
         'objectName'    => 'sync',
     ),
 );
