@@ -28,37 +28,23 @@ echo $this->div(
                             8,
                             $this->tag('h4', 'Export')
                             . $this->tag('p', 'small', 'Select the portals to be exported as an Ingraph graph file (.gph):')
-                            . $this->div(
-                                'radio',
-                                $this->tag(
-                                    'input',
-                                    array(
-                                        'type'  => 'radio',
-                                        'name'  => 'iGsource',
-                                        'value' => 'plan',
-                                    )
-                                )
-                                . $this->tag(
-                                    'label',
-                                    $this->tag('strong', 'from plan')
-                                    . ' ' . $this->tag('small', 'Select portals from the plan')
-                                )
+                            . $this->checkbox(
+                                array(
+                                    'type'  => 'radio',
+                                    'name'  => 'iGsource',
+                                    'value' => 'plan',
+                                ),
+                                $this->tag('strong', 'from plan')
+                                . ' ' . $this->tag('small', 'Select portals from the plan')
                             )
-                            . $this->div(
-                                'radio',
-                                $this->tag(
-                                    'input',
-                                    array(
-                                        'type'  => 'radio',
-                                        'name'  => 'iGsource',
-                                        'value' => 'ranges',
-                                    )
-                                )
-                                . $this->tag(
-                                    'label',
-                                    $this->tag('strong', 'from ranges')
-                                    . ' ' . $this->tag('small', 'Select portals from definde ranges.<br>Ranges are circles or polygons drawn on the map.')
-                                )
+                            . $this->checkbox(
+                                array(
+                                    'type'  => 'radio',
+                                    'name'  => 'iGsource',
+                                    'value' => 'ranges',
+                                ),
+                                $this->tag('strong', 'from ranges')
+                                . ' ' . $this->tag('small', 'Select portals from definde ranges.<br>Ranges are circles or polygons drawn on the map.')
                             )
                             . $this->div(
                                 'iGSelection',
@@ -104,50 +90,32 @@ echo $this->div(
                                 )
                             )
                             . $this->tag('h5', 'Import type:')
-                            . $this->div(
-                                'radio radio-inline',
-                                $this->tag(
-                                    'input',
-                                    array(
-                                        'type'  => 'radio',
-                                        'name'  => 'iGimportType',
-                                        'value' => 'replace',
-                                    )
-                                )
-                                . $this->tag(
-                                    'label',
-                                    $this->tag('strong', 'Replace')
-                                )
+                            . $this->checkbox(
+                                array(
+                                    'type'  => 'radio',
+                                    'name'  => 'iGimportType',
+                                    'value' => 'replace',
+                                ),
+                                $this->tag('strong', 'Replace'),
+                                true
                             )
-                            . $this->div(
-                                'radio radio-inline',
-                                $this->tag(
-                                    'input',
-                                    array(
-                                        'type'  => 'radio',
-                                        'name'  => 'iGimportType',
-                                        'value' => 'append',
-                                    )
-                                )
-                                . $this->tag(
-                                    'label',
-                                    $this->tag('strong', 'Append')
-                                )
+                            . $this->checkbox(
+                                array(
+                                    'type'  => 'radio',
+                                    'name'  => 'iGimportType',
+                                    'value' => 'append',
+                                ),
+                                $this->tag('strong', 'Append'),
+                                true
                             )
-                            . $this->div(
-                                'radio radio-inline',
-                                $this->tag(
-                                    'input',
-                                    array(
-                                        'type'  => 'radio',
-                                        'name'  => 'iGimportType',
-                                        'value' => 'prepend',
-                                    )
-                                )
-                                . $this->tag(
-                                    'label',
-                                    $this->tag('strong', 'Prepend')
-                                )
+                            . $this->checkbox(
+                                array(
+                                    'type'  => 'radio',
+                                    'name'  => 'iGimportType',
+                                    'value' => 'prepend',
+                                ),
+                                $this->tag('strong', 'Prepend'),
+                                true
                             )
                             . '<br><br>' . $this->button('Import Graph from Ingraph', array('class'=>'btn-primary', 'id'=>'importIngraphBtn'))
                             . $this->tag('input', array('id'=>'importIngraphControl', 'type'=>'file', 'style' => 'display: none; '))

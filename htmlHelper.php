@@ -681,4 +681,43 @@ class HtmlHelper
             )
         ;
     }
+
+    public function checkbox($attrsArray = array(), $label, $inline = false)
+    {
+        if (is_string($attrsArray)) {
+            if (substr($attrsArray, 0, 1) == '#') {
+                $attrsArray = array('id' => substr($attrsArray, 1));
+            } else {
+                $attrsArray = array('name' => $attrsArray);
+            }
+        }
+
+        if (empty($attrsArray['type'])) {
+            $attrsArray['type'] = 'checkbox';
+        }
+
+        if (empty($attrsArray['id'])) {
+            if (!empty($attrsArray['name'])) {
+                $attrsArray['id'] = $attrsArray['name'];
+            } else {
+                $attrsArray['id'] = $attrsArray['type'];
+            }
+            $attrsArray['id'] .= '-' . substr(md5(microtime()),rand(0,26),5);
+        }
+
+        return $this->div(
+            $attrsArray['type'] . ($inline ? ' ' . $attrsArray['type'] . '-inline' : ''),
+            $this->tag(
+                'input',
+                $attrsArray
+            )
+            . $this->tag(
+                'label',
+                array(
+                    'for' => $attrsArray['id']
+                ),
+                $label
+            )
+        );
+    }
 }

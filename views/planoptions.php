@@ -2,73 +2,41 @@
 echo
 $this->div(
     'well',
-    $this->div(
-        'checkbox',
-        $this->tag(
-            'input',
-            array(
-                'type'  => 'checkbox',
-                'id'    => 'HLPlanningInput',
-                'name'  => 'HLPlanning',
-                'class' => 'planoption',
-            )
-        )
-        . $this->tag(
-            'label',
-            $this->tag('strong', 'HIGH LEVEL PLANNING mode')
-            . ' ' . $this->tag('small', 'disable all checks and calculations except: planned links crossings, blocking & wasted fileds and outgoing links count check')
-        )
+    $this->checkbox(
+        array(
+            'id'    => 'HLPlanningInput',
+            'name'  => 'HLPlanning',
+            'class' => 'planoption',
+        ),
+        $this->tag('strong', 'HIGH LEVEL PLANNING mode')
+        . ' ' . $this->tag('small', 'disable all checks and calculations except: planned links crossings, blocking & wasted fields and outgoing links count check')
     )
-    . $this->div(
-        'checkbox',
-        $this->tag(
-            'input',
-            array(
-                'type'  => 'checkbox',
-                'id'    => 'showDoneLinksInput',
-                'name'  => 'showDoneLinks',
-                'class' => 'planoption',
-            )
-        )
-        . $this->tag(
-            'label',
-            $this->tag('strong', 'Show done links')
-            . ' ' . $this->tag('small', 'check to show done links (planned links currently in place and of the same faction)')
-        )
+    . $this->checkbox(
+        array(
+            'id'    => 'showDoneLinksInput',
+            'name'  => 'showDoneLinks',
+            'class' => 'planoption',
+        ),
+        $this->tag('strong', 'Show done links')
+        . ' ' . $this->tag('small', 'check to show done links (planned links currently in place and of the same faction)')
     )
-    . $this->div(
-        'checkbox',
-        $this->tag(
-            'input',
-            array(
-                'type'  => 'checkbox',
-                'id'    => 'fullresosOnTouchedPortalsInput',
-                'name'  => 'fullresosOnTouchedPortals',
-                'class' => 'planoption',
-            )
-        )
-        . $this->tag(
-            'label',
-            $this->tag('strong', 'Always Capture & Ful resos')
-            . ' ' . $this->tag('small', 'Check to assume any visited portal is captured & made full resos. Brought to NEUTRAL otherwise.')
-        )
+    . $this->checkbox(
+        array(
+            'id'    => 'fullresosOnTouchedPortalsInput',
+            'name'  => 'fullresosOnTouchedPortals',
+            'class' => 'planoption',
+        ),
+        $this->tag('strong', 'Always Capture & Full resos')
+        . ' ' . $this->tag('small', 'Check to assume any visited portal is captured & made full resos. Brought to NEUTRAL otherwise.')
     )
-    . $this->div(
-        'checkbox',
-        $this->tag(
-            'input',
-            array(
-                'type'  => 'checkbox',
-                'id'    => 'planKeyFarmingInput',
-                'name'  => 'planKeyFarming',
-                'class' => 'planoption',
-            )
-        )
-        . $this->tag(
-            'label',
-            $this->tag('strong', 'Plan Key Farming')
-            . ' ' . $this->tag('small', 'Plan key farming basing on keys owned. Summarize needed keys otherwise.')
-        )
+    . $this->checkbox(
+        array(
+            'id'    => 'planKeyFarmingInput',
+            'name'  => 'planKeyFarming',
+            'class' => 'planoption',
+        ),
+        $this->tag('strong', 'Plan Key Farming')
+        . ' ' . $this->tag('small', 'Plan key farming basing on keys owned. Summarize needed keys otherwise.')
     )
     . $this->div(
         '#keyFarmLimitContainer',

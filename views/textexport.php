@@ -3,21 +3,13 @@
 echo
 $this->div(
     'form-inline',
-    $this->div(
-        'checkbox checkbox-inline',
-        $this->tag(
-            'input',
-            array(
-                'type'  => 'checkbox',
-                'name'  => 'textualPlanAddLinks',
-                'class' => 'planoption',
-            ),
-            ''
-        )
-        . $this->tag(
-            'label',
-            'Add links'
-        )
+    $this->checkbox(
+        array(
+            'name'  => 'textualPlanAddLinks',
+            'class' => 'planoption',
+        ),
+        'Add links',
+        true
     )
     . $this->tag(
         'span',
