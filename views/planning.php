@@ -81,7 +81,7 @@ $this->div(
         )
     )
     . $this->div(
-        'scroll screenHeigth',
+        'scroll screenHeight',
         array('id'=>'stepsTableContainer',),
         $this->tag(
             'table',

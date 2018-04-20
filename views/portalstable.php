@@ -1,7 +1,7 @@
 <?php
 
 echo $this->div(
-    'scroll screenHeigth',
+    'scroll screenHeight',
     $this->view('noplanactive')
     . $this->tag(
         'table',

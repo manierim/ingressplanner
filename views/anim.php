@@ -127,11 +127,11 @@ echo $this->div(
                     )
                 )
                 . $this->div(
-                    'screenHeigth',
+                    'screenHeight',
                     array(
                         'id'    => 'planPreviewCanvas',
                         'style' => 'width: 100%;',
-                        'data-screenHeigth-less' => 70,
+                        'data-screenHeight-less' => 70,
                     ),
                     ''
                 )

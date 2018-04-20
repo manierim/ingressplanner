@@ -7,7 +7,7 @@ foreach ($requiredPlugins as $name => $data) {
 }
 
 echo $this->div(
-    'scroll screenHeigth container',
+    'scroll screenHeight container',
     $this->div(
         'row',
         $this->col(
