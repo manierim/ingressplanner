@@ -29,7 +29,7 @@ ingressplanner.iitc = new (function() {
 	            request["ingess-planner"].data = data;
 	        }
 
-	        messagingTarget.postMessage(request,"https://intel.ingress.com");
+	        messagingTarget.postMessage(request,window.about.STOCKINTELURL);
 	        if (about.debug)
 	        {
 	        	if (about.debug)

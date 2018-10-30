@@ -155,7 +155,7 @@ ingressplanner.ui = new (function() {
 
         return $('<a>').attr({
             class:  'team-'+team,
-            href:   'https://intel.ingress.com?ll='+portal.llstring+'&z=17&pll='+portal.llstring,
+            href:   window.about.STOCKINTELURL + '?ll='+portal.llstring+'&z=17&pll='+portal.llstring,
             target: 'blank',
         })
         .append($("<portal>").data('portal',portal).toggleClass('unknown',unknown).html(title));
@@ -466,7 +466,7 @@ ingressplanner.ui = new (function() {
                             break;
 
                         case 'portal':
-                            url = 'https://intel.ingress.com?ll='+llstring+'&z=17&pll='+llstring;
+                            url = window.about.STOCKINTELURL + '?ll='+llstring+'&z=17&pll='+llstring;
                             break;
                     }
 
@@ -3941,7 +3941,7 @@ ingressplanner.ui = new (function() {
 		iitcSentPing: function()
 		{
 			$(".qs-iitcplugin").addClass('done');
-	        $('body').on('click','a[href^="https://intel.ingress.com"]',function () {
+	        $('body').on('click','a[href^="'+window.about.STOCKINTELURL+'"]',function () {
 
 	        	if (eventHandler)
 	        	{
