@@ -1,0 +1,20 @@
+while read oldrev newrev ref
+do
+    branch=`echo $ref | cut -d/ -f3`
+  
+    if [ "produzione" == "$branch" ]; then
+
+        export IP_basepath="/home/marco/www-ingressplanner"
+        export IP_baseurl="https://www.ingressplanner.net"
+
+        echo "Checkout $branch to $IP_basepath:";
+
+        git --work-tree=$IP_basepath checkout -f $branch
+
+        sh $IP_basepath/deploy.sh
+
+        chmod -R 0775 $IP_basepath
+        chown -R marco:apache $IP_basepath
+  fi
+  
+done
