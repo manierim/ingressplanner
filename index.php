@@ -20,7 +20,7 @@ define('LIB_LEAFLET_VERS', '<span id="leafletVersionSpan">?<span>');
 define('LIB_LEAFLETLABEL_VERS', '<span id="leafletLabelVersionSpan">?<span>');
 
 define('INGRESSURL', 'http://www.ingress.com/');
-define('STOCKINTELURL', 'https://www.ingress.com/intel/');
+define('STOCKINTELURL', 'https://intel.ingress.com/');
 define('INGRAPHURL', 'http://atistar.net/~stepp/ingraph/');
 
 define('IITCHOMEURL', 'https://static.iitc.me/');

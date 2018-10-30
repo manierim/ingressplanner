@@ -4,6 +4,15 @@ $news = array(
 // add newest to the top!
 
     array(
+        'title'     => 'Ingress URLs update',
+        'date'      => 'Oct. 30, 2018',
+        'version'   => '2.0.12',
+        'body' => array(
+            'Ingress Intel URL updated',
+        ),
+    ),
+
+    array(
         'title'     => 'Fixes & improvements',
         'date'      => 'Apr. 20, 2018',
         'version'   => '2.0.11',
@@ -63,6 +72,7 @@ $news = array(
             'Manage items: portal filter can now specify if it is origin/destination, selected links can be mass inverted, selected items can be mass changed colors.',
         ),
     ),
+/*
 
     array(
         'date'      => 'Jan. 14, 2016',
@@ -71,7 +81,7 @@ $news = array(
             'Backend data storage is now SQLite instead of JSON files (no more URL shortener issues).',
         ),
     ),
-/*
+
     array(
         'date'      => 'Dec. 29, 2015',
         'version'   => '2.0.5',
