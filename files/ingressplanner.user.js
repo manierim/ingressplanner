@@ -4,8 +4,8 @@
 // @category       misc
 // @version        2.@@DATETIMEVERSION@@
 // @namespace      https://github.com/jonatkins/ingress-intel-total-conversion
-// @updateURL      @@UPDATEURL@@
-// @downloadURL    @@DOWNLOADURL@@
+// @updateURL      @@IPBASEURL@@/files/ingressplanner.user.js
+// @downloadURL    @@IPBASEURL@@/files/ingressplanner.user-meta.js
 // @description    Data source for Ingress Planner.
 // @include        *://*.ingress.com/intel*
 // @include        *://*.ingress.com/mission/
