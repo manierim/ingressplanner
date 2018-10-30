@@ -7,14 +7,15 @@ do
         export IP_basepath="/home/marco/www-ingressplanner"
         export IP_baseurl="https://www.ingressplanner.net"
 
-        echo "Checkout $branch to $IP_basepath:";
+        echo "Checkout $branch to $IP_basepath at host $IP_baseurl:";
 
         git --work-tree=$IP_basepath checkout -f $branch
 
-        sh $IP_basepath/deploy.sh
-
         chmod -R 0775 $IP_basepath
         chown -R marco:apache $IP_basepath
+
+        sh $IP_basepath/deploy.sh
+
   fi
   
 done
