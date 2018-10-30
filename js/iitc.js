@@ -29,7 +29,7 @@ ingressplanner.iitc = new (function() {
 	            request["ingess-planner"].data = data;
 	        }
 
-	        messagingTarget.postMessage(request,"https://www.ingress.com");
+	        messagingTarget.postMessage(request,"https://intel.ingress.com");
 	        if (about.debug)
 	        {
 	        	if (about.debug)
