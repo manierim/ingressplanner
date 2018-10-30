@@ -5,7 +5,7 @@ do
     if [ "produzione" == "$branch" ]; then
 
         export IP_basepath="/home/marco/www-ingressplanner"
-        export IP_baseurl="https://www.ingressplanner.net"
+        export IP_baseurl="https:\/\/www.ingressplanner.net"
 
         echo "Checkout $branch to $IP_basepath at host $IP_baseurl:";
 
