@@ -11,7 +11,7 @@ $html = new Helpers\HtmlHelper;
 require 'basics.php';
 
 define('BUILD', '@@BUILD@@ @@BUILDDATE@@');
-define('PLUGINVERSION', '2.@@PLUGINBUILD@@');
+define('PLUGINVERSION', '2.0.12.@@PLUGINBUILD@@');
 define('AUTHOR', 'Marco Manieri');
 define('AUTHOR_AGENTNAME', '@MarcioPG');
 define('AUTHOR_TEAM', 'ENLIGHTENED');
