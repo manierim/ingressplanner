@@ -4,3 +4,4 @@ shortURLs.json
 shortURLs.lock
 php-error.log
 ingressplannerDB.sqlite
+public/.well-known/*

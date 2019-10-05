@@ -2,10 +2,10 @@
 // @id             iitc-plugin-ingressplanner
 // @name           IITC plugin: Ingress Planner
 // @category       misc
-// @version        2.0.12.@@DATETIMEVERSION@@
+// @version        2.0.12.3106449 01/11/2018
 // @namespace      https://github.com/jonatkins/ingress-intel-total-conversion
-// @updateURL      @@IPBASEURL@@/files/ingressplanner.user.js
-// @downloadURL    @@IPBASEURL@@/files/ingressplanner.user-meta.js
+// @updateURL      https://www.ingressplanner.net/files/ingressplanner.user.js
+// @downloadURL    https://www.ingressplanner.net/files/ingressplanner.user-meta.js
 // @description    Data source for Ingress Planner.
 // @include        *://*.ingress.com/intel*
 // @include        *://*.ingress.com/mission/
@@ -29,7 +29,7 @@ function wrapper() {
 
     var self = window.plugin.ingressplanner;
 
-    self.version = '2.0.12.@@PLUGINBUILD@@';
+    self.version = '2.0.12.3106449';
 
     self.ihOrigin = '*';
 

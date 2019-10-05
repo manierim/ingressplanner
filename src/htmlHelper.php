@@ -1,5 +1,5 @@
 <?php
-namespace IngressPlanner\Helpers;
+namespace Helpers;
 
 class HtmlHelper
 {
@@ -73,7 +73,7 @@ class HtmlHelper
             extract($vars);
         }
         ob_start();
-        require "views/$file.php";
+        require SRC_FOLDER . "views/$file.php";
         $html = ob_get_contents();
         ob_end_clean();
         return $html;

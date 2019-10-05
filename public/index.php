@@ -1,132 +1,27 @@
 <?php
-namespace IngressPlanner;
+define('DEBUG', getenv('DEBUG')?true:false);
 
-error_reporting(E_ALL);
-ini_set('error_log', 'php-error.log');
-ini_set('log_errors', true);
+ini_set('display_errors', DEBUG?1:0);
 
-require 'htmlHelper.php';
-$html = new Helpers\HtmlHelper;
+date_default_timezone_set('Europe/Rome');
 
-require 'basics.php';
+session_start();
 
-define('BUILD', '@@BUILD@@ @@BUILDDATE@@');
-define('PLUGINVERSION', '2.0.12.@@PLUGINBUILD@@');
-define('AUTHOR', 'Marco Manieri');
-define('AUTHOR_AGENTNAME', '@MarcioPG');
-define('AUTHOR_TEAM', 'ENLIGHTENED');
+define('SRC_FOLDER', dirname(__DIR__) . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR);
 
-define('LIB_LEAFLET_VERS', '<span id="leafletVersionSpan">?<span>');
-define('LIB_LEAFLETLABEL_VERS', '<span id="leafletLabelVersionSpan">?<span>');
+require SRC_FOLDER . 'utils.php';
+require SRC_FOLDER . 'db.php';
 
-define('INGRESSURL', 'http://www.ingress.com');
-define('STOCKINTELURL', 'https://intel.ingress.com/intel');
-define('INGRAPHURL', 'http://atistar.net/~stepp/ingraph/');
+$requestpath = array_values(array_filter(explode('/', $_SERVER['REQUEST_URI'])));
 
-define('IITCHOMEURL', 'https://static.iitc.me/');
-define('IITCINTALLURL', 'https://iitc.me/desktop/');
+if (count($requestpath) == 1) {
 
-define('FIXEDIITC', false);   // set false if official IITC script is ok.
-//define('FIXEDIITC', 'files/total-conversion-build.user.js');   // set to relative url to download fixed IITC.
-define('FIXEDIITCREASON', 'this is needed since the current IITC version has not yet implemented a fix to allow IITC to run inside a frame');
-
-define('PLUGDOWNLOADRELURL', 'files/ingressplanner.user.js');
-
-$requiredPlugins = array(
-    'Draw Tools'    => array(
-        'description'   => 'allows quick drawing of links directly on the map, portal to portal',
-        'infoURL'       => IITCINTALLURL . '#' . 'plugin-draw-tools',
-        'downloadURL'   => IITCHOMEURL . 'build/release/plugins/draw-tools.user.js',
-        'objectName'    => 'drawTools',
-    ),
-    'Keys'          => array(
-        'description'   => 'support the player in keeping track, directly from the map interface, of the number of "portal keys" for each portal, being them necessary to build links',
-        'infoURL'       => IITCINTALLURL . '#' . 'plugin-keys',
-        'downloadURL'   => IITCHOMEURL . 'build/release/plugins/keys.user.js',
-        'objectName'    => 'keys',
-    ),
-    'Sync'          => array(
-        'description'   => 'stores Keys plugin data for the user in Google Drive',
-        'infoURL'       => IITCINTALLURL . '#' . 'plugin-sync',
-        'downloadURL'   => IITCHOMEURL . 'build/release/plugins/sync.user.js',
-        'objectName'    => 'sync',
-    ),
-);
-
-$content = $html->view('index', compact('requiredPlugins', 'agents', 'agents_since', 'news'));
-
-$jsbuffer = $html->getJsBuffer();
-
-$additionalassetts = array(
-    'css' => array(
-        // Color Picker Sliders
-        'css/bootstrap.colorpickersliders.min.css',
-        // Awesome Bootstrap Checkbox
-        '//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
-        'css/awesome-bootstrap-checkbox.css',
-        // Leaflet
-        'css/leaflet.css',
-        // leaflet.label
-        'css/leaflet.label.css',
-        // main site
-        'css/main.css',
-    ),
-    'scripts' => array(
-        // Bootbox.js
-        'js/bootbox.min.js',
-        // Color Picker Sliders
-        'js/tinycolor-min.js',
-//      fixed to avoid multiple addition of same color to swatch
-        'js/bootstrap.colorpickersliders.nocielch-fix.js', //        'js/bootstrap.colorpickersliders.nocielch.min.js',
-        // Leaflet
-        'js/leaflet.js',
-        // Leaflet.label
-        'js/leaflet.label.js',
-        // Polyline.encoded
-        'js/Polyline.encoded.js',
-        // Main App
-        'js/ingressplanner.js',
-        'js/utils.js',
-        'js/iitc.js',
-        'js/plan.js',
-        'js/gameworld.js',
-        'js/gdrive.js',
-        'js/ui.js',
-        'js/aprewards.js',
-        'js/tools.js',
-        'js/router.js',
-        'js/shortener.js',
-        // GDrive bootstrap
-        'https://apis.google.com/js/client.js?onload=gdriveClientLoad',
-    ),
-
-    'jsblocks' => array(
-        'about = ' . json_encode(
-            array(
-                'debug'           => DEBUG,
-                'productname'     => PRODUCTNAME,
-                'version'         => VERSION,
-                'pluginVersion'   => PLUGINVERSION,
-                'author'          => AUTHOR,
-                'requiredPlugins' => $requiredPlugins,
-                'STOCKINTELURL'   => STOCKINTELURL,
-            )
-        ) . ';
-        about.site = window.location.href;',
-    )
-
-);
-
-if (!DEBUG) {
-    $additionalassetts['jsblocks'][] = '
-    (function(i,s,o,g,r,a,m){i["GoogleAnalyticsObject"]=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,"script","//www.google-analytics.com/analytics.js","ga");
-
-      ga("create", "UA-58916725-1", "auto");
-      ga("send", "pageview");
-    ';
+    $requestpath = $requestpath[0];
+    if ($requestpath == 'agent.php') {
+        require SRC_FOLDER . 'agent.php';
+        die();
+    }
+    require SRC_FOLDER . 'shortener.php';
 }
 
-require 'layout.php';
+require SRC_FOLDER . 'app.php';

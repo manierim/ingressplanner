@@ -421,7 +421,7 @@ ingressplanner = new (function() {
 
                     case 'ping':
                         if (
-                            about.pluginVersion != '2.@@PLUGINBUILD@@'
+                            about.pluginVersion != '2.0.12.3106449'
                             &&
                             (
                                 payload.version != about.pluginVersion
