@@ -1,6 +1,6 @@
 <?php
 
-$dbfile = '/var/www/persistent/ingressplannerDB.sqlite';
+$dbfile = '/var/www/persistent/db/ingressplannerDB.sqlite';
 
 $existing = is_file($dbfile);
 $db = new PDO('sqlite:'.$dbfile);
