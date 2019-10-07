@@ -18,27 +18,7 @@ echo $this->div(
             . $this->row(
                 array('style'=>'margin-top: 20px; '),
                 $this->col(
-                    4,
-                    $this->tag(
-                        'a',
-                        array(
-                            'href'      => 'https://plus.google.com/communities/102911691483488654925',
-                            'target'    => '_blank',
-                            'style'     => 'text-decoration:none; ',
-                            'class'     => 'pull-left',
-                        ),
-                        $this->tag(
-                            'img',
-                            array(
-                                'src'   => '//ssl.gstatic.com/images/icons/gplus-32.png',
-                                'alt'   => 'Google+',
-                                'style' => 'border:0; height: 32px; ',
-                            )
-                        )
-                    )
-                )
-                . $this->col(
-                    4,
+                    6,
                     $this->tag(
                         'a',
                         array(
@@ -58,7 +38,7 @@ echo $this->div(
                     )
                 )
                 . $this->col(
-                    4,
+                    6,
                     $this->tag(
                         'a',
                         array(
